@@ -1,0 +1,6 @@
+@CommuniCare_HostAddress = http://localhost:5182
+
+GET {{CommuniCare_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

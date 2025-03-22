@@ -1,13 +1,9 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\IPCA\\2\u00BAAno\\2\u00BASemestre\\Projeto de Desenvolvimento de Software\\CommuniCareRepo\\CommuniCare\\CommuniCare\\",
+  "WorkspaceRootPath": "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{61DB51D4-BA6F-4B0E-B19F-7CA964E4D85A}|CommuniCare\\CommuniCare.csproj|c:\\ipca\\2\u00BAano\\2\u00BAsemestre\\projeto de desenvolvimento de software\\communicarerepo\\communicare\\communicare\\communicare\\weatherforecast.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{61DB51D4-BA6F-4B0E-B19F-7CA964E4D85A}|CommuniCare\\CommuniCare.csproj|solutionrelative:communicare\\weatherforecast.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{61DB51D4-BA6F-4B0E-B19F-7CA964E4D85A}|CommuniCare\\CommuniCare.csproj|c:\\ipca\\2\u00BAano\\2\u00BAsemestre\\projeto de desenvolvimento de software\\communicarerepo\\communicare\\communicare\\communicare\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{61DB51D4-BA6F-4B0E-B19F-7CA964E4D85A}|CommuniCare\\CommuniCare.csproj|c:\\users\\ferna\\documents\\github\\communicare_pds\\communicare\\communicare\\communicare\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{61DB51D4-BA6F-4B0E-B19F-7CA964E4D85A}|CommuniCare\\CommuniCare.csproj|solutionrelative:communicare\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -27,23 +23,10 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "WeatherForecast.cs",
-              "DocumentMoniker": "C:\\IPCA\\2\u00BAAno\\2\u00BASemestre\\Projeto de Desenvolvimento de Software\\CommuniCareRepo\\CommuniCare\\CommuniCare\\CommuniCare\\WeatherForecast.cs",
-              "RelativeDocumentMoniker": "CommuniCare\\WeatherForecast.cs",
-              "ToolTip": "C:\\IPCA\\2\u00BAAno\\2\u00BASemestre\\Projeto de Desenvolvimento de Software\\CommuniCareRepo\\CommuniCare\\CommuniCare\\CommuniCare\\WeatherForecast.cs",
-              "RelativeToolTip": "CommuniCare\\WeatherForecast.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAgAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-21T16:53:57.31Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
               "Title": "Program.cs",
-              "DocumentMoniker": "C:\\IPCA\\2\u00BAAno\\2\u00BASemestre\\Projeto de Desenvolvimento de Software\\CommuniCareRepo\\CommuniCare\\CommuniCare\\CommuniCare\\Program.cs",
+              "DocumentMoniker": "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\Program.cs",
               "RelativeDocumentMoniker": "CommuniCare\\Program.cs",
-              "ToolTip": "C:\\IPCA\\2\u00BAAno\\2\u00BASemestre\\Projeto de Desenvolvimento de Software\\CommuniCareRepo\\CommuniCare\\CommuniCare\\CommuniCare\\Program.cs",
+              "ToolTip": "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\Program.cs",
               "RelativeToolTip": "CommuniCare\\Program.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ryHEMp41CgM=",
+  "dgSpecHash": "y6oivkFmvfE=",
   "success": true,
-  "projectFilePath": "C:\\IPCA\\2ºAno\\2ºSemestre\\Projeto de Desenvolvimento de Software\\CommuniCareRepo\\CommuniCare\\CommuniCare\\CommuniCare\\CommuniCare.csproj",
+  "projectFilePath": "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\CommuniCare.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ferna\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\ferna\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",

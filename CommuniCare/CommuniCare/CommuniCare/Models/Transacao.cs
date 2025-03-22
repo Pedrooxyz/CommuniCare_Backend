@@ -11,9 +11,9 @@ public partial class Transacao
 
     public int? Quantidade { get; set; }
 
-    public virtual TransacaoAjudum? TransacaoAjudum { get; set; }
+    public virtual TransacaoAjuda? TransacaoAjudum { get; set; }
 
     public virtual TransacaoEmprestimo? TransacaoEmprestimo { get; set; }
 
-    public virtual Vendum? Vendum { get; set; }
+    public virtual Venda? Venda { get; set; }
 }

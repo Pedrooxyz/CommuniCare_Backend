@@ -21,7 +21,7 @@ public partial class Notificacao
 
     public virtual ItemEmprestimo Item { get; set; } = null!;
 
-    public virtual PedidoAjudum Pedido { get; set; } = null!;
+    public virtual PedidoAjuda Pedido { get; set; } = null!;
 
     public virtual Utilizador Utilizador { get; set; } = null!;
 }

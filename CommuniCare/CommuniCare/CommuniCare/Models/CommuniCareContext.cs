@@ -31,11 +31,11 @@ public partial class CommuniCareContext : DbContext
 
     public virtual DbSet<Mensagem> Mensagems { get; set; }
 
-    public virtual DbSet<Moradum> Morada { get; set; }
+    public virtual DbSet<Morada> Morada { get; set; }
 
     public virtual DbSet<Notificacao> Notificacaos { get; set; }
 
-    public virtual DbSet<PedidoAjudum> PedidoAjuda { get; set; }
+    public virtual DbSet<PedidoAjuda> PedidoAjuda { get; set; }
 
     public virtual DbSet<TipoContacto> TipoContactos { get; set; }
 
@@ -43,13 +43,13 @@ public partial class CommuniCareContext : DbContext
 
     public virtual DbSet<Transacao> Transacaos { get; set; }
 
-    public virtual DbSet<TransacaoAjudum> TransacaoAjuda { get; set; }
+    public virtual DbSet<TransacaoAjuda> TransacaoAjuda { get; set; }
 
     public virtual DbSet<TransacaoEmprestimo> TransacaoEmprestimos { get; set; }
 
     public virtual DbSet<Utilizador> Utilizadors { get; set; }
 
-    public virtual DbSet<Vendum> Venda { get; set; }
+    public virtual DbSet<Venda> Venda { get; set; }
 
     public virtual DbSet<Voluntariado> Voluntariados { get; set; }
 
@@ -252,7 +252,7 @@ public partial class CommuniCareContext : DbContext
                 .HasConstraintName("FKMensagem208498");
         });
 
-        modelBuilder.Entity<Moradum>(entity =>
+        modelBuilder.Entity<Morada>(entity =>
         {
             entity.HasKey(e => e.MoradaId).HasName("PK__Morada__5BDD9AB29A5F23DC");
 
@@ -308,7 +308,7 @@ public partial class CommuniCareContext : DbContext
                 .HasConstraintName("FKNotificaca99191");
         });
 
-        modelBuilder.Entity<PedidoAjudum>(entity =>
+        modelBuilder.Entity<PedidoAjuda>(entity =>
         {
             entity.HasKey(e => e.PedidoId).HasName("PK__PedidoAj__BAF07AE4789D03F6");
 
@@ -372,7 +372,7 @@ public partial class CommuniCareContext : DbContext
             entity.Property(e => e.Quantidade).HasColumnName("quantidade");
         });
 
-        modelBuilder.Entity<TransacaoAjudum>(entity =>
+        modelBuilder.Entity<TransacaoAjuda>(entity =>
         {
             entity.HasKey(e => e.TransacaoId).HasName("PK__Transaca__EA9168CE1D5A6645");
 
@@ -382,7 +382,7 @@ public partial class CommuniCareContext : DbContext
             entity.Property(e => e.RecetorTran).HasColumnName("recetorTran");
 
             entity.HasOne(d => d.Transacao).WithOne(p => p.TransacaoAjudum)
-                .HasForeignKey<TransacaoAjudum>(d => d.TransacaoId)
+                .HasForeignKey<TransacaoAjuda>(d => d.TransacaoId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKTransacaoA7406");
         });
@@ -434,7 +434,7 @@ public partial class CommuniCareContext : DbContext
                 .HasConstraintName("FKUtilizador319669");
         });
 
-        modelBuilder.Entity<Vendum>(entity =>
+        modelBuilder.Entity<Venda>(entity =>
         {
             entity.HasKey(e => e.TransacaoId).HasName("PK__Venda__EA9168CECCA8D27D");
 
@@ -444,8 +444,8 @@ public partial class CommuniCareContext : DbContext
             entity.Property(e => e.NArtigos).HasColumnName("nArtigos");
             entity.Property(e => e.UtilizadorId).HasColumnName("utilizadorID");
 
-            entity.HasOne(d => d.Transacao).WithOne(p => p.Vendum)
-                .HasForeignKey<Vendum>(d => d.TransacaoId)
+            entity.HasOne(d => d.Transacao).WithOne(p => p.Venda)
+                .HasForeignKey<Venda>(d => d.TransacaoId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKVenda552087");
 

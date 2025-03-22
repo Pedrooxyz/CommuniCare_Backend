@@ -11,7 +11,7 @@ public partial class Voluntariado
 
     public int IdVoluntariado { get; set; }
 
-    public virtual PedidoAjudum Pedido { get; set; } = null!;
+    public virtual PedidoAjuda Pedido { get; set; } = null!;
 
     public virtual Utilizador Utilizador { get; set; } = null!;
 }

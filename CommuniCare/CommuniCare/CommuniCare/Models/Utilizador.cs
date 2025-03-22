@@ -21,15 +21,15 @@ public partial class Utilizador
 
     public virtual ICollection<Contacto> Contactos { get; set; } = new List<Contacto>();
 
-    public virtual Moradum Morada { get; set; } = null!;
+    public virtual Morada Morada { get; set; } = null!;
 
     public virtual ICollection<Notificacao> Notificacaos { get; set; } = new List<Notificacao>();
 
-    public virtual ICollection<PedidoAjudum> PedidoAjuda { get; set; } = new List<PedidoAjudum>();
+    public virtual ICollection<PedidoAjuda> PedidoAjuda { get; set; } = new List<PedidoAjuda>();
 
     public virtual TipoUtilizador TipoUtilizador { get; set; } = null!;
 
-    public virtual ICollection<Vendum> Venda { get; set; } = new List<Vendum>();
+    public virtual ICollection<Venda> Venda { get; set; } = new List<Venda>();
 
     public virtual ICollection<Voluntariado> Voluntariados { get; set; } = new List<Voluntariado>();
 

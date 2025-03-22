@@ -19,5 +19,5 @@ public partial class Artigo
 
     public virtual Loja Loja { get; set; } = null!;
 
-    public virtual Vendum? Transacao { get; set; }
+    public virtual Venda? Transacao { get; set; }
 }

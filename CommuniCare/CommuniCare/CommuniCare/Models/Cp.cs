@@ -9,5 +9,5 @@ public partial class Cp
 
     public int? DescCp { get; set; }
 
-    public virtual ICollection<Moradum> Morada { get; set; } = new List<Moradum>();
+    public virtual ICollection<Morada> Morada { get; set; } = new List<Morada>();
 }

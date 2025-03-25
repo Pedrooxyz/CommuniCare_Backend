@@ -24,14 +24,14 @@ namespace CommuniCare.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Utilizador>>> GetUtilizadors()
         {
-            return await _context.Utilizadors.ToListAsync();
+            return await _context.Utilizadores.ToListAsync();
         }
 
         // GET: api/Utilizadors/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Utilizador>> GetUtilizador(int id)
         {
-            var utilizador = await _context.Utilizadors.FindAsync(id);
+            var utilizador = await _context.Utilizadores.FindAsync(id);
 
             if (utilizador == null)
             {
@@ -77,7 +77,7 @@ namespace CommuniCare.Controllers
         [HttpPost]
         public async Task<ActionResult<Utilizador>> PostUtilizador(Utilizador utilizador)
         {
-            _context.Utilizadors.Add(utilizador);
+            _context.Utilizadores.Add(utilizador);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetUtilizador", new { id = utilizador.UtilizadorId }, utilizador);
@@ -87,13 +87,13 @@ namespace CommuniCare.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUtilizador(int id)
         {
-            var utilizador = await _context.Utilizadors.FindAsync(id);
+            var utilizador = await _context.Utilizadores.FindAsync(id);
             if (utilizador == null)
             {
                 return NotFound();
             }
 
-            _context.Utilizadors.Remove(utilizador);
+            _context.Utilizadores.Remove(utilizador);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -101,7 +101,7 @@ namespace CommuniCare.Controllers
 
         private bool UtilizadorExists(int id)
         {
-            return _context.Utilizadors.Any(e => e.UtilizadorId == id);
+            return _context.Utilizadores.Any(e => e.UtilizadorId == id);
         }
     }
 }

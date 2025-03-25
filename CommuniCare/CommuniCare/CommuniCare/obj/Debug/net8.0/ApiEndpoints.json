@@ -1199,6 +1199,22 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",
+    "Method": "PedirAjuda",
+    "RelativePath": "api/PedidosAjuda/pedir",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pedidoData",
+        "Type": "CommuniCare.DTOs.PedidoAjudaDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "CommuniCare.Controllers.TipoContactosController",
     "Method": "GetTipoContactos",
     "RelativePath": "api/TipoContactos",

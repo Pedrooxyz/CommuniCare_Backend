@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Conventions;
+using System;
 using System.Collections.Generic;
 
 namespace CommuniCare.Models;
@@ -7,7 +8,7 @@ public partial class PedidoAjuda
 {
     public int PedidoId { get; set; }
 
-    public string? DescPedido { get; set; }
+    public string DescPedido { get; set; }
 
     public int? RecompensaCares { get; set; }
 
@@ -30,4 +31,29 @@ public partial class PedidoAjuda
     public virtual Utilizador Utilizador { get; set; } = null!;
 
     public virtual ICollection<Voluntariado> Voluntariados { get; set; } = new List<Voluntariado>();
+
+    public PedidoAjuda (string descPedido, DateTime horarioAjuda, int nHoras, int nPessoas, int utilizadorId)
+    {
+        DescPedido=descPedido;
+        HorarioAjuda=horarioAjuda;
+        NHoras=nHoras;
+        NPessoas=nPessoas;
+        UtilizadorId=utilizadorId;
+        RecompensaCares = CalculaRecompensa(nHoras);
+
+    }
+
+    public PedidoAjuda() { }
+
+
+    int CalculaRecompensa(int nHoras)
+    {
+        return nHoras * 50;
+    }
+
+    #region Metodos
+
+
+
+    #endregion
 }

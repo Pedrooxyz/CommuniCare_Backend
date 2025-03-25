@@ -24,14 +24,14 @@ namespace CommuniCare.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Mensagem>>> GetMensagems()
         {
-            return await _context.Mensagems.ToListAsync();
+            return await _context.Mensagens.ToListAsync();
         }
 
         // GET: api/Mensagens/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Mensagem>> GetMensagem(int id)
         {
-            var mensagem = await _context.Mensagems.FindAsync(id);
+            var mensagem = await _context.Mensagens.FindAsync(id);
 
             if (mensagem == null)
             {
@@ -77,7 +77,7 @@ namespace CommuniCare.Controllers
         [HttpPost]
         public async Task<ActionResult<Mensagem>> PostMensagem(Mensagem mensagem)
         {
-            _context.Mensagems.Add(mensagem);
+            _context.Mensagens.Add(mensagem);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetMensagem", new { id = mensagem.MensagemId }, mensagem);
@@ -87,13 +87,13 @@ namespace CommuniCare.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMensagem(int id)
         {
-            var mensagem = await _context.Mensagems.FindAsync(id);
+            var mensagem = await _context.Mensagens.FindAsync(id);
             if (mensagem == null)
             {
                 return NotFound();
             }
 
-            _context.Mensagems.Remove(mensagem);
+            _context.Mensagens.Remove(mensagem);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -101,7 +101,7 @@ namespace CommuniCare.Controllers
 
         private bool MensagemExists(int id)
         {
-            return _context.Mensagems.Any(e => e.MensagemId == id);
+            return _context.Mensagens.Any(e => e.MensagemId == id);
         }
     }
 }

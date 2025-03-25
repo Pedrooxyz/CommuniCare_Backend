@@ -25,11 +25,11 @@ public partial class CommuniCareContext : DbContext
 
     public virtual DbSet<Emprestimo> Emprestimos { get; set; }
 
-    public virtual DbSet<ItemEmprestimo> ItemEmprestimos { get; set; }
+    public virtual DbSet<ItemEmprestimo> ItensEmprestimo { get; set; }
 
     public virtual DbSet<Loja> Lojas { get; set; }
 
-    public virtual DbSet<Mensagem> Mensagems { get; set; }
+    public virtual DbSet<Mensagem> Mensagens { get; set; }
 
     public virtual DbSet<Morada> Morada { get; set; }
 
@@ -47,7 +47,7 @@ public partial class CommuniCareContext : DbContext
 
     public virtual DbSet<TransacaoEmprestimo> TransacaoEmprestimos { get; set; }
 
-    public virtual DbSet<Utilizador> Utilizadors { get; set; }
+    public virtual DbSet<Utilizador> Utilizadores { get; set; }
 
     public virtual DbSet<Venda> Venda { get; set; }
 

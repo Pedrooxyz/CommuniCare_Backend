@@ -24,14 +24,14 @@ namespace CommuniCare.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ItemEmprestimo>>> GetItemEmprestimos()
         {
-            return await _context.ItemEmprestimos.ToListAsync();
+            return await _context.ItensEmprestimo.ToListAsync();
         }
 
         // GET: api/ItemEmprestimoes/5
         [HttpGet("{id}")]
         public async Task<ActionResult<ItemEmprestimo>> GetItemEmprestimo(int id)
         {
-            var itemEmprestimo = await _context.ItemEmprestimos.FindAsync(id);
+            var itemEmprestimo = await _context.ItensEmprestimo.FindAsync(id);
 
             if (itemEmprestimo == null)
             {
@@ -77,7 +77,7 @@ namespace CommuniCare.Controllers
         [HttpPost]
         public async Task<ActionResult<ItemEmprestimo>> PostItemEmprestimo(ItemEmprestimo itemEmprestimo)
         {
-            _context.ItemEmprestimos.Add(itemEmprestimo);
+            _context.ItensEmprestimo.Add(itemEmprestimo);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetItemEmprestimo", new { id = itemEmprestimo.ItemId }, itemEmprestimo);
@@ -87,13 +87,13 @@ namespace CommuniCare.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteItemEmprestimo(int id)
         {
-            var itemEmprestimo = await _context.ItemEmprestimos.FindAsync(id);
+            var itemEmprestimo = await _context.ItensEmprestimo.FindAsync(id);
             if (itemEmprestimo == null)
             {
                 return NotFound();
             }
 
-            _context.ItemEmprestimos.Remove(itemEmprestimo);
+            _context.ItensEmprestimo.Remove(itemEmprestimo);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -101,7 +101,7 @@ namespace CommuniCare.Controllers
 
         private bool ItemEmprestimoExists(int id)
         {
-            return _context.ItemEmprestimos.Any(e => e.ItemId == id);
+            return _context.ItensEmprestimo.Any(e => e.ItemId == id);
         }
     }
 }

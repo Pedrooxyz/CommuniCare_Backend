@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CommuniCare.Models;
+using CommuniCare.DTOs;
 
 namespace CommuniCare.Controllers
 {
@@ -103,5 +104,39 @@ namespace CommuniCare.Controllers
         {
             return _context.PedidoAjuda.Any(e => e.PedidoId == id);
         }
+
+
+    [HttpPost("pedir")]
+    public async Task<IActionResult> PedirAjuda([FromBody] PedidoAjudaDTO pedidoData)
+    {
+        if (pedidoData == null)
+        {
+            return BadRequest("Dados inválidos.");
+        }
+
+        var utilizador = await _context.Utilizadores.FindAsync(pedidoData.UtilizadorId);
+        if (utilizador == null)
+        {
+            return NotFound("Utilizador não encontrado.");
+        }
+
+        bool pedidoCriado = utilizador.PedirAjuda(
+            pedidoData.DescPedido,
+            pedidoData.HorarioAjuda,
+            pedidoData.NHoras,
+            pedidoData.NPessoas,
+            pedidoData.UtilizadorId
+        );
+
+        if (!pedidoCriado)
+        {
+            return StatusCode(500, "Erro ao criar o pedido de ajuda.");
+        }
+
+        await _context.SaveChangesAsync();
+
+        return Ok("Pedido de ajuda criado com sucesso.");
     }
+
+}
 }

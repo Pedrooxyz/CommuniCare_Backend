@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection.PortableExecutable;
 
 namespace CommuniCare.Models;
 
@@ -34,4 +35,25 @@ public partial class Utilizador
     public virtual ICollection<Voluntariado> Voluntariados { get; set; } = new List<Voluntariado>();
 
     public virtual ICollection<ItemEmprestimo> Items { get; set; } = new List<ItemEmprestimo>();
+
+    #region Metodos
+
+    public bool PedirAjuda(string descPedido, DateTime horarioAjuda, int nHoras, int nPessoas, int utilizadorId)
+    {
+        try
+        {
+            PedidoAjuda pedido = new PedidoAjuda(descPedido, horarioAjuda, nHoras, nPessoas, utilizadorId);
+            this.PedidoAjuda.Add(pedido);
+
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+
+    }
+
+
+    #endregion
 }

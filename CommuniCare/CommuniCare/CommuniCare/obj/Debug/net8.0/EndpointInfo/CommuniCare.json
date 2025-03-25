@@ -2040,6 +2040,37 @@
         }
       }
     },
+    "/api/PedidosAjuda/pedir": {
+      "post": {
+        "tags": [
+          "PedidosAjuda"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PedidoAjudaDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PedidoAjudaDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/PedidoAjudaDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/TipoContactos": {
       "get": {
         "tags": [
@@ -3954,6 +3985,32 @@
               "$ref": "#/components/schemas/Voluntariado"
             },
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PedidoAjudaDTO": {
+        "type": "object",
+        "properties": {
+          "utilizadorId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "descPedido": {
+            "type": "string",
+            "nullable": true
+          },
+          "horarioAjuda": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "nHoras": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nPessoas": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false

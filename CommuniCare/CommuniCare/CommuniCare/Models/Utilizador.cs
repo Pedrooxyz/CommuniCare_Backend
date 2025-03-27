@@ -38,6 +38,8 @@ public partial class Utilizador
 
     #region Metodos
 
+    public Utilizador() { }
+
     public bool PedirAjuda(string descPedido, DateTime horarioAjuda, int nHoras, int nPessoas, int utilizadorId)
     {
         try

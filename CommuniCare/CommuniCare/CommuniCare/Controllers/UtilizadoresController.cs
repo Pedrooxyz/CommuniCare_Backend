@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CommuniCare.Models;
+using CommuniCare.DTOs;
+using Microsoft.CodeAnalysis.Scripting;
 
 namespace CommuniCare.Controllers
 {
@@ -99,9 +101,56 @@ namespace CommuniCare.Controllers
             return NoContent();
         }
 
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] UtilizadorDTO dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            // Verificar se o email já está em uso
+            bool emailExiste = await _context.Contactos
+                .AnyAsync(c => c.NumContacto == dto.Email);
+
+            if (emailExiste)
+            {
+                return BadRequest("Já existe uma conta com este email.");
+            }
+
+            // Criar um novo utilizador
+            var novoUtilizador = new Utilizador
+            {
+                NomeUtilizador = dto.NomeUtilizador,
+                Password = BCrypt.Net.BCrypt.HashPassword(dto.Password), // Hash da senha
+                NumCares = 0, // O utilizador começa com 0 pontos
+                TipoUtilizadorId = 1 // Definir um tipo padrão (ajusta conforme necessário)
+            };
+
+            // Adicionar utilizador ao contexto
+            _context.Utilizadores.Add(novoUtilizador);
+            await _context.SaveChangesAsync(); // Primeiro, salvar para obter o ID
+
+            // Criar contacto para o email
+            var contactoEmail = new Contacto
+            {
+                NumContacto = dto.Email,
+                TipoContactoId = 1, // Supondo que "1" representa Email em TipoContacto
+                UtilizadorId = novoUtilizador.UtilizadorId
+            };
+
+            _context.Contactos.Add(contactoEmail);
+            await _context.SaveChangesAsync();
+
+            return Ok("Conta criada com sucesso!");
+        }
+
+
         private bool UtilizadorExists(int id)
         {
             return _context.Utilizadores.Any(e => e.UtilizadorId == id);
         }
+
+
     }
 }

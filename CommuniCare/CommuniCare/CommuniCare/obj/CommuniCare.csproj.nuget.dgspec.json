@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\CommuniCare.csproj": {}
+    "D:\\2ano\\2sem\\Projeto Desenvolvimento Software\\RepoTrabalho\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\CommuniCare.csproj": {}
   },
   "projects": {
-    "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\CommuniCare.csproj": {
+    "D:\\2ano\\2sem\\Projeto Desenvolvimento Software\\RepoTrabalho\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\CommuniCare.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\CommuniCare.csproj",
+        "projectUniqueName": "D:\\2ano\\2sem\\Projeto Desenvolvimento Software\\RepoTrabalho\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\CommuniCare.csproj",
         "projectName": "CommuniCare",
-        "projectPath": "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\CommuniCare.csproj",
-        "packagesPath": "C:\\Users\\ferna\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\obj\\",
+        "projectPath": "D:\\2ano\\2sem\\Projeto Desenvolvimento Software\\RepoTrabalho\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\CommuniCare.csproj",
+        "packagesPath": "C:\\Users\\Pedro M Ribeiro\\.nuget\\packages\\",
+        "outputPath": "D:\\2ano\\2sem\\Projeto Desenvolvimento Software\\RepoTrabalho\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\ferna\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Pedro M Ribeiro\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -26,6 +26,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -42,14 +43,18 @@
         "restoreAuditProperties": {
           "enableAudit": "true",
           "auditLevel": "low",
-          "auditMode": "direct"
+          "auditMode": "all"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "9.0.100"
       },
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "BCrypt.Net-Next": {
+              "target": "Package",
+              "version": "[4.0.3, )"
+            },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
               "version": "[9.0.3, )"
@@ -96,7 +101,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.100/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

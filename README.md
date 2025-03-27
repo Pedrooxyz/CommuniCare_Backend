@@ -1,10 +1,13 @@
 # Grupo de Trabalho
 
-- **Pedro Miguel Cardoso Ribeiro** (nº27960)
-- **Carolina Macedo Branco** (nº27983)
-- **Ricardo Filipe Esteves Fernandes** (nº27961)
-- **João Pedro Júnior Barbosa** (nº27964)
-- **Rui Filipe Fontes Miranda** (nº21135)
+| Nome Completo                                | Número de Aluno |
+|----------------------------------------------|-----------------|
+| Pedro Miguel Cardoso Ribeiro                 | 27960           |
+| Carolina Macedo Branco                       | 27983           |
+| Ricardo Filipe Esteves Fernandes             | 27961           |
+| João Pedro Júnior Barbosa                    | 27964           |
+| Rui Filipe Fontes Miranda                    | 21135           |
+
 
 # CommuniCare
 

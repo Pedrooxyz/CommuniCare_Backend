@@ -2071,6 +2071,70 @@
         }
       }
     },
+    "/api/PedidosAjuda/{pedidoId}/voluntariar/{utilizadorId}": {
+      "post": {
+        "tags": [
+          "PedidosAjuda"
+        ],
+        "parameters": [
+          {
+            "name": "pedidoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "utilizadorId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/PedidosAjuda/{pedidoId}/aceitar/{voluntarioId}": {
+      "post": {
+        "tags": [
+          "PedidosAjuda"
+        ],
+        "parameters": [
+          {
+            "name": "pedidoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "voluntarioId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/TipoContactos": {
       "get": {
         "tags": [
@@ -3181,6 +3245,68 @@
         }
       }
     },
+    "/api/Utilizadores/register": {
+      "post": {
+        "tags": [
+          "Utilizadores"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UtilizadorDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UtilizadorDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UtilizadorDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Utilizadores/login": {
+      "post": {
+        "tags": [
+          "Utilizadores"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Vendas": {
       "get": {
         "tags": [
@@ -3739,6 +3865,15 @@
         },
         "additionalProperties": false
       },
+      "EstadoPedido": {
+        "enum": [
+          0,
+          1,
+          2
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
       "ItemEmprestimo": {
         "type": "object",
         "properties": {
@@ -3784,6 +3919,25 @@
               "$ref": "#/components/schemas/Utilizador"
             },
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "LoginDTO": {
+        "required": [
+          "email",
+          "password"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "minLength": 1,
+            "type": "string",
+            "format": "email"
+          },
+          "password": {
+            "minLength": 1,
+            "type": "string"
           }
         },
         "additionalProperties": false
@@ -3939,9 +4093,7 @@
             "nullable": true
           },
           "estado": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
+            "$ref": "#/components/schemas/EstadoPedido"
           },
           "horarioAjuda": {
             "type": "string",
@@ -4229,6 +4381,30 @@
               "$ref": "#/components/schemas/ItemEmprestimo"
             },
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UtilizadorDTO": {
+        "required": [
+          "email",
+          "nomeUtilizador",
+          "password"
+        ],
+        "type": "object",
+        "properties": {
+          "nomeUtilizador": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "email": {
+            "minLength": 1,
+            "type": "string",
+            "format": "email"
+          },
+          "password": {
+            "minLength": 1,
+            "type": "string"
           }
         },
         "additionalProperties": false

@@ -109,7 +109,6 @@ namespace CommuniCare.Controllers
                 return BadRequest(ModelState);
             }
 
-            // Verificar se o email já está em uso
             bool emailExiste = await _context.Contactos
                 .AnyAsync(c => c.NumContacto == dto.Email);
 
@@ -118,24 +117,21 @@ namespace CommuniCare.Controllers
                 return BadRequest("Já existe uma conta com este email.");
             }
 
-            // Criar um novo utilizador
             var novoUtilizador = new Utilizador
             {
                 NomeUtilizador = dto.NomeUtilizador,
-                Password = BCrypt.Net.BCrypt.HashPassword(dto.Password), // Hash da senha
-                NumCares = 0, // O utilizador começa com 0 pontos
-                TipoUtilizadorId = 1 // Definir um tipo padrão (ajusta conforme necessário)
+                Password = BCrypt.Net.BCrypt.HashPassword(dto.Password), 
+                NumCares = 0, 
+                TipoUtilizadorId = 1 
             };
 
-            // Adicionar utilizador ao contexto
             _context.Utilizadores.Add(novoUtilizador);
-            await _context.SaveChangesAsync(); // Primeiro, salvar para obter o ID
+            await _context.SaveChangesAsync();
 
-            // Criar contacto para o email
             var contactoEmail = new Contacto
             {
                 NumContacto = dto.Email,
-                TipoContactoId = 1, // Supondo que "1" representa Email em TipoContacto
+                TipoContactoId = 1,
                 UtilizadorId = novoUtilizador.UtilizadorId
             };
 
@@ -143,6 +139,33 @@ namespace CommuniCare.Controllers
             await _context.SaveChangesAsync();
 
             return Ok("Conta criada com sucesso!");
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginDTO dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var contacto = await _context.Contactos
+                .Include(c => c.Utilizador)
+                .FirstOrDefaultAsync(c => c.NumContacto == dto.Email && c.TipoContactoId == 1);
+
+            if (contacto == null)
+            {
+                return Unauthorized("Email ou senha inválidos.");
+            }
+
+            var utilizador = contacto.Utilizador;
+
+            if (!BCrypt.Net.BCrypt.Verify(dto.Password, utilizador.Password))
+            {
+                return Unauthorized("Email ou senha inválidos.");
+            }
+
+            return Ok(new { Message = "Login bem-sucedido!", UtilizadorId = utilizador.UtilizadorId });
         }
 
 

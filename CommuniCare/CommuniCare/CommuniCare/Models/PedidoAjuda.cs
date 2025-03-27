@@ -4,6 +4,13 @@ using System.Collections.Generic;
 
 namespace CommuniCare.Models;
 
+public enum EstadoPedido
+{
+    Aberto = 0,
+    EmProgresso = 1,
+    Concluido = 2
+}
+
 public partial class PedidoAjuda
 {
     public int PedidoId { get; set; }
@@ -12,7 +19,7 @@ public partial class PedidoAjuda
 
     public int? RecompensaCares { get; set; }
 
-    public byte? Estado { get; set; }
+    public EstadoPedido Estado { get; set; } = EstadoPedido.Aberto;
 
     public DateTime? HorarioAjuda { get; set; }
 

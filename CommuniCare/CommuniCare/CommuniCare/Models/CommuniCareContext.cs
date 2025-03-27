@@ -35,7 +35,7 @@ public partial class CommuniCareContext : DbContext
 
     public virtual DbSet<Notificacao> Notificacaos { get; set; }
 
-    public virtual DbSet<PedidoAjuda> PedidoAjuda { get; set; }
+    public virtual DbSet<PedidoAjuda> PedidosAjuda { get; set; }
 
     public virtual DbSet<TipoContacto> TipoContactos { get; set; }
 

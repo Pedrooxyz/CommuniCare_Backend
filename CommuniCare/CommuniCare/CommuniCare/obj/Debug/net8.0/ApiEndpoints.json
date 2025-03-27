@@ -1200,6 +1200,48 @@
   },
   {
     "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",
+    "Method": "AceitarVoluntario",
+    "RelativePath": "api/PedidosAjuda/{pedidoId}/aceitar/{voluntarioId}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pedidoId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "voluntarioId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",
+    "Method": "Voluntariar",
+    "RelativePath": "api/PedidosAjuda/{pedidoId}/voluntariar/{utilizadorId}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pedidoId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "utilizadorId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",
     "Method": "PedirAjuda",
     "RelativePath": "api/PedidosAjuda/pedir",
     "HttpMethod": "POST",
@@ -1863,6 +1905,38 @@
       {
         "Name": "id",
         "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.UtilizadoresController",
+    "Method": "Login",
+    "RelativePath": "api/Utilizadores/login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "CommuniCare.DTOs.LoginDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.UtilizadoresController",
+    "Method": "Register",
+    "RelativePath": "api/Utilizadores/register",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "CommuniCare.DTOs.UtilizadorDTO",
         "IsRequired": true
       }
     ],

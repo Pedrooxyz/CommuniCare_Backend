@@ -17,5 +17,5 @@ public partial class Morada
 
     public virtual Cp Cp { get; set; } = null!;
 
-    public virtual ICollection<Utilizador> Utilizadors { get; set; } = new List<Utilizador>();
+    public virtual ICollection<Utilizador> Utilizadores { get; set; } = new List<Utilizador>();
 }

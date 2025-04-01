@@ -135,7 +135,7 @@ public partial class CommuniCareContext : DbContext
             entity.ToTable("CP");
 
             entity.Property(e => e.Cpid).HasColumnName("CPID");
-            entity.Property(e => e.DescCp).HasColumnName("descCP");
+            entity.Property(e => e.DescCP).HasColumnName("descCP");
         });
 
         modelBuilder.Entity<Emprestimo>(entity =>
@@ -423,7 +423,7 @@ public partial class CommuniCareContext : DbContext
                 .HasColumnName("password");
             entity.Property(e => e.TipoUtilizadorId).HasColumnName("tipoUtilizadorID");
 
-            entity.HasOne(d => d.Morada).WithMany(p => p.Utilizadors)
+            entity.HasOne(d => d.Morada).WithMany(p => p.Utilizadores)
                 .HasForeignKey(d => d.MoradaId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKUtilizador388471");

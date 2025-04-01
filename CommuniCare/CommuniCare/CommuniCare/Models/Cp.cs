@@ -7,7 +7,7 @@ public partial class Cp
 {
     public int Cpid { get; set; }
 
-    public int? DescCp { get; set; }
+    public string? DescCP { get; set; }
 
     public virtual ICollection<Morada> Morada { get; set; } = new List<Morada>();
 }

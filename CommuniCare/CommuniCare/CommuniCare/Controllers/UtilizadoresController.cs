@@ -117,17 +117,41 @@ namespace CommuniCare.Controllers
                 return BadRequest("Já existe uma conta com este email.");
             }
 
+            // Garantir que existe um Código Postal padrão
+            var codigoPostalPadrao = await _context.Cps.FirstOrDefaultAsync(cp => cp.DescCP == "000000"); // O DescCP como string
+            if (codigoPostalPadrao == null)
+            {
+                codigoPostalPadrao = new Cp { DescCP = "000000" };
+                _context.Cps.Add(codigoPostalPadrao);
+                await _context.SaveChangesAsync();
+            }
+
+            // Criar uma morada temporária associada a esse Código Postal
+            var moradaTemporaria = new Morada
+            {
+                Rua = "A definir",
+                NumPorta = null,
+                Distrito = "A definir",
+                Cpid = codigoPostalPadrao.Cpid // Associar ao Código Postal padrão
+            };
+
+            _context.Morada.Add(moradaTemporaria);
+            await _context.SaveChangesAsync();
+
+            // Criar o utilizador associado à morada temporária
             var novoUtilizador = new Utilizador
             {
                 NomeUtilizador = dto.NomeUtilizador,
-                Password = BCrypt.Net.BCrypt.HashPassword(dto.Password), 
-                NumCares = 0, 
-                TipoUtilizadorId = 1 
+                Password = BCrypt.Net.BCrypt.HashPassword(dto.Password),
+                NumCares = 0,
+                TipoUtilizadorId = 1,
+                MoradaId = moradaTemporaria.MoradaId // Associar à morada temporária
             };
 
             _context.Utilizadores.Add(novoUtilizador);
             await _context.SaveChangesAsync();
 
+            // Criar o contacto do utilizador
             var contactoEmail = new Contacto
             {
                 NumContacto = dto.Email,
@@ -138,7 +162,48 @@ namespace CommuniCare.Controllers
             _context.Contactos.Add(contactoEmail);
             await _context.SaveChangesAsync();
 
-            return Ok("Conta criada com sucesso!");
+            return Ok(new { Message = "Conta criada com sucesso! Agora insira a sua morada para completar o registo." });
+        }
+
+        [HttpPost("completar-registo")]
+        public async Task<IActionResult> CompletarRegisto([FromBody] MoradaDTO dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            // Verifica se o utilizador existe
+            var utilizador = await _context.Utilizadores.FindAsync(dto.UtilizadorId);
+            if (utilizador == null)
+            {
+                return NotFound("Utilizador não encontrado.");
+            }
+
+            // Verifica se o código postal existe
+            var codigoPostal = await _context.Cps.FindAsync(dto.Cpid);
+            if (codigoPostal == null)
+            {
+                return BadRequest("Código Postal inválido.");
+            }
+
+            // Criar nova morada
+            var novaMorada = new Morada
+            {
+                Rua = dto.Rua,
+                NumPorta = dto.NumPorta,
+                Distrito = dto.Distrito, // O Distrito está presente
+                Cpid = dto.Cpid
+            };
+
+            _context.Morada.Add(novaMorada);
+            await _context.SaveChangesAsync();
+
+            // Associar a nova morada ao utilizador
+            utilizador.MoradaId = novaMorada.MoradaId;
+            await _context.SaveChangesAsync();
+
+            return Ok(new { Message = "Morada adicionada com sucesso! Agora pode utilizar a aplicação." });
         }
 
         [HttpPost("login")]

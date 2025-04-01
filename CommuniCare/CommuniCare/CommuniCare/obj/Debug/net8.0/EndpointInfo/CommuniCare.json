@@ -3276,6 +3276,37 @@
         }
       }
     },
+    "/api/Utilizadores/completar-registo": {
+      "post": {
+        "tags": [
+          "Utilizadores"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MoradaDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MoradaDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/MoradaDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Utilizadores/login": {
       "post": {
         "tags": [
@@ -3816,9 +3847,8 @@
             "type": "integer",
             "format": "int32"
           },
-          "descCp": {
-            "type": "integer",
-            "format": "int32",
+          "descCP": {
+            "type": "string",
             "nullable": true
           },
           "morada": {
@@ -4021,12 +4051,47 @@
           "cp": {
             "$ref": "#/components/schemas/Cp"
           },
-          "utilizadors": {
+          "utilizadores": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/Utilizador"
             },
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "MoradaDTO": {
+        "type": "object",
+        "properties": {
+          "moradaId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "rua": {
+            "type": "string",
+            "nullable": true
+          },
+          "numPorta": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "cpid": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "descCP": {
+            "type": "string",
+            "nullable": true
+          },
+          "distrito": {
+            "type": "string",
+            "nullable": true
+          },
+          "utilizadorId": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false

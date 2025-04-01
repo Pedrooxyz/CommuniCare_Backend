@@ -1912,6 +1912,22 @@
   },
   {
     "ContainingType": "CommuniCare.Controllers.UtilizadoresController",
+    "Method": "CompletarRegisto",
+    "RelativePath": "api/Utilizadores/completar-registo",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "CommuniCare.DTOs.MoradaDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.UtilizadoresController",
     "Method": "Login",
     "RelativePath": "api/Utilizadores/login",
     "HttpMethod": "POST",

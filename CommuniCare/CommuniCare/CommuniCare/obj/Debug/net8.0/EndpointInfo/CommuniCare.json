@@ -1,8 +1,8 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "CommuniCare",
-    "version": "1.0"
+    "title": "CommuniCare API",
+    "version": "v1"
   },
   "paths": {
     "/api/Artigos": {
@@ -4059,10 +4059,6 @@
       "MoradaDTO": {
         "type": "object",
         "properties": {
-          "moradaId": {
-            "type": "integer",
-            "format": "int32"
-          },
           "rua": {
             "type": "string",
             "nullable": true
@@ -4073,18 +4069,6 @@
             "nullable": true
           },
           "cpid": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "descCP": {
-            "type": "string",
-            "nullable": true
-          },
-          "distrito": {
-            "type": "string",
-            "nullable": true
-          },
-          "utilizadorId": {
             "type": "integer",
             "format": "int32"
           }
@@ -4547,6 +4531,19 @@
         },
         "additionalProperties": false
       }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "apiKey",
+        "description": "JWT Authorization header using the Bearer scheme. \r\n\r\n Introduz o token abaixo:",
+        "name": "Authorization",
+        "in": "header"
+      }
     }
-  }
+  },
+  "security": [
+    {
+      "Bearer": [ ]
+    }
+  ]
 }

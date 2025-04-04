@@ -8,6 +8,10 @@ using Microsoft.EntityFrameworkCore;
 using CommuniCare.Models;
 using CommuniCare.DTOs;
 using Microsoft.CodeAnalysis.Scripting;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace CommuniCare.Controllers
 {
@@ -16,10 +20,12 @@ namespace CommuniCare.Controllers
     public class UtilizadoresController : ControllerBase
     {
         private readonly CommuniCareContext _context;
+        private readonly IConfiguration _configuration;
 
-        public UtilizadoresController(CommuniCareContext context)
+        public UtilizadoresController(CommuniCareContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
 
         // GET: api/Utilizadors
@@ -161,8 +167,17 @@ namespace CommuniCare.Controllers
             _context.Contactos.Add(contactoEmail);
             await _context.SaveChangesAsync();
 
-            return Ok(new { Message = "Conta criada com sucesso! Agora insira a sua morada para completar o registo." });
+            // Gerar token para o utilizador
+            var token = GerarToken(novoUtilizador.UtilizadorId, dto.Email);
+
+            // Retornar o token JWT
+            return Ok(new
+            {
+                Message = "Conta criada com sucesso!",
+                Token = token
+            });
         }
+
 
         [HttpPost("completar-registo")]
         public async Task<IActionResult> CompletarRegisto([FromBody] MoradaDTO dto)
@@ -172,64 +187,102 @@ namespace CommuniCare.Controllers
                 return BadRequest(ModelState);
             }
 
+            // Obter o UtilizadorId a partir do JWT (do token enviado no cabeçalho Authorization)
+            var utilizadorId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)); // Recupera o 'UtilizadorId' a partir das claims
+
             // Verifica se o utilizador existe
-            var utilizador = await _context.Utilizadores.FindAsync(dto.UtilizadorId);
+            var utilizador = await _context.Utilizadores
+                .Include(u => u.Morada) // Incluir a morada associada
+                .FirstOrDefaultAsync(u => u.UtilizadorId == utilizadorId);
+
             if (utilizador == null)
             {
                 return NotFound("Utilizador não encontrado.");
             }
 
-            // Verifica se o código postal existe
-            var codigoPostal = await _context.Cps.FindAsync(dto.Cpid);
-            if (codigoPostal == null)
+            // Verifica se o utilizador tem uma morada temporária associada
+            var moradaTemporaria = utilizador.Morada;
+
+            if (moradaTemporaria == null || moradaTemporaria.Rua == "A definir")
             {
-                return BadRequest("Código Postal inválido.");
+                return BadRequest("Morada temporária não encontrada ou ainda não foi definida.");
             }
 
-            // Criar nova morada
-            var novaMorada = new Morada
-            {
-                Rua = dto.Rua,
-                NumPorta = dto.NumPorta,
-                Cpid = dto.Cpid
-            };
+            // Atualiza a morada com os novos dados fornecidos pelo utilizador
+            moradaTemporaria.Rua = dto.Rua;
+            moradaTemporaria.NumPorta = dto.NumPorta;
+            moradaTemporaria.Cpid = dto.Cpid; // Novo Código Postal
 
-            _context.Morada.Add(novaMorada);
+            // Salva as alterações no banco de dados
+            _context.Morada.Update(moradaTemporaria);
             await _context.SaveChangesAsync();
 
-            // Associar a nova morada ao utilizador
-            utilizador.MoradaId = novaMorada.MoradaId;
+            // Atualiza o utilizador (opcional, dependendo da lógica que queres implementar)
+            utilizador.MoradaId = moradaTemporaria.MoradaId;  // A morada já está associada ao utilizador, então não é necessário modificar
+
             await _context.SaveChangesAsync();
 
-            return Ok(new { Message = "Morada adicionada com sucesso! Agora pode utilizar a aplicação." });
+            return Ok(new { Message = "Morada atualizada com sucesso! Registo completo." });
         }
+
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDTO dto)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
+            // Procurar contacto com email
             var contacto = await _context.Contactos
                 .Include(c => c.Utilizador)
                 .FirstOrDefaultAsync(c => c.NumContacto == dto.Email && c.TipoContactoId == 1);
 
-            if (contacto == null)
-            {
-                return Unauthorized("Email ou senha inválidos.");
-            }
+            if (contacto == null || contacto.Utilizador == null)
+                return Unauthorized("Email ou password inválidos.");
 
             var utilizador = contacto.Utilizador;
 
+            // Verificar password
             if (!BCrypt.Net.BCrypt.Verify(dto.Password, utilizador.Password))
-            {
-                return Unauthorized("Email ou senha inválidos.");
-            }
+                return Unauthorized("Email ou password inválidos.");
 
-            return Ok(new { Message = "Login bem-sucedido!", UtilizadorId = utilizador.UtilizadorId });
+            // Gerar token
+            var token = GerarToken(utilizador.UtilizadorId, dto.Email);
+
+            return Ok(new
+            {
+                Token = token,
+                Message = "Login efetuado com sucesso"
+            });
         }
+
+        private string GerarToken(int utilizadorId, string email)
+        {
+            var jwtSettings = _configuration.GetSection("JwtSettings").Get<JwtSettings>();
+            var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSettings.SecretKey));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var claims = new[]
+            {
+        new Claim(ClaimTypes.NameIdentifier, utilizadorId.ToString()),
+        new Claim(ClaimTypes.Name, email),
+        new Claim(ClaimTypes.Role, "Utilizador")
+    };
+
+            var token = new JwtSecurityToken(
+                issuer: jwtSettings.Issuer,
+                audience: jwtSettings.Audience,
+                claims: claims,
+                expires: DateTime.UtcNow.AddMinutes(jwtSettings.ExpirationMinutes),
+                signingCredentials: creds
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+
+
+
 
 
         private bool UtilizadorExists(int id)

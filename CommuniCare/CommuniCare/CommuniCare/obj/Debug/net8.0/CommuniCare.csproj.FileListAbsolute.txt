@@ -571,7 +571,6 @@ D:\2ano\2sem\Projeto Desenvolvimento Software\RepoTrabalho\CommuniCare_PDS\Commu
 D:\2ano\2sem\Projeto Desenvolvimento Software\RepoTrabalho\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.CommuniCare.props
 D:\2ano\2sem\Projeto Desenvolvimento Software\RepoTrabalho\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.CommuniCare.props
 D:\2ano\2sem\Projeto Desenvolvimento Software\RepoTrabalho\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\obj\Debug\net8.0\staticwebassets.pack.json
-D:\2ano\2sem\Projeto Desenvolvimento Software\RepoTrabalho\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 D:\2ano\2sem\Projeto Desenvolvimento Software\RepoTrabalho\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\obj\Debug\net8.0\CommuniC.12B6E494.Up2Date
 D:\2ano\2sem\Projeto Desenvolvimento Software\RepoTrabalho\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\obj\Debug\net8.0\CommuniCare.dll
 D:\2ano\2sem\Projeto Desenvolvimento Software\RepoTrabalho\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\obj\Debug\net8.0\refint\CommuniCare.dll

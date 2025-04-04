@@ -137,7 +137,7 @@ namespace CommuniCare.Controllers
             {
                 Rua = "A definir",
                 NumPorta = null,
-                Cpid = codigoPostalPadrao.Cpid // Associar ao Código Postal padrão
+                CPostal = codigoPostalPadrao.CPostal // Associar ao Código Postal padrão
             };
 
             _context.Morada.Add(moradaTemporaria);
@@ -211,7 +211,7 @@ namespace CommuniCare.Controllers
             // Atualiza a morada com os novos dados fornecidos pelo utilizador
             moradaTemporaria.Rua = dto.Rua;
             moradaTemporaria.NumPorta = dto.NumPorta;
-            moradaTemporaria.Cpid = dto.Cpid; // Novo Código Postal
+            moradaTemporaria.CPostal = dto.CPostal; // Novo Código Postal
 
             // Salva as alterações no banco de dados
             _context.Morada.Update(moradaTemporaria);

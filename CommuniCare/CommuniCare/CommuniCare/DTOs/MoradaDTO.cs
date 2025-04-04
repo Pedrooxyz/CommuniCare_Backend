@@ -4,7 +4,7 @@
     {
         public string? Rua { get; set; }
         public int? NumPorta { get; set; }
-        public int Cpid { get; set; }
+        public string CPostal { get; set; }
     }
 
 

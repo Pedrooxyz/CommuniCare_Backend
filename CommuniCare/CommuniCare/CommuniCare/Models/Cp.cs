@@ -5,7 +5,7 @@ namespace CommuniCare.Models;
 
 public partial class Cp
 {
-    public int Cpid { get; set; }
+    public string CPostal { get; set; }
 
     public string? Localidade { get; set; }
 

@@ -4,6 +4,7 @@ using CommuniCare.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CommuniCare.Migrations
 {
     [DbContext(typeof(CommuniCareContext))]
-    partial class CommuniCareContextModelSnapshot : ModelSnapshot
+    [Migration("20250404160159_CommuniCareAtualizado")]
+    partial class CommuniCareAtualizado
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -121,15 +124,18 @@ namespace CommuniCare.Migrations
 
             modelBuilder.Entity("CommuniCare.Models.Cp", b =>
                 {
-                    b.Property<string>("CPostal")
-                        .HasColumnType("nvarchar(450)")
-                        .HasColumnName("CPostal");
+                    b.Property<int>("Cpid")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("CPID");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Cpid"));
 
                     b.Property<string>("Localidade")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Localidade");
 
-                    b.HasKey("CPostal")
+                    b.HasKey("Cpid")
                         .HasName("PK__CP__F5B22BE63663255C");
 
                     b.ToTable("CP", (string)null);
@@ -264,8 +270,8 @@ namespace CommuniCare.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MoradaId"));
 
-                    b.Property<string>("CPostal")
-                        .HasColumnType("nvarchar(450)")
+                    b.Property<int>("Cpid")
+                        .HasColumnType("int")
                         .HasColumnName("CPID");
 
                     b.Property<int?>("NumPorta")
@@ -281,7 +287,7 @@ namespace CommuniCare.Migrations
                     b.HasKey("MoradaId")
                         .HasName("PK__Morada__5BDD9AB29A5F23DC");
 
-                    b.HasIndex("CPostal");
+                    b.HasIndex("Cpid");
 
                     b.ToTable("Morada");
                 });
@@ -687,7 +693,8 @@ namespace CommuniCare.Migrations
                 {
                     b.HasOne("CommuniCare.Models.Cp", "Cp")
                         .WithMany("Morada")
-                        .HasForeignKey("CPostal")
+                        .HasForeignKey("Cpid")
+                        .IsRequired()
                         .HasConstraintName("FKMorada368657");
 
                     b.Navigation("Cp");

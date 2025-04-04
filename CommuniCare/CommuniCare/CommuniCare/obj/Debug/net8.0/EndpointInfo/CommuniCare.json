@@ -693,8 +693,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string"
             }
           }
         ],
@@ -3843,9 +3842,9 @@
       "Cp": {
         "type": "object",
         "properties": {
-          "cpid": {
-            "type": "integer",
-            "format": "int32"
+          "cPostal": {
+            "type": "string",
+            "nullable": true
           },
           "localidade": {
             "type": "string",
@@ -4039,9 +4038,9 @@
             "format": "int32",
             "nullable": true
           },
-          "cpid": {
-            "type": "integer",
-            "format": "int32"
+          "cPostal": {
+            "type": "string",
+            "nullable": true
           },
           "cp": {
             "$ref": "#/components/schemas/Cp"
@@ -4068,9 +4067,9 @@
             "format": "int32",
             "nullable": true
           },
-          "cpid": {
-            "type": "integer",
-            "format": "int32"
+          "cPostal": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false

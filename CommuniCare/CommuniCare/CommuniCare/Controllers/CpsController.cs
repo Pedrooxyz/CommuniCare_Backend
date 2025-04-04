@@ -44,9 +44,9 @@ namespace CommuniCare.Controllers
         // PUT: api/Cps/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCp(int id, Cp cp)
+        public async Task<IActionResult> PutCp(string id, Cp cp)
         {
-            if (id != cp.Cpid)
+            if (id != cp.CPostal)
             {
                 return BadRequest();
             }
@@ -80,7 +80,7 @@ namespace CommuniCare.Controllers
             _context.Cps.Add(cp);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCp", new { id = cp.Cpid }, cp);
+            return CreatedAtAction("GetCp", new { id = cp.CPostal }, cp);
         }
 
         // DELETE: api/Cps/5
@@ -99,9 +99,9 @@ namespace CommuniCare.Controllers
             return NoContent();
         }
 
-        private bool CpExists(int id)
+        private bool CpExists(string id)
         {
-            return _context.Cps.Any(e => e.Cpid == id);
+            return _context.Cps.Any(e => e.CPostal == id);
         }
     }
 }

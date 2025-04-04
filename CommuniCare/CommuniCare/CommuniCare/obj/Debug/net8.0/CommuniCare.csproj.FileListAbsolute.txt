@@ -160,7 +160,6 @@ C:\Users\ferna\Documents\GitHub\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniC
 C:\Users\ferna\Documents\GitHub\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.CommuniCare.props
 C:\Users\ferna\Documents\GitHub\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.CommuniCare.props
 C:\Users\ferna\Documents\GitHub\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\obj\Debug\net8.0\staticwebassets.pack.json
-C:\Users\ferna\Documents\GitHub\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\ferna\Documents\GitHub\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\obj\Debug\net8.0\CommuniC.12B6E494.Up2Date
 C:\Users\ferna\Documents\GitHub\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\obj\Debug\net8.0\CommuniCare.dll
 C:\Users\ferna\Documents\GitHub\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\obj\Debug\net8.0\refint\CommuniCare.dll
@@ -581,3 +580,4 @@ D:\2ano\2sem\Projeto Desenvolvimento Software\RepoTrabalho\CommuniCare_PDS\Commu
 C:\Users\ferna\Documents\GitHub\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\bin\Debug\net8.0\BCrypt.Net-Next.dll
 D:\2ano\2sem\Projeto Desenvolvimento Software\RepoTrabalho\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 D:\2ano\2sem\Projeto Desenvolvimento Software\RepoTrabalho\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\ferna\Documents\GitHub\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll

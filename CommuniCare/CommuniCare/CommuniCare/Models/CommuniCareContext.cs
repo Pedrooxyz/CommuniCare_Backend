@@ -54,16 +54,9 @@ public partial class CommuniCareContext : DbContext
     public virtual DbSet<Voluntariado> Voluntariados { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-        => optionsBuilder.UseSqlServer("Data Source=localhost; Database=CommuniCare; Integrated Security=True; Encrypt=False");
-=======
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263. 
         => optionsBuilder.UseSqlServer("Data Source=DESKTOP-OFDBEUT\\MSSQLSERVER_4PR; Database=CommuniCare; Integrated Security=True; Encrypt=False");
->>>>>>> Stashed changes
-=======
-        => optionsBuilder.UseSqlServer("Data Source=DESKTOP-OFDBEUT\\MSSQLSERVER_4PR; Database=CommuniCare; Integrated Security=True; Encrypt=False");
->>>>>>> Stashed changes
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -143,7 +136,7 @@ public partial class CommuniCareContext : DbContext
             entity.ToTable("CP");
 
             entity.Property(e => e.Cpid).HasColumnName("CPID");
-            entity.Property(e => e.DescCP).HasColumnName("descCP");
+            entity.Property(e => e.Localidade).HasColumnName("Localidade");
         });
 
         modelBuilder.Entity<Emprestimo>(entity =>
@@ -266,9 +259,6 @@ public partial class CommuniCareContext : DbContext
 
             entity.Property(e => e.MoradaId).HasColumnName("moradaID");
             entity.Property(e => e.Cpid).HasColumnName("CPID");
-            entity.Property(e => e.Distrito)
-                .HasMaxLength(255)
-                .IsUnicode(false);
             entity.Property(e => e.NumPorta).HasColumnName("numPorta");
             entity.Property(e => e.Rua)
                 .HasMaxLength(255)
@@ -366,7 +356,7 @@ public partial class CommuniCareContext : DbContext
             entity.ToTable("TipoUtilizador");
 
             entity.Property(e => e.TipoUtilizadorId).HasColumnName("tipoUtilizadorID");
-            entity.Property(e => e.DescTu).HasColumnName("descTU");
+            entity.Property(e => e.DescTU).HasColumnName("descTU");
         });
 
         modelBuilder.Entity<Transacao>(entity =>
@@ -376,7 +366,7 @@ public partial class CommuniCareContext : DbContext
             entity.ToTable("Transacao");
 
             entity.Property(e => e.TransacaoId).HasColumnName("transacaoID");
-            entity.Property(e => e.DataTransmissao).HasColumnName("dataTransmissao");
+            entity.Property(e => e.DataTransacao).HasColumnName("dataTransacao");
             entity.Property(e => e.Quantidade).HasColumnName("quantidade");
         });
 
@@ -389,7 +379,7 @@ public partial class CommuniCareContext : DbContext
                 .HasColumnName("transacaoID");
             entity.Property(e => e.RecetorTran).HasColumnName("recetorTran");
 
-            entity.HasOne(d => d.Transacao).WithOne(p => p.TransacaoAjudum)
+            entity.HasOne(d => d.Transacao).WithOne(p => p.TransacaoAjuda)
                 .HasForeignKey<TransacaoAjuda>(d => d.TransacaoId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKTransacaoA7406");

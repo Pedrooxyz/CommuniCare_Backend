@@ -3847,7 +3847,7 @@
             "type": "integer",
             "format": "int32"
           },
-          "descCP": {
+          "localidade": {
             "type": "string",
             "nullable": true
           },
@@ -4005,8 +4005,7 @@
             "format": "int32"
           },
           "conteudo": {
-            "type": "integer",
-            "format": "int32",
+            "type": "string",
             "nullable": true
           },
           "dataEnvio": {
@@ -4038,10 +4037,6 @@
           "numPorta": {
             "type": "integer",
             "format": "int32",
-            "nullable": true
-          },
-          "distrito": {
-            "type": "string",
             "nullable": true
           },
           "cpid": {
@@ -4260,9 +4255,8 @@
             "type": "integer",
             "format": "int32"
           },
-          "descTu": {
-            "type": "integer",
-            "format": "int32",
+          "descTU": {
+            "type": "string",
             "nullable": true
           },
           "utilizadors": {
@@ -4282,9 +4276,9 @@
             "type": "integer",
             "format": "int32"
           },
-          "dataTransmissao": {
-            "type": "integer",
-            "format": "int32",
+          "dataTransacao": {
+            "type": "string",
+            "format": "date-time",
             "nullable": true
           },
           "quantidade": {
@@ -4292,7 +4286,7 @@
             "format": "int32",
             "nullable": true
           },
-          "transacaoAjudum": {
+          "transacaoAjuda": {
             "$ref": "#/components/schemas/TransacaoAjuda"
           },
           "transacaoEmprestimo": {

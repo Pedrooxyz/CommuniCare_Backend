@@ -1,24 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\2ano\\2sem\\Projeto Desenvolvimento Software\\RepoTrabalho\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\CommuniCare.csproj": {}
+    "Z:\\Universidade\\Semestre1\\24-25\\PDS\\PDS_Api\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\CommuniCare.csproj": {}
   },
   "projects": {
-    "D:\\2ano\\2sem\\Projeto Desenvolvimento Software\\RepoTrabalho\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\CommuniCare.csproj": {
+    "Z:\\Universidade\\Semestre1\\24-25\\PDS\\PDS_Api\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\CommuniCare.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\2ano\\2sem\\Projeto Desenvolvimento Software\\RepoTrabalho\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\CommuniCare.csproj",
+        "projectUniqueName": "Z:\\Universidade\\Semestre1\\24-25\\PDS\\PDS_Api\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\CommuniCare.csproj",
         "projectName": "CommuniCare",
-        "projectPath": "D:\\2ano\\2sem\\Projeto Desenvolvimento Software\\RepoTrabalho\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\CommuniCare.csproj",
-        "packagesPath": "C:\\Users\\Pedro M Ribeiro\\.nuget\\packages\\",
-        "outputPath": "D:\\2ano\\2sem\\Projeto Desenvolvimento Software\\RepoTrabalho\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\obj\\",
+        "projectPath": "Z:\\Universidade\\Semestre1\\24-25\\PDS\\PDS_Api\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\CommuniCare.csproj",
+        "packagesPath": "C:\\Users\\123ru\\.nuget\\packages\\",
+        "outputPath": "Z:\\Universidade\\Semestre1\\24-25\\PDS\\PDS_Api\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Pedro M Ribeiro\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\123ru\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -26,7 +22,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -43,9 +38,8 @@
         "restoreAuditProperties": {
           "enableAudit": "true",
           "auditLevel": "low",
-          "auditMode": "all"
-        },
-        "SdkAnalysisLevel": "9.0.100"
+          "auditMode": "direct"
+        }
       },
       "frameworks": {
         "net8.0": {
@@ -54,6 +48,14 @@
             "BCrypt.Net-Next": {
               "target": "Package",
               "version": "[4.0.3, )"
+            },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.0, )"
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
@@ -73,6 +75,10 @@
               "target": "Package",
               "version": "[9.0.3, )"
             },
+            "Microsoft.IdentityModel.Tokens": {
+              "target": "Package",
+              "version": "[8.7.0, )"
+            },
             "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
               "target": "Package",
               "version": "[8.0.7, )"
@@ -80,6 +86,10 @@
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.6.2, )"
+            },
+            "System.IdentityModel.Tokens.Jwt": {
+              "target": "Package",
+              "version": "[8.7.0, )"
             }
           },
           "imports": [
@@ -101,7 +111,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.100/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.205/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

@@ -11,8 +11,6 @@ public partial class Morada
 
     public int? NumPorta { get; set; }
 
-    public string? Distrito { get; set; }
-
     public int Cpid { get; set; }
 
     public virtual Cp Cp { get; set; } = null!;

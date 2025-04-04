@@ -118,10 +118,10 @@ namespace CommuniCare.Controllers
             }
 
             // Garantir que existe um Código Postal padrão
-            var codigoPostalPadrao = await _context.Cps.FirstOrDefaultAsync(cp => cp.DescCP == "000000"); // O DescCP como string
+            var codigoPostalPadrao = await _context.Cps.FirstOrDefaultAsync(cp => cp.Localidade == "000000"); // O DescCP como string
             if (codigoPostalPadrao == null)
             {
-                codigoPostalPadrao = new Cp { DescCP = "000000" };
+                codigoPostalPadrao = new Cp { Localidade = "000000" };
                 _context.Cps.Add(codigoPostalPadrao);
                 await _context.SaveChangesAsync();
             }
@@ -131,7 +131,6 @@ namespace CommuniCare.Controllers
             {
                 Rua = "A definir",
                 NumPorta = null,
-                Distrito = "A definir",
                 Cpid = codigoPostalPadrao.Cpid // Associar ao Código Postal padrão
             };
 
@@ -192,7 +191,6 @@ namespace CommuniCare.Controllers
             {
                 Rua = dto.Rua,
                 NumPorta = dto.NumPorta,
-                Distrito = dto.Distrito, // O Distrito está presente
                 Cpid = dto.Cpid
             };
 

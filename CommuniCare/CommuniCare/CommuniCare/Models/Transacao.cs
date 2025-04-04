@@ -7,11 +7,11 @@ public partial class Transacao
 {
     public int TransacaoId { get; set; }
 
-    public int? DataTransmissao { get; set; }
+    public DateTime? DataTransacao { get; set; }
 
     public int? Quantidade { get; set; }
 
-    public virtual TransacaoAjuda? TransacaoAjudum { get; set; }
+    public virtual TransacaoAjuda? TransacaoAjuda { get; set; }
 
     public virtual TransacaoEmprestimo? TransacaoEmprestimo { get; set; }
 

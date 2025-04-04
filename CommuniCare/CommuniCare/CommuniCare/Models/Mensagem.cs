@@ -7,7 +7,7 @@ public partial class Mensagem
 {
     public int MensagemId { get; set; }
 
-    public int? Conteudo { get; set; }
+    public string? Conteudo { get; set; }
 
     public DateTime? DataEnvio { get; set; }
 

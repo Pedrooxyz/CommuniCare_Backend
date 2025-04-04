@@ -2,35 +2,3 @@
 x64/
 appsettings.Development.json
 
-# Diretoria de build
-bin/
-obj/
-
-# Visual Studio files
-.vs/
-*.user
-*.suo
-*.userosscache
-*.sln.docstates
-
-# Arquivos de log e temporários
-*.log
-*.tmp
-
-# Arquivos de cache e debug
-*.pdb
-*.cache
-*.db
-*.mdb
-
-# VS Code (se usarem)
-.vscode/
-
-# Rider (JetBrains)
-.idea/
-
-# Arquivos de backup/merge
-*.orig
-*.bak
-*.old
-*.rej

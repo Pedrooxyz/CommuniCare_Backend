@@ -581,3 +581,4 @@ C:\Users\ferna\Documents\GitHub\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniC
 D:\2ano\2sem\Projeto Desenvolvimento Software\RepoTrabalho\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 D:\2ano\2sem\Projeto Desenvolvimento Software\RepoTrabalho\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 C:\Users\ferna\Documents\GitHub\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\ferna\Documents\GitHub\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

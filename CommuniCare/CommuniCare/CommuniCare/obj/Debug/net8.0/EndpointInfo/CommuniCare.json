@@ -4070,6 +4070,10 @@
           "cPostal": {
             "type": "string",
             "nullable": true
+          },
+          "localidade": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false

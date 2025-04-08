@@ -5,7 +5,9 @@
         public string? Rua { get; set; }
         public int? NumPorta { get; set; }
         public string CPostal { get; set; }
+        public string Localidade { get; set; } 
     }
+
 
 
 

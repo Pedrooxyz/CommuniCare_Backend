@@ -124,13 +124,19 @@ namespace CommuniCare.Controllers
             }
 
             // Garantir que existe um Código Postal padrão
-            var codigoPostalPadrao = await _context.Cps.FirstOrDefaultAsync(cp => cp.Localidade == "000000"); // O DescCP como string
+            // Garantir que existe um Código Postal padrão
+            var codigoPostalPadrao = await _context.Cps.FirstOrDefaultAsync(cp => cp.CPostal == "0000-000");
             if (codigoPostalPadrao == null)
             {
-                codigoPostalPadrao = new Cp { Localidade = "000000" };
+                codigoPostalPadrao = new Cp
+                {
+                    CPostal = "0000-000",
+                    Localidade = "000000"
+                };
                 _context.Cps.Add(codigoPostalPadrao);
                 await _context.SaveChangesAsync();
             }
+
 
             // Criar uma morada temporária associada a esse Código Postal
             var moradaTemporaria = new Morada
@@ -168,7 +174,7 @@ namespace CommuniCare.Controllers
             await _context.SaveChangesAsync();
 
             // Gerar token para o utilizador
-            var token = GerarToken(novoUtilizador.UtilizadorId, dto.Email);
+            var token = GerarToken(novoUtilizador.UtilizadorId, dto.Email, novoUtilizador.TipoUtilizadorId);
 
             // Retornar o token JWT
             return Ok(new
@@ -187,12 +193,16 @@ namespace CommuniCare.Controllers
                 return BadRequest(ModelState);
             }
 
-            // Obter o UtilizadorId a partir do JWT (do token enviado no cabeçalho Authorization)
-            var utilizadorId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)); // Recupera o 'UtilizadorId' a partir das claims
+            var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            // Verifica se o utilizador existe
+            if (string.IsNullOrEmpty(userIdStr) || !int.TryParse(userIdStr, out int utilizadorId))
+            {
+                return Unauthorized("Token inválido ou utilizador não autenticado.");
+            }
+
+
             var utilizador = await _context.Utilizadores
-                .Include(u => u.Morada) // Incluir a morada associada
+                .Include(u => u.Morada)
                 .FirstOrDefaultAsync(u => u.UtilizadorId == utilizadorId);
 
             if (utilizador == null)
@@ -200,30 +210,38 @@ namespace CommuniCare.Controllers
                 return NotFound("Utilizador não encontrado.");
             }
 
-            // Verifica se o utilizador tem uma morada temporária associada
             var moradaTemporaria = utilizador.Morada;
 
-            if (moradaTemporaria == null || moradaTemporaria.Rua == "A definir")
+            // Verificar se o código postal fornecido já existe
+            var codigoPostal = await _context.Cps.FindAsync(dto.CPostal);
+            if (codigoPostal == null)
             {
-                return BadRequest("Morada temporária não encontrada ou ainda não foi definida.");
+                // Criar novo código postal com a localidade fornecida
+                codigoPostal = new Cp
+                {
+                    CPostal = dto.CPostal,
+                    Localidade = dto.Localidade
+                };
+
+                _context.Cps.Add(codigoPostal);
+                await _context.SaveChangesAsync();
             }
 
-            // Atualiza a morada com os novos dados fornecidos pelo utilizador
+            // Atualiza a morada
             moradaTemporaria.Rua = dto.Rua;
             moradaTemporaria.NumPorta = dto.NumPorta;
-            moradaTemporaria.CPostal = dto.CPostal; // Novo Código Postal
+            moradaTemporaria.CPostal = dto.CPostal;
 
-            // Salva as alterações no banco de dados
             _context.Morada.Update(moradaTemporaria);
             await _context.SaveChangesAsync();
 
-            // Atualiza o utilizador (opcional, dependendo da lógica que queres implementar)
-            utilizador.MoradaId = moradaTemporaria.MoradaId;  // A morada já está associada ao utilizador, então não é necessário modificar
-
+            // Opcional: manter referência correta no utilizador
+            utilizador.MoradaId = moradaTemporaria.MoradaId;
             await _context.SaveChangesAsync();
 
             return Ok(new { Message = "Morada atualizada com sucesso! Registo completo." });
         }
+
 
 
         [HttpPost("login")]
@@ -247,7 +265,7 @@ namespace CommuniCare.Controllers
                 return Unauthorized("Email ou password inválidos.");
 
             // Gerar token
-            var token = GerarToken(utilizador.UtilizadorId, dto.Email);
+            var token = GerarToken(utilizador.UtilizadorId, dto.Email, utilizador.TipoUtilizadorId);
 
             return Ok(new
             {
@@ -256,7 +274,7 @@ namespace CommuniCare.Controllers
             });
         }
 
-        private string GerarToken(int utilizadorId, string email)
+        private string GerarToken(int utilizadorId, string email, int tipoUtilizadorId)
         {
             var jwtSettings = _configuration.GetSection("JwtSettings").Get<JwtSettings>();
             var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSettings.SecretKey));
@@ -266,7 +284,7 @@ namespace CommuniCare.Controllers
             {
         new Claim(ClaimTypes.NameIdentifier, utilizadorId.ToString()),
         new Claim(ClaimTypes.Name, email),
-        new Claim(ClaimTypes.Role, "Utilizador")
+        new Claim(ClaimTypes.Role, tipoUtilizadorId.ToString())
     };
 
             var token = new JwtSecurityToken(
@@ -279,6 +297,7 @@ namespace CommuniCare.Controllers
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
 
 
 

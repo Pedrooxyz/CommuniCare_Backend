@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CommuniCare.Controllers
 {
@@ -310,5 +311,59 @@ namespace CommuniCare.Controllers
         }
 
 
+        [HttpPut("editar-perfil")]
+        [Authorize]
+        public async Task<IActionResult> EditarPerfil([FromBody] EditarPerfilDTO dto)
+        {
+            var utilizadorId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            var utilizador = await _context.Utilizadores
+                .Include(u => u.Contactos)
+                .Include(u => u.Morada)
+                .FirstOrDefaultAsync(u => u.UtilizadorId == utilizadorId);
+
+            if (utilizador == null) return NotFound("Utilizador não encontrado.");
+
+            if (!string.IsNullOrEmpty(dto.Nome))
+                utilizador.NomeUtilizador = dto.Nome;
+
+            // Atualiza contactos individualmente
+            if (!string.IsNullOrEmpty(dto.Email))
+            {
+                var contactoEmail = utilizador.Contactos.FirstOrDefault(c => c.TipoContactoId == 1);
+                if (contactoEmail != null)
+                    contactoEmail.NumContacto = dto.Email;
+            }
+
+            if (!string.IsNullOrEmpty(dto.Telemovel))
+            {
+                var contactoTele = utilizador.Contactos.FirstOrDefault(c => c.TipoContactoId == 2);
+                if (contactoTele != null)
+                    contactoTele.NumContacto = dto.Telemovel;
+            }
+
+            // Atualiza morada se existir
+            if (utilizador.Morada != null)
+            {
+                if (!string.IsNullOrEmpty(dto.Rua)) utilizador.Morada.Rua = dto.Rua;
+                if (dto.NumPorta == null) utilizador.Morada.NumPorta = dto.NumPorta;
+
+                if (!string.IsNullOrEmpty(dto.CPostal))
+                {
+                    var cp = await _context.Cps.FindAsync(dto.CPostal);
+                    if (cp == null)
+                    {
+                        cp = new Cp { CPostal = dto.CPostal, Localidade = dto.Localidade ?? "" };
+                        _context.Cps.Add(cp);
+                        await _context.SaveChangesAsync();
+                    }
+                    utilizador.Morada.CPostal = cp.CPostal;
+                }
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Ok("Perfil atualizado com sucesso.");
+        }
     }
-}
+    }

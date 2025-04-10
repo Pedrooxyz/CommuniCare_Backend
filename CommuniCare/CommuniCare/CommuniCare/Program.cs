@@ -41,6 +41,7 @@ builder.Services.AddAuthentication(options =>
 });
 
 // 3. Serviços essenciais
+builder.Services.AddSingleton<EmailService>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>

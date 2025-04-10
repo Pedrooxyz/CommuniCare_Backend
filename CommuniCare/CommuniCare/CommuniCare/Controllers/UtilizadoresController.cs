@@ -13,6 +13,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Cryptography;
 
 namespace CommuniCare.Controllers
 {
@@ -299,12 +300,6 @@ namespace CommuniCare.Controllers
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-
-
-
-
-
-
         private bool UtilizadorExists(int id)
         {
             return _context.Utilizadores.Any(e => e.UtilizadorId == id);
@@ -365,5 +360,144 @@ namespace CommuniCare.Controllers
 
             return Ok("Perfil atualizado com sucesso.");
         }
+
+        [HttpGet("saldo")]
+        [Authorize]
+        public async Task<IActionResult> ObterSaldo()
+        {
+            var utilizadorId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var utilizador = await _context.Utilizadores
+                .FirstOrDefaultAsync(u => u.UtilizadorId == utilizadorId);
+
+            if (utilizador == null)
+                return NotFound("Utilizador não encontrado.");
+
+            return Ok(new { Saldo = utilizador.NumCares });
+        }
+
+        [HttpDelete("apagar-conta")]
+        [Authorize]
+        public async Task<IActionResult> ApagarConta([FromBody] ConfirmarPasswordDTO dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var utilizadorId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            var utilizador = await _context.Utilizadores
+                .Include(u => u.Morada)
+                .Include(u => u.Contactos)
+                .FirstOrDefaultAsync(u => u.UtilizadorId == utilizadorId);
+
+            if (utilizador == null)
+                return NotFound("Utilizador não encontrado.");
+
+            if (!BCrypt.Net.BCrypt.Verify(dto.Password, utilizador.Password))
+                return Unauthorized("Password incorreta.");
+
+            if (utilizador.Contactos != null)
+                _context.Contactos.RemoveRange(utilizador.Contactos);
+
+            if (utilizador.Morada != null)
+                _context.Morada.Remove(utilizador.Morada);
+
+            _context.Utilizadores.Remove(utilizador);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { Message = "Conta apagada com sucesso." });
+        }
+
+        #region Reset Password
+
+        [HttpPost("recuperar-senha")]
+        public async Task<IActionResult> RecuperarSenha([FromBody] RecuperarSenhaDTO dto)
+        {
+            if (string.IsNullOrEmpty(dto.Email))
+            {
+                return BadRequest("E-mail não fornecido.");
+            }
+
+            // Verificar se o utilizador existe com o e-mail fornecido
+            var utilizador = await _context.Utilizadores
+                .Include(u => u.Contactos)
+                .FirstOrDefaultAsync(u => u.Contactos.Any(c => c.NumContacto == dto.Email));
+
+            if (utilizador == null)
+            {
+                return NotFound("Utilizador não encontrado.");
+            }
+
+            // Gerar o token de recuperação
+            var tokenRecuperacao = GerarTokenRecuperacaoSenha(utilizador.UtilizadorId);
+            var resetLink = $"{Request.Scheme}://{Request.Host}/api/utilizadores/resetar-senha?token={tokenRecuperacao}";
+
+            // Enviar o e-mail de recuperação
+            var emailService = new EmailService(_configuration);
+            await emailService.SendPasswordResetEmail(dto.Email, resetLink);
+
+            return Ok("E-mail de recuperação enviado.");
+        }
+
+
+        private string GerarTokenRecuperacaoSenha(int utilizadorId)
+        {
+            // Gerar uma chave aleatória de 256 bits (32 bytes)
+            var key = new byte[32]; // 32 bytes = 256 bits
+            using (var rng = new RNGCryptoServiceProvider())
+            {
+                rng.GetBytes(key);
+            }
+
+            var symmetricKey = new SymmetricSecurityKey(key);
+
+            var token = new JwtSecurityToken(
+                issuer: "your-issuer",
+                audience: "your-audience",
+                claims: new[] { new Claim(ClaimTypes.NameIdentifier, utilizadorId.ToString()) },
+                expires: DateTime.UtcNow.AddMinutes(30),
+                signingCredentials: new SigningCredentials(symmetricKey, SecurityAlgorithms.HmacSha256)
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+
+        [HttpPost("resetar-senha")]
+        public async Task<IActionResult> ResetarSenha([FromQuery] string token, [FromBody] NovaSenhaDTO dto)
+        {
+            if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(dto.NovaSenha))
+            {
+                return BadRequest("Token ou nova senha não fornecidos.");
+            }
+
+            var handler = new JwtSecurityTokenHandler();
+            try
+            {
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+                var utilizadorIdClaim = jsonToken?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+                if (utilizadorIdClaim == null)
+                    return Unauthorized("Token inválido.");
+
+                var utilizador = await _context.Utilizadores.FindAsync(int.Parse(utilizadorIdClaim));
+                if (utilizador == null)
+                    return NotFound("Utilizador não encontrado.");
+
+                utilizador.Password = BCrypt.Net.BCrypt.HashPassword(dto.NovaSenha);
+                _context.Utilizadores.Update(utilizador);
+                await _context.SaveChangesAsync();
+
+                return Ok("Senha redefinida com sucesso.");
+            }
+            catch (Exception)
+            {
+                return Unauthorized("Token inválido ou expirado.");
+            }
+        }
+
+
+
+        #endregion
+
     }
-    }
+}

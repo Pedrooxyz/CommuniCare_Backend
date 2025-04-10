@@ -1912,6 +1912,22 @@
   },
   {
     "ContainingType": "CommuniCare.Controllers.UtilizadoresController",
+    "Method": "ApagarConta",
+    "RelativePath": "api/Utilizadores/apagar-conta",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "CommuniCare.DTOs.ConfirmarPasswordDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.UtilizadoresController",
     "Method": "CompletarRegisto",
     "RelativePath": "api/Utilizadores/completar-registo",
     "HttpMethod": "POST",
@@ -1921,6 +1937,22 @@
       {
         "Name": "dto",
         "Type": "CommuniCare.DTOs.MoradaDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.UtilizadoresController",
+    "Method": "EditarPerfil",
+    "RelativePath": "api/Utilizadores/editar-perfil",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "CommuniCare.DTOs.EditarPerfilDTO",
         "IsRequired": true
       }
     ],
@@ -1944,6 +1976,22 @@
   },
   {
     "ContainingType": "CommuniCare.Controllers.UtilizadoresController",
+    "Method": "RecuperarSenha",
+    "RelativePath": "api/Utilizadores/recuperar-senha",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "CommuniCare.DTOs.RecuperarSenhaDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.UtilizadoresController",
     "Method": "Register",
     "RelativePath": "api/Utilizadores/register",
     "HttpMethod": "POST",
@@ -1956,6 +2004,37 @@
         "IsRequired": true
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.UtilizadoresController",
+    "Method": "ResetarSenha",
+    "RelativePath": "api/Utilizadores/resetar-senha",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "token",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "dto",
+        "Type": "CommuniCare.DTOs.NovaSenhaDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.UtilizadoresController",
+    "Method": "ObterSaldo",
+    "RelativePath": "api/Utilizadores/saldo",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {

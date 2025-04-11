@@ -438,21 +438,14 @@ namespace CommuniCare.Controllers
             return Ok("E-mail de recuperação enviado.");
         }
 
-
         private string GerarTokenRecuperacaoSenha(int utilizadorId)
         {
-            // Gerar uma chave aleatória de 256 bits (32 bytes)
-            var key = new byte[32]; // 32 bytes = 256 bits
-            using (var rng = new RNGCryptoServiceProvider())
-            {
-                rng.GetBytes(key);
-            }
-
+            var key = Encoding.UTF8.GetBytes(_configuration["JwtSettings:Secret"]);
             var symmetricKey = new SymmetricSecurityKey(key);
 
             var token = new JwtSecurityToken(
-                issuer: "your-issuer",
-                audience: "your-audience",
+                issuer: "CommuniCare",
+                audience: "CommuniCareUsers",
                 claims: new[] { new Claim(ClaimTypes.NameIdentifier, utilizadorId.ToString()) },
                 expires: DateTime.UtcNow.AddMinutes(30),
                 signingCredentials: new SigningCredentials(symmetricKey, SecurityAlgorithms.HmacSha256)
@@ -473,13 +466,26 @@ namespace CommuniCare.Controllers
             var handler = new JwtSecurityTokenHandler();
             try
             {
-                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
-                var utilizadorIdClaim = jsonToken?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                var key = Encoding.UTF8.GetBytes(_configuration["JwtSettings:Secret"]);
+                var parameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = "CommuniCare",
+                    ValidateAudience = true,
+                    ValidAudience = "CommuniCareUsers",
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
+                };
 
-                if (utilizadorIdClaim == null)
+                var principal = handler.ValidateToken(token, parameters, out _);
+                var utilizadorId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+                if (utilizadorId == null)
                     return Unauthorized("Token inválido.");
 
-                var utilizador = await _context.Utilizadores.FindAsync(int.Parse(utilizadorIdClaim));
+                var utilizador = await _context.Utilizadores.FindAsync(int.Parse(utilizadorId));
                 if (utilizador == null)
                     return NotFound("Utilizador não encontrado.");
 
@@ -489,11 +495,12 @@ namespace CommuniCare.Controllers
 
                 return Ok("Senha redefinida com sucesso.");
             }
-            catch (Exception)
+            catch (SecurityTokenException)
             {
                 return Unauthorized("Token inválido ou expirado.");
             }
         }
+
 
 
 

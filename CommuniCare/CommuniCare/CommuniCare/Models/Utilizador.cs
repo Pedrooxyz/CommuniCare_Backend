@@ -34,7 +34,7 @@ public partial class Utilizador
 
     public virtual ICollection<Voluntariado> Voluntariados { get; set; } = new List<Voluntariado>();
 
-    public virtual ICollection<ItemEmprestimo> Items { get; set; } = new List<ItemEmprestimo>();
+    public virtual ICollection<ItemEmprestimo> ItensEmprestimo { get; set; } = new List<ItemEmprestimo>();
 
     #region Metodos
 

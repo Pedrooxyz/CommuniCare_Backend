@@ -25,7 +25,7 @@ public partial class PedidoAjuda
 
     public int? NHoras { get; set; }
 
-    public int TransacaoId { get; set; }
+    public int? TransacaoId { get; set; }
 
     public int? NPessoas { get; set; }
 

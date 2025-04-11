@@ -1114,6 +1114,60 @@
         }
       }
     },
+    "/api/ItensEmprestimo/adicionar-item": {
+      "post": {
+        "tags": [
+          "ItensEmprestimo"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ItemEmprestimoDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ItemEmprestimoDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ItemEmprestimoDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/ItensEmprestimo/adquirir-item/{itemId}": {
+      "post": {
+        "tags": [
+          "ItensEmprestimo"
+        ],
+        "parameters": [
+          {
+            "name": "itemId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Lojas": {
       "get": {
         "tags": [
@@ -4198,11 +4252,30 @@
             },
             "nullable": true
           },
-          "utilizadors": {
+          "utilizadores": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/Utilizador"
             },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ItemEmprestimoDTO": {
+        "type": "object",
+        "properties": {
+          "nomeItem": {
+            "type": "string",
+            "nullable": true
+          },
+          "descItem": {
+            "type": "string",
+            "nullable": true
+          },
+          "comissaoCares": {
+            "type": "integer",
+            "format": "int32",
             "nullable": true
           }
         },
@@ -4424,7 +4497,8 @@
           },
           "transacaoId": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
           "nPessoas": {
             "type": "integer",
@@ -4461,10 +4535,6 @@
       "PedidoAjudaDTO": {
         "type": "object",
         "properties": {
-          "utilizadorId": {
-            "type": "integer",
-            "format": "int32"
-          },
           "descPedido": {
             "type": "string",
             "nullable": true
@@ -4705,7 +4775,7 @@
             },
             "nullable": true
           },
-          "items": {
+          "itensEmprestimo": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ItemEmprestimo"

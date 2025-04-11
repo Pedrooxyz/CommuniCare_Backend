@@ -581,7 +581,6 @@ C:\Users\ferna\Documents\GitHub\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniC
 D:\2ano\2sem\Projeto Desenvolvimento Software\RepoTrabalho\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 D:\2ano\2sem\Projeto Desenvolvimento Software\RepoTrabalho\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 C:\Users\ferna\Documents\GitHub\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
-C:\Users\ferna\Documents\GitHub\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\ferna\Documents\GitHub\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\bin\Debug\net8.0\SendGrid.dll
 C:\Users\ferna\Documents\GitHub\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\bin\Debug\net8.0\StarkbankEcdsa.dll
 C:\Users\João\OneDrive - Instituto Politécnico do Cávado e do Ave\Desktop\ipca\ano 2\2º semestre\PDS\Segunda Fase\Codigo\CommuniCare\CommuniCare\CommuniCare\bin\Debug\net8.0\appsettings.Development.json
@@ -878,3 +877,4 @@ C:\Users\João\OneDrive - Instituto Politécnico do Cávado e do Ave\Desktop\ipc
 C:\Users\João\OneDrive - Instituto Politécnico do Cávado e do Ave\Desktop\ipca\ano 2\2º semestre\PDS\Segunda Fase\Codigo\CommuniCare\CommuniCare\CommuniCare\obj\Debug\net8.0\CommuniCare.pdb
 C:\Users\João\OneDrive - Instituto Politécnico do Cávado e do Ave\Desktop\ipca\ano 2\2º semestre\PDS\Segunda Fase\Codigo\CommuniCare\CommuniCare\CommuniCare\obj\Debug\net8.0\CommuniCare.genruntimeconfig.cache
 C:\Users\João\OneDrive - Instituto Politécnico do Cávado e do Ave\Desktop\ipca\ano 2\2º semestre\PDS\Segunda Fase\Codigo\CommuniCare\CommuniCare\CommuniCare\obj\Debug\net8.0\ref\CommuniCare.dll
+C:\Users\ferna\Documents\GitHub\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

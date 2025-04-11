@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CommuniCare.Models;
 using CommuniCare.DTOs;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace CommuniCare.Controllers
 {
@@ -105,16 +107,25 @@ namespace CommuniCare.Controllers
             return _context.PedidosAjuda.Any(e => e.PedidoId == id);
         }
 
-
         [HttpPost("pedir")]
-        public async Task<IActionResult> PedirAjuda([FromBody] PedidoAjudaDTO pedidoData)
+        [Authorize] // Garante que só utilizadores autenticados podem aceder
+        public async Task<IActionResult> PedirPedirAjuda([FromBody] PedidoAjudaDTO pedidoData)
         {
             if (pedidoData == null)
             {
                 return BadRequest("Dados inválidos.");
             }
 
-            var utilizador = await _context.Utilizadores.FindAsync(pedidoData.UtilizadorId);
+            // Obter o ID do utilizador autenticado a partir do JWT
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Unauthorized("Utilizador não autenticado.");
+            }
+
+            int utilizadorId = int.Parse(userIdClaim.Value);
+
+            var utilizador = await _context.Utilizadores.FindAsync(utilizadorId);
             if (utilizador == null)
             {
                 return NotFound("Utilizador não encontrado.");
@@ -125,8 +136,9 @@ namespace CommuniCare.Controllers
                 pedidoData.HorarioAjuda,
                 pedidoData.NHoras,
                 pedidoData.NPessoas,
-                pedidoData.UtilizadorId
+                utilizadorId
             );
+
 
             if (!pedidoCriado)
             {

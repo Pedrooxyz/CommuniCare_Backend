@@ -4424,7 +4424,8 @@
           },
           "transacaoId": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
           "nPessoas": {
             "type": "integer",
@@ -4461,10 +4462,6 @@
       "PedidoAjudaDTO": {
         "type": "object",
         "properties": {
-          "utilizadorId": {
-            "type": "integer",
-            "format": "int32"
-          },
           "descPedido": {
             "type": "string",
             "nullable": true

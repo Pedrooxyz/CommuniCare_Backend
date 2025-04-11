@@ -1242,7 +1242,7 @@
   },
   {
     "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",
-    "Method": "PedirAjuda",
+    "Method": "PedirPedirAjuda",
     "RelativePath": "api/PedidosAjuda/pedir",
     "HttpMethod": "POST",
     "IsController": true,

@@ -50,17 +50,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Artigo"
+                "$ref": "#/components/schemas/ArtigoDto"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/Artigo"
+                "$ref": "#/components/schemas/ArtigoDto"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/Artigo"
+                "$ref": "#/components/schemas/ArtigoDto"
               }
             }
           }
@@ -3667,6 +3667,49 @@
         }
       }
     },
+    "/api/Vendas/comprar": {
+      "post": {
+        "tags": [
+          "Vendas"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Voluntariados": {
       "get": {
         "tags": [
@@ -3928,6 +3971,29 @@
           },
           "transacao": {
             "$ref": "#/components/schemas/Venda"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ArtigoDto": {
+        "type": "object",
+        "properties": {
+          "nomeArtigo": {
+            "type": "string",
+            "nullable": true
+          },
+          "descArtigo": {
+            "type": "string",
+            "nullable": true
+          },
+          "custoCares": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "lojaId": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false

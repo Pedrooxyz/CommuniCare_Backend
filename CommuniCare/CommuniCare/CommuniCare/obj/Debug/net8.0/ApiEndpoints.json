@@ -28,8 +28,8 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "artigo",
-        "Type": "CommuniCare.Models.Artigo",
+        "Name": "dto",
+        "Type": "CommuniCare.DTOs.ArtigoDto",
         "IsRequired": true
       }
     ],
@@ -2141,6 +2141,22 @@
       {
         "Name": "id",
         "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.VendasController",
+    "Method": "Comprar",
+    "RelativePath": "api/Vendas/comprar",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "artigosIds",
+        "Type": "System.Collections.Generic.List\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": true
       }
     ],

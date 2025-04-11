@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CommuniCare.Models;
+using CommuniCare.DTOs;
 
 namespace CommuniCare.Controllers
 {
@@ -75,13 +76,22 @@ namespace CommuniCare.Controllers
         // POST: api/Artigos
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Artigo>> PostArtigo(Artigo artigo)
+        public async Task<ActionResult<Artigo>> PostArtigo(ArtigoDto dto)
         {
+            var artigo = new Artigo
+            {
+                NomeArtigo = dto.NomeArtigo,
+                DescArtigo = dto.DescArtigo,
+                CustoCares = dto.CustoCares,
+                LojaId = dto.LojaId
+            };
+
             _context.Artigos.Add(artigo);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetArtigo", new { id = artigo.ArtigoId }, artigo);
         }
+
 
         // DELETE: api/Artigos/5
         [HttpDelete("{id}")]

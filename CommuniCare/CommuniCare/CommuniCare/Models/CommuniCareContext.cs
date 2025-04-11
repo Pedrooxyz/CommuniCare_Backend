@@ -197,7 +197,7 @@ public partial class CommuniCareContext : DbContext
                         j.IndexerProperty<int>("EmprestimoId").HasColumnName("emprestimoID");
                     });
 
-            entity.HasMany(d => d.Utilizadors).WithMany(p => p.Items)
+            entity.HasMany(d => d.Utilizadores).WithMany(p => p.ItensEmprestimo)
                 .UsingEntity<Dictionary<string, object>>(
                     "ItemEmprestimoUtilizador",
                     r => r.HasOne<Utilizador>().WithMany()

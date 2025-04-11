@@ -654,6 +654,38 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "CommuniCare.Controllers.ItensEmprestimoController",
+    "Method": "AdicionarItemEmprestimo",
+    "RelativePath": "api/ItensEmprestimo/adicionar-item",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "itemData",
+        "Type": "CommuniCare.DTOs.ItemEmprestimoDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.ItensEmprestimoController",
+    "Method": "AdquirirItem",
+    "RelativePath": "api/ItensEmprestimo/adquirir-item/{itemId}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "itemId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "CommuniCare.Controllers.LojasController",
     "Method": "GetLojas",
     "RelativePath": "api/Lojas",

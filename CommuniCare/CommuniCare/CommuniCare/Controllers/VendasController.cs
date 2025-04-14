@@ -150,21 +150,20 @@ namespace CommuniCare.Controllers
             try
             {
                 var user = await _context.Utilizadores.FindAsync(userId);
-                if (user == null)
-                    return NotFound("Utilizador não encontrado.");
-
                 var emailContacto = await _context.Contactos
                     .Where(c => c.UtilizadorId == userId && c.TipoContactoId == 1)
                     .Select(c => c.NumContacto)
                     .FirstOrDefaultAsync();
 
-                if (string.IsNullOrEmpty(emailContacto))
-                    return BadRequest("Não foi possível encontrar o email do utilizador.");
+
 
                 var (venda, transacao, artigos, dataCompra) = await _transacaoServico.ProcessarCompraAsync(userId, request.ArtigosIds);
-                var pdfBytes = ComprovativoGenerator.GerarComprovativoPDF(venda, user, artigos);
 
-                await _emailService.EnviarComprovativoCompra(emailContacto, user.NomeUtilizador, pdfBytes);
+                // Gerar um único PDF com todos os artigos
+                var comprovativoUnico = ComprovativoGenerator.GerarComprovativoUnicoPDF(venda, user, artigos);
+
+                // Enviar o PDF por email
+                await _emailService.EnviarComprovativoCompra(emailContacto, user.NomeUtilizador, comprovativoUnico);
 
                 return Ok(new
                 {
@@ -180,6 +179,7 @@ namespace CommuniCare.Controllers
             }
         }
 
+
         [HttpPost("comprar-download")]
         [Authorize]
         public async Task<IActionResult> ComprarDownload([FromBody] PedidoCompraDTO request)
@@ -189,16 +189,15 @@ namespace CommuniCare.Controllers
             try
             {
                 var user = await _context.Utilizadores.FindAsync(userId);
-                if (user == null)
-                    return NotFound("Utilizador não encontrado.");
 
                 var (venda, transacao, artigos, dataCompra) = await _transacaoServico.ProcessarCompraAsync(userId, request.ArtigosIds);
-                var pdfBytes = ComprovativoGenerator.GerarComprovativoPDF(venda, user, artigos);
+
+                var comprovativoUnico = ComprovativoGenerator.GerarComprovativoUnicoPDF(venda, user, artigos);
 
                 Response.Headers.Add("X-DataCompra", dataCompra.ToString("yyyy-MM-dd HH:mm"));
                 Response.Headers.Add("X-Artigos", string.Join(", ", artigos.Select(a => a.NomeArtigo)));
 
-                return File(pdfBytes, "application/pdf", $"comprovativo_{transacao.TransacaoId}.pdf");
+                return File(comprovativoUnico, "application/pdf", $"Vouchers_Compra.pdf");
             }
             catch (Exception ex)
             {

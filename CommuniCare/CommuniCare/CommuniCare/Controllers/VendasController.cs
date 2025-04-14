@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CommuniCare.Models;
+using Microsoft.AspNetCore.Authorization;
+using CommuniCare.DTOs;
+using System.Security.Claims;
 
 namespace CommuniCare.Controllers
 {
@@ -14,10 +17,13 @@ namespace CommuniCare.Controllers
     public class VendasController : ControllerBase
     {
         private readonly CommuniCareContext _context;
-
-        public VendasController(CommuniCareContext context)
+        private readonly EmailService _emailService;
+        private readonly TransacaoServico _transacaoServico;
+        public VendasController(CommuniCareContext context, EmailService emailService)
         {
             _context = context;
+            _emailService = emailService;
+            _transacaoServico = new TransacaoServico(_context);
         }
 
         // GET: api/Vendas
@@ -118,100 +124,88 @@ namespace CommuniCare.Controllers
             return _context.Venda.Any(e => e.TransacaoId == id);
         }
 
-
-
-
-
         [HttpPost("comprar")]
-        public async Task<IActionResult> Comprar([FromBody] List<int> artigosIds)
+        [Authorize]
+        public async Task<IActionResult> Comprar([FromBody] PedidoCompraDTO request)
         {
-            // Verificar se o utilizador está autenticado
-            if (!User.Identity.IsAuthenticated)
-                return Unauthorized();
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
-            // Obter ID do utilizador autenticado
-            var userId = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value);
-
-            var user = await _context.Utilizadores.FindAsync(userId);
-            if (user == null)
-                return NotFound("Utilizador não encontrado.");
-
-            // Buscar os artigos
-            var artigos = await _context.Artigos
-                .Where(a => artigosIds.Contains(a.ArtigoId))
-                .ToListAsync();
-
-            // Verificar se todos os artigos foram encontrados
-            if (artigos.Count != artigosIds.Count)
-                return BadRequest("Alguns artigos não foram encontrados.");
-
-            // Calcular o custo total da compra (quantidade de pontos necessários)
-            int totalCares = artigos.Sum(a => a.CustoCares ?? 0);
-
-            // Verificar se o utilizador tem pontos suficientes
-            if (user.NumCares < totalCares)
-                return BadRequest("Pontos insuficientes.");
-
-            // Iniciar uma transação para garantir consistência de dados
-            using (var transaction = await _context.Database.BeginTransactionAsync())
+            try
             {
-                try
-                {
-                    // Criar nova transação para a compra
-                    var transacao = new Transacao
-                    {
-                        DataTransacao = DateTime.Now,
-                        Quantidade = artigos.Count
-                    };
-                    _context.Transacaos.Add(transacao);
-                    await _context.SaveChangesAsync();
-
-                    // Criar a venda
-                    var venda = new Venda
-                    {
-                        UtilizadorId = user.UtilizadorId,
-                        TransacaoId = transacao.TransacaoId,
-                        NArtigos = artigos.Count
-                    };
-                    _context.Venda.Add(venda);
-                    await _context.SaveChangesAsync();
-
-                    // Associar os artigos à transação
-                    foreach (var artigo in artigos)
-                    {
-                        artigo.TransacaoId = transacao.TransacaoId;
-                    }
-
-                    // Subtrair os pontos do utilizador
-                    user.NumCares -= totalCares;
-
-                    // Salvar as alterações na transação, venda e artigos
-                    await _context.SaveChangesAsync();
-
-                    // Commitar a transação
-                    await transaction.CommitAsync();
-
-                    return Ok(new
-                    {
-                        Sucesso = true,
-                        Mensagem = "Compra efetuada com sucesso.",
-                        TransacaoId = transacao.TransacaoId,
-                        PontosRestantes = user.NumCares
-                    });
-                }
-                catch (Exception)
-                {
-                    // Rollback em caso de erro
-                    await transaction.RollbackAsync();
-                    return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro ao processar a compra.");
-                }
+                await _transacaoServico.ProcessarCompraAsync(userId, request.ArtigosIds);
+                return Ok(new { Sucesso = true, Mensagem = "Compra efetuada com sucesso." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Sucesso = false, Erro = ex.Message });
             }
         }
 
+        [HttpPost("comprar-email")]
+        [Authorize]
+        public async Task<IActionResult> ComprarEmail([FromBody] PedidoCompraDTO request)
+        {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
+            try
+            {
+                var user = await _context.Utilizadores.FindAsync(userId);
+                if (user == null)
+                    return NotFound("Utilizador não encontrado.");
 
+                var emailContacto = await _context.Contactos
+                    .Where(c => c.UtilizadorId == userId && c.TipoContactoId == 1)
+                    .Select(c => c.NumContacto)
+                    .FirstOrDefaultAsync();
+
+                if (string.IsNullOrEmpty(emailContacto))
+                    return BadRequest("Não foi possível encontrar o email do utilizador.");
+
+                var (venda, transacao, artigos, dataCompra) = await _transacaoServico.ProcessarCompraAsync(userId, request.ArtigosIds);
+                var pdfBytes = ComprovativoGenerator.GerarComprovativoPDF(venda, user, artigos);
+
+                await _emailService.EnviarComprovativoCompra(emailContacto, user.NomeUtilizador, pdfBytes);
+
+                return Ok(new
+                {
+                    Sucesso = true,
+                    Mensagem = "Compra efetuada e comprovativo enviado por email.",
+                    DataHora = dataCompra.ToString("yyyy-MM-dd HH:mm"),
+                    NomeArtigos = artigos.Select(a => a.NomeArtigo)
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Sucesso = false, Erro = ex.Message });
+            }
+        }
+
+        [HttpPost("comprar-download")]
+        [Authorize]
+        public async Task<IActionResult> ComprarDownload([FromBody] PedidoCompraDTO request)
+        {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+            try
+            {
+                var user = await _context.Utilizadores.FindAsync(userId);
+                if (user == null)
+                    return NotFound("Utilizador não encontrado.");
+
+                var (venda, transacao, artigos, dataCompra) = await _transacaoServico.ProcessarCompraAsync(userId, request.ArtigosIds);
+                var pdfBytes = ComprovativoGenerator.GerarComprovativoPDF(venda, user, artigos);
+
+                Response.Headers.Add("X-DataCompra", dataCompra.ToString("yyyy-MM-dd HH:mm"));
+                Response.Headers.Add("X-Artigos", string.Join(", ", artigos.Select(a => a.NomeArtigo)));
+
+                return File(pdfBytes, "application/pdf", $"comprovativo_{transacao.TransacaoId}.pdf");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Sucesso = false, Erro = ex.Message });
+            }
+        }
     }
-
 
 
 

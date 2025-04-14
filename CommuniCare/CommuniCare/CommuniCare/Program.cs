@@ -10,6 +10,19 @@ using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+// ? Configurar licença da QuestPDF antes de adicionar outros serviços
+var questPdfLicense = builder.Configuration["QuestPDF:LicenseKey"];
+if (!string.IsNullOrEmpty(questPdfLicense))
+{
+    QuestPDF.Settings.License = (QuestPDF.Infrastructure.LicenseType)Enum.Parse(typeof(QuestPDF.Infrastructure.LicenseType), questPdfLicense);
+}
+else
+{
+    // Caso não tenha chave de licença, use a licença comunitária
+    QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
+}
+
 // 1. Adicionar configuração do JWT
 var jwtSettingsSection = builder.Configuration.GetSection("JwtSettings");
 builder.Services.Configure<JwtSettings>(jwtSettingsSection);

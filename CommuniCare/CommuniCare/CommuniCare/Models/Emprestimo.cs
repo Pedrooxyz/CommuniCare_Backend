@@ -11,7 +11,7 @@ public partial class Emprestimo
 
     public DateTime? DataDev { get; set; }
 
-    public int TransacaoId { get; set; }
+    public int? TransacaoId { get; set; }
 
     public virtual TransacaoEmprestimo Transacao { get; set; } = null!;
 

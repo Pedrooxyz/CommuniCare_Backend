@@ -154,13 +154,6 @@ namespace CommuniCare.Controllers
             return Ok("Item de empréstimo adicionado com sucesso.");
         }
 
-
-        /**
-         * É necessário na funcao abaixo criar uma instancia da classe emprestimo e alem disso a mais algumas coisas a 
-         * preocupar: ao adquirir alem de quere que nos icollections adiciones o utilizador associado ao token que fez 
-         * a aquisição quero também que cries uma instancia da classe Emprestimo em que o UtilizadorId seja igual ao utilazadorId 
-         * da tabela ItemEmprestimo
-         */
         [HttpPost("adquirir-item/{itemId}")]
         [Authorize] // Garante que só utilizadores autenticados podem aceder
         public async Task<IActionResult> AdquirirItem(int itemId)
@@ -182,7 +175,10 @@ namespace CommuniCare.Controllers
             }
 
             // Encontrar o item de empréstimo pelo ID
-            var itemEmprestimo = await _context.ItensEmprestimo.FindAsync(itemId);
+            var itemEmprestimo = await _context.ItensEmprestimo
+                .Include(i => i.Utilizadores)  // Incluindo os utilizadores que já adquiriram o item
+                .FirstOrDefaultAsync(i => i.ItemId == itemId);
+
             if (itemEmprestimo == null)
             {
                 return NotFound("Item de empréstimo não encontrado.");
@@ -203,14 +199,30 @@ namespace CommuniCare.Controllers
             // Marcar o item como indisponível
             itemEmprestimo.Disponivel = 0;
 
-            // Associar o item ao utilizador que está pedindo
+            // Criar o empréstimo (vinculando o item ao empréstimo)
+            var emprestimo = new Emprestimo
+            {
+                DataIni = DateTime.UtcNow,
+                // Associar o item de empréstimo ao empréstimo
+                Items = new List<ItemEmprestimo> { itemEmprestimo },
+            };
+
+            // Criar a relação entre o utilizador e o item de empréstimo na tabela intermediária
             itemEmprestimo.Utilizadores.Add(utilizador);
 
-            // Salvar no banco de dados
+            // Adicionar o novo empréstimo ao contexto para ser salvo
+            _context.Emprestimos.Add(emprestimo);
+
+            // Atualizar o itemEmprestimo para refletir a disponibilidade e as alterações de associação
+            _context.ItensEmprestimo.Update(itemEmprestimo);
+
+            // Salvar todas as mudanças no banco de dados
             await _context.SaveChangesAsync();
 
             return Ok("Item adquirido com sucesso.");
         }
+
+
 
     }
 }

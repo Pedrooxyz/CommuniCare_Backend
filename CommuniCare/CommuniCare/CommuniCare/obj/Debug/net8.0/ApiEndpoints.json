@@ -1944,6 +1944,22 @@
   },
   {
     "ContainingType": "CommuniCare.Controllers.UtilizadoresController",
+    "Method": "AdicionarCares",
+    "RelativePath": "api/Utilizadores/adicionar-cares",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "CommuniCare.DTOs.AdicionarCaresDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.UtilizadoresController",
     "Method": "ApagarConta",
     "RelativePath": "api/Utilizadores/apagar-conta",
     "HttpMethod": "DELETE",

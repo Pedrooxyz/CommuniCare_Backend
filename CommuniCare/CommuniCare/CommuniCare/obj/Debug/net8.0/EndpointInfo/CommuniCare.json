@@ -3536,6 +3536,37 @@
         }
       }
     },
+    "/api/Utilizadores/adicionar-cares": {
+      "post": {
+        "tags": [
+          "Utilizadores"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdicionarCaresDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdicionarCaresDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdicionarCaresDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Vendas": {
       "get": {
         "tags": [
@@ -4002,6 +4033,20 @@
   },
   "components": {
     "schemas": {
+      "AdicionarCaresDTO": {
+        "type": "object",
+        "properties": {
+          "utilizadorId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "quantidade": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
       "Artigo": {
         "type": "object",
         "properties": {
@@ -4200,7 +4245,8 @@
           },
           "transacaoId": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
           "transacao": {
             "$ref": "#/components/schemas/TransacaoEmprestimo"

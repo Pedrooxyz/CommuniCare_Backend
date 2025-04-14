@@ -501,7 +501,37 @@ namespace CommuniCare.Controllers
             }
         }
 
+        #endregion
 
+        #region TESTE 
+
+        [HttpPost("adicionar-cares")]
+        public async Task<IActionResult> AdicionarCares([FromBody] AdicionarCaresDTO dto)
+        {
+            var utilizador = await _context.Utilizadores.FindAsync(dto.UtilizadorId);
+
+            if (utilizador == null)
+            {
+                return NotFound("Utilizador não encontrado.");
+            }
+
+            if (dto.Quantidade <= 0)
+            {
+                return BadRequest("A quantidade de cares deve ser maior que zero.");
+            }
+
+            utilizador.NumCares = (utilizador.NumCares ?? 0) + dto.Quantidade;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                return Ok(new { message = "Cares adicionados com sucesso.", totalCares = utilizador.NumCares });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro ao atualizar cares: {ex.Message}");
+            }
+        }
 
 
         #endregion

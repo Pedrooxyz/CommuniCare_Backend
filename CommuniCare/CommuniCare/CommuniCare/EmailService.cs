@@ -26,11 +26,12 @@
             var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, plainTextContent);
 
             var response = await client.SendEmailAsync(msg);
-            if (response.StatusCode != HttpStatusCode.OK)
+            if (response.StatusCode != HttpStatusCode.Accepted)
             {
-                // Trate a falha ao enviar o e-mail, talvez lançando um erro
-                throw new Exception("Erro ao enviar o e-mail");
+                var body = await response.Body.ReadAsStringAsync();
+                throw new Exception($"Erro ao enviar o e-mail: {response.StatusCode} - {body}");
             }
+
         }
 
 

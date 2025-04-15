@@ -686,6 +686,22 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "CommuniCare.Controllers.ItensEmprestimoController",
+    "Method": "ConcluirEmprestimo",
+    "RelativePath": "api/ItensEmprestimo/devolucao-item/{emprestimoId}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "emprestimoId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "CommuniCare.Controllers.LojasController",
     "Method": "GetLojas",
     "RelativePath": "api/Lojas",

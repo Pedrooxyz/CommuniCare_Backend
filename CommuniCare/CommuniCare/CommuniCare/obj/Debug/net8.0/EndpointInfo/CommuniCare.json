@@ -1168,6 +1168,29 @@
         }
       }
     },
+    "/api/ItensEmprestimo/devolucao-item/{emprestimoId}": {
+      "post": {
+        "tags": [
+          "ItensEmprestimo"
+        ],
+        "parameters": [
+          {
+            "name": "emprestimoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Lojas": {
       "get": {
         "tags": [

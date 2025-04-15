@@ -24,14 +24,14 @@ namespace CommuniCare.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Transacao>>> GetTransacaos()
         {
-            return await _context.Transacaos.ToListAsync();
+            return await _context.Transacoes.ToListAsync();
         }
 
         // GET: api/Transacoes/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Transacao>> GetTransacao(int id)
         {
-            var transacao = await _context.Transacaos.FindAsync(id);
+            var transacao = await _context.Transacoes.FindAsync(id);
 
             if (transacao == null)
             {
@@ -77,7 +77,7 @@ namespace CommuniCare.Controllers
         [HttpPost]
         public async Task<ActionResult<Transacao>> PostTransacao(Transacao transacao)
         {
-            _context.Transacaos.Add(transacao);
+            _context.Transacoes.Add(transacao);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetTransacao", new { id = transacao.TransacaoId }, transacao);
@@ -87,13 +87,13 @@ namespace CommuniCare.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTransacao(int id)
         {
-            var transacao = await _context.Transacaos.FindAsync(id);
+            var transacao = await _context.Transacoes.FindAsync(id);
             if (transacao == null)
             {
                 return NotFound();
             }
 
-            _context.Transacaos.Remove(transacao);
+            _context.Transacoes.Remove(transacao);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -101,7 +101,7 @@ namespace CommuniCare.Controllers
 
         private bool TransacaoExists(int id)
         {
-            return _context.Transacaos.Any(e => e.TransacaoId == id);
+            return _context.Transacoes.Any(e => e.TransacaoId == id);
         }
     }
 }

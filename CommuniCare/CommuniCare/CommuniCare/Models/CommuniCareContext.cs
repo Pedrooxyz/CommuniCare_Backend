@@ -41,11 +41,11 @@ public partial class CommuniCareContext : DbContext
 
     public virtual DbSet<TipoUtilizador> TipoUtilizadors { get; set; }
 
-    public virtual DbSet<Transacao> Transacaos { get; set; }
+    public virtual DbSet<Transacao> Transacoes { get; set; }
 
     public virtual DbSet<TransacaoAjuda> TransacaoAjuda { get; set; }
 
-    public virtual DbSet<TransacaoEmprestimo> TransacaoEmprestimos { get; set; }
+    public virtual DbSet<TransacaoEmprestimo> TransacoesEmprestimo { get; set; }
 
     public virtual DbSet<Utilizador> Utilizadores { get; set; }
 

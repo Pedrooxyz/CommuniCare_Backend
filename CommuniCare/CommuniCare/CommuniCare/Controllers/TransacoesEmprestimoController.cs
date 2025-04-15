@@ -24,14 +24,14 @@ namespace CommuniCare.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TransacaoEmprestimo>>> GetTransacaoEmprestimos()
         {
-            return await _context.TransacaoEmprestimos.ToListAsync();
+            return await _context.TransacoesEmprestimo.ToListAsync();
         }
 
         // GET: api/TransacaoEmprestimos/5
         [HttpGet("{id}")]
         public async Task<ActionResult<TransacaoEmprestimo>> GetTransacaoEmprestimo(int id)
         {
-            var transacaoEmprestimo = await _context.TransacaoEmprestimos.FindAsync(id);
+            var transacaoEmprestimo = await _context.TransacoesEmprestimo.FindAsync(id);
 
             if (transacaoEmprestimo == null)
             {
@@ -77,7 +77,7 @@ namespace CommuniCare.Controllers
         [HttpPost]
         public async Task<ActionResult<TransacaoEmprestimo>> PostTransacaoEmprestimo(TransacaoEmprestimo transacaoEmprestimo)
         {
-            _context.TransacaoEmprestimos.Add(transacaoEmprestimo);
+            _context.TransacoesEmprestimo.Add(transacaoEmprestimo);
             try
             {
                 await _context.SaveChangesAsync();
@@ -101,13 +101,13 @@ namespace CommuniCare.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTransacaoEmprestimo(int id)
         {
-            var transacaoEmprestimo = await _context.TransacaoEmprestimos.FindAsync(id);
+            var transacaoEmprestimo = await _context.TransacoesEmprestimo.FindAsync(id);
             if (transacaoEmprestimo == null)
             {
                 return NotFound();
             }
 
-            _context.TransacaoEmprestimos.Remove(transacaoEmprestimo);
+            _context.TransacoesEmprestimo.Remove(transacaoEmprestimo);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -115,7 +115,7 @@ namespace CommuniCare.Controllers
 
         private bool TransacaoEmprestimoExists(int id)
         {
-            return _context.TransacaoEmprestimos.Any(e => e.TransacaoId == id);
+            return _context.TransacoesEmprestimo.Any(e => e.TransacaoId == id);
         }
     }
 }

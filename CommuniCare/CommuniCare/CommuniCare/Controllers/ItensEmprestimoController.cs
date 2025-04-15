@@ -155,10 +155,9 @@ namespace CommuniCare.Controllers
         }
 
         [HttpPost("adquirir-item/{itemId}")]
-        [Authorize] // Garante que só utilizadores autenticados podem aceder
+        [Authorize] 
         public async Task<IActionResult> AdquirirItem(int itemId)
         {
-            // Obter o ID do utilizador autenticado a partir do JWT
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
             {
@@ -167,16 +166,14 @@ namespace CommuniCare.Controllers
 
             int utilizadorId = int.Parse(userIdClaim.Value);
 
-            // Verificar se o utilizador existe
             var utilizador = await _context.Utilizadores.FindAsync(utilizadorId);
             if (utilizador == null)
             {
                 return NotFound("Utilizador não encontrado.");
             }
 
-            // Encontrar o item de empréstimo pelo ID
             var itemEmprestimo = await _context.ItensEmprestimo
-                .Include(i => i.Utilizadores)  // Incluindo os utilizadores que já adquiriram o item
+                .Include(i => i.Utilizadores) 
                 .FirstOrDefaultAsync(i => i.ItemId == itemId);
 
             if (itemEmprestimo == null)
@@ -184,45 +181,34 @@ namespace CommuniCare.Controllers
                 return NotFound("Item de empréstimo não encontrado.");
             }
 
-            // Verificar se o utilizador que está pedindo o item não é o mesmo que colocou o item
             if (itemEmprestimo.Utilizadores.Any(u => u.UtilizadorId == utilizadorId))
             {
                 return BadRequest("Não pode adquirir o item que você mesmo colocou.");
             }
 
-            // Verificar se o item está disponível
             if (itemEmprestimo.Disponivel == 0)
             {
                 return BadRequest("Este item não está disponível para empréstimo.");
             }
 
-            // Marcar o item como indisponível
             itemEmprestimo.Disponivel = 0;
 
-            // Criar o empréstimo (vinculando o item ao empréstimo)
             var emprestimo = new Emprestimo
             {
                 DataIni = DateTime.UtcNow,
-                // Associar o item de empréstimo ao empréstimo
                 Items = new List<ItemEmprestimo> { itemEmprestimo },
             };
 
-            // Criar a relação entre o utilizador e o item de empréstimo na tabela intermediária
             itemEmprestimo.Utilizadores.Add(utilizador);
 
-            // Adicionar o novo empréstimo ao contexto para ser salvo
             _context.Emprestimos.Add(emprestimo);
 
-            // Atualizar o itemEmprestimo para refletir a disponibilidade e as alterações de associação
             _context.ItensEmprestimo.Update(itemEmprestimo);
 
-            // Salvar todas as mudanças no banco de dados
             await _context.SaveChangesAsync();
 
             return Ok("Item adquirido com sucesso.");
         }
-
-
 
     }
 }

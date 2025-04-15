@@ -15,6 +15,8 @@ public partial class ItemEmprestimo
 
     public int? ComissaoCares { get; set; }
 
+    public int idEmprestador { get; set; }
+
     public virtual ICollection<Notificacao> Notificacaos { get; set; } = new List<Notificacao>();
 
     public virtual ICollection<Emprestimo> Emprestimos { get; set; } = new List<Emprestimo>();

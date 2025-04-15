@@ -45,7 +45,7 @@ namespace CommuniCare
                     DataTransacao = dataCompra,
                     Quantidade = artigos.Count
                 };
-                _context.Transacaos.Add(transacao);
+                _context.Transacoes.Add(transacao);
                 await _context.SaveChangesAsync();
 
                 var venda = new Venda

@@ -1317,3 +1317,4 @@ Z:\Universidade\Semestre1\24-25\PDS\PDS_Api\CommuniCare_PDS\CommuniCare\CommuniC
 Z:\Universidade\Semestre1\24-25\PDS\PDS_Api\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\obj\Debug\net8.0\CommuniCare.pdb
 Z:\Universidade\Semestre1\24-25\PDS\PDS_Api\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\obj\Debug\net8.0\CommuniCare.genruntimeconfig.cache
 Z:\Universidade\Semestre1\24-25\PDS\PDS_Api\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\obj\Debug\net8.0\ref\CommuniCare.dll
+C:\Users\ferna\Documents\GitHub\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

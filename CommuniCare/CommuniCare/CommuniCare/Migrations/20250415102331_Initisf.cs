@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace CommuniCare.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCrea : Migration
+    public partial class Initisf : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,13 +15,12 @@ namespace CommuniCare.Migrations
                 name: "CP",
                 columns: table => new
                 {
-                    CPID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    descCP = table.Column<int>(type: "int", nullable: true)
+                    CPostal = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Localidade = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK__CP__F5B22BE63663255C", x => x.CPID);
+                    table.PrimaryKey("PK__CP__F5B22BE63663255C", x => x.CPostal);
                 });
 
             migrationBuilder.CreateTable(
@@ -73,7 +72,7 @@ namespace CommuniCare.Migrations
                 {
                     tipoUtilizadorID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    descTU = table.Column<int>(type: "int", nullable: true)
+                    descTU = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -86,7 +85,7 @@ namespace CommuniCare.Migrations
                 {
                     transacaoID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    dataTransmissao = table.Column<int>(type: "int", nullable: true),
+                    dataTransacao = table.Column<DateTime>(type: "datetime2", nullable: true),
                     quantidade = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -102,8 +101,7 @@ namespace CommuniCare.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     rua = table.Column<string>(type: "varchar(255)", unicode: false, maxLength: 255, nullable: true),
                     numPorta = table.Column<int>(type: "int", nullable: true),
-                    Distrito = table.Column<string>(type: "varchar(255)", unicode: false, maxLength: 255, nullable: true),
-                    CPID = table.Column<int>(type: "int", nullable: false)
+                    CPID = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -112,7 +110,7 @@ namespace CommuniCare.Migrations
                         name: "FKMorada368657",
                         column: x => x.CPID,
                         principalTable: "CP",
-                        principalColumn: "CPID");
+                        principalColumn: "CPostal");
                 });
 
             migrationBuilder.CreateTable(
@@ -186,7 +184,7 @@ namespace CommuniCare.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     dataIni = table.Column<DateTime>(type: "datetime", nullable: true),
                     dataDev = table.Column<DateTime>(type: "datetime", nullable: true),
-                    transacaoID = table.Column<int>(type: "int", nullable: false)
+                    transacaoID = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -274,7 +272,7 @@ namespace CommuniCare.Migrations
                     estado = table.Column<int>(type: "int", nullable: false),
                     horarioAjuda = table.Column<DateTime>(type: "datetime", nullable: true),
                     nHoras = table.Column<int>(type: "int", nullable: true),
-                    transacaoID = table.Column<int>(type: "int", nullable: false),
+                    transacaoID = table.Column<int>(type: "int", nullable: true),
                     nPessoas = table.Column<int>(type: "int", nullable: true),
                     utilizadorID = table.Column<int>(type: "int", nullable: false)
                 },
@@ -344,7 +342,7 @@ namespace CommuniCare.Migrations
                 {
                     mensagemID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    conteudo = table.Column<int>(type: "int", nullable: true),
+                    conteudo = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     dataEnvio = table.Column<DateTime>(type: "datetime", nullable: true),
                     chatID = table.Column<int>(type: "int", nullable: false)
                 },

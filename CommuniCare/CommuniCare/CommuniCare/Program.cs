@@ -11,7 +11,7 @@ using System.Security.Claims;
 var builder = WebApplication.CreateBuilder(args);
 
 
-// ? Configurar licença da QuestPDF antes de adicionar outros serviços
+// ? Configurar licenï¿½a da QuestPDF antes de adicionar outros serviï¿½os
 var questPdfLicense = builder.Configuration["QuestPDF:LicenseKey"];
 if (!string.IsNullOrEmpty(questPdfLicense))
 {
@@ -19,18 +19,18 @@ if (!string.IsNullOrEmpty(questPdfLicense))
 }
 else
 {
-    // Caso não tenha chave de licença, use a licença comunitária
+    // Caso nï¿½o tenha chave de licenï¿½a, use a licenï¿½a comunitï¿½ria
     QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
 }
 
-// 1. Adicionar configuração do JWT
+// 1. Adicionar configuraï¿½ï¿½o do JWT
 var jwtSettingsSection = builder.Configuration.GetSection("JwtSettings");
 builder.Services.Configure<JwtSettings>(jwtSettingsSection);
 
 var jwtSettings = jwtSettingsSection.Get<JwtSettings>();
 var key = Encoding.ASCII.GetBytes(jwtSettings.SecretKey);
 
-// 2. Configurar autenticação JWT
+// 2. Configurar autenticaï¿½ï¿½o JWT
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -53,7 +53,7 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-// 3. Serviços essenciais
+// 3. Serviï¿½os essenciais
 builder.Services.AddSingleton<EmailService>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -61,7 +61,7 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "CommuniCare API", Version = "v1" });
 
-    // Configurar o botão Authorize no Swagger
+    // Configurar o botï¿½o Authorize no Swagger
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Introduz o token abaixo:",
@@ -95,6 +95,42 @@ builder.Services.AddDbContext<CommuniCareContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("ConStr")));
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<CommuniCareContext>();
+
+    
+    if (!db.TipoContactos.Any(tc => tc.TipoContactoId == 1))
+    {
+        db.TipoContactos.Add(new TipoContacto
+        {
+            
+            DescContacto = "email"
+        });
+    }
+
+    
+    if (!db.TipoUtilizadors.Any(tu => tu.TipoUtilizadorId == 1))
+    {
+        db.TipoUtilizadors.Add(new TipoUtilizador
+        {
+            
+            DescTU = "utilizador"
+        });
+    }
+    if (!db.TipoUtilizadors.Any(tu => tu.TipoUtilizadorId == 2))
+    {
+        db.TipoUtilizadors.Add(new TipoUtilizador
+        {
+            
+            DescTU = "administrador"
+        });
+    }
+
+    
+    db.SaveChanges();
+}
 
 // 4. Middleware
 if (app.Environment.IsDevelopment())

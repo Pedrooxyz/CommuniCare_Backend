@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CommuniCare.Migrations
 {
     [DbContext(typeof(CommuniCareContext))]
-    [Migration("20250404093107_NovaMigracao")]
-    partial class NovaMigracao
+    [Migration("20250415102331_Initisf")]
+    partial class Initisf
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -124,18 +124,15 @@ namespace CommuniCare.Migrations
 
             modelBuilder.Entity("CommuniCare.Models.Cp", b =>
                 {
-                    b.Property<int>("Cpid")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("CPID");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Cpid"));
+                    b.Property<string>("CPostal")
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("CPostal");
 
                     b.Property<string>("Localidade")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Localidade");
 
-                    b.HasKey("Cpid")
+                    b.HasKey("CPostal")
                         .HasName("PK__CP__F5B22BE63663255C");
 
                     b.ToTable("CP", (string)null);
@@ -158,7 +155,7 @@ namespace CommuniCare.Migrations
                         .HasColumnType("datetime")
                         .HasColumnName("dataIni");
 
-                    b.Property<int>("TransacaoId")
+                    b.Property<int?>("TransacaoId")
                         .HasColumnType("int")
                         .HasColumnName("transacaoID");
 
@@ -270,8 +267,8 @@ namespace CommuniCare.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MoradaId"));
 
-                    b.Property<int>("Cpid")
-                        .HasColumnType("int")
+                    b.Property<string>("CPostal")
+                        .HasColumnType("nvarchar(450)")
                         .HasColumnName("CPID");
 
                     b.Property<int?>("NumPorta")
@@ -287,7 +284,7 @@ namespace CommuniCare.Migrations
                     b.HasKey("MoradaId")
                         .HasName("PK__Morada__5BDD9AB29A5F23DC");
 
-                    b.HasIndex("Cpid");
+                    b.HasIndex("CPostal");
 
                     b.ToTable("Morada");
                 });
@@ -375,7 +372,7 @@ namespace CommuniCare.Migrations
                         .HasColumnType("int")
                         .HasColumnName("recompensaCares");
 
-                    b.Property<int>("TransacaoId")
+                    b.Property<int?>("TransacaoId")
                         .HasColumnType("int")
                         .HasColumnName("transacaoID");
 
@@ -672,7 +669,6 @@ namespace CommuniCare.Migrations
                     b.HasOne("CommuniCare.Models.TransacaoEmprestimo", "Transacao")
                         .WithMany("Emprestimos")
                         .HasForeignKey("TransacaoId")
-                        .IsRequired()
                         .HasConstraintName("FKEmprestimo891193");
 
                     b.Navigation("Transacao");
@@ -693,8 +689,7 @@ namespace CommuniCare.Migrations
                 {
                     b.HasOne("CommuniCare.Models.Cp", "Cp")
                         .WithMany("Morada")
-                        .HasForeignKey("Cpid")
-                        .IsRequired()
+                        .HasForeignKey("CPostal")
                         .HasConstraintName("FKMorada368657");
 
                     b.Navigation("Cp");
@@ -732,7 +727,6 @@ namespace CommuniCare.Migrations
                     b.HasOne("CommuniCare.Models.TransacaoAjuda", "Transacao")
                         .WithMany("PedidoAjuda")
                         .HasForeignKey("TransacaoId")
-                        .IsRequired()
                         .HasConstraintName("FKPedidoAjud864110");
 
                     b.HasOne("CommuniCare.Models.Utilizador", "Utilizador")

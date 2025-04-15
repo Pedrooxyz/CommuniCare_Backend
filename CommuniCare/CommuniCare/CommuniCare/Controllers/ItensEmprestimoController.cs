@@ -137,25 +137,31 @@ namespace CommuniCare.Controllers
             {
                 NomeItem = itemData.NomeItem,
                 DescItem = itemData.DescItem,
-                Disponivel = 1,  // Disponível como true
+                Disponivel = 1,
                 ComissaoCares = itemData.ComissaoCares
             };
 
-            // Adicionar o item ao contexto
             _context.ItensEmprestimo.Add(itemEmprestimo);
-
-            // Salvar no banco de dados
             await _context.SaveChangesAsync();
 
-            // Associar o item com o utilizador
-            utilizador.ItensEmprestimo.Add(itemEmprestimo);
+            // Criar a relação explícita com TipoRelacao = "Dono"
+            var relacao = new ItemEmprestimoUtilizador
+            {
+                ItemId = itemEmprestimo.ItemId,
+                UtilizadorId = utilizadorId,
+                TipoRelacao = "Dono"
+            };
+
+            _context.ItemEmprestimoUtilizadores.Add(relacao);
             await _context.SaveChangesAsync();
 
             return Ok("Item de empréstimo adicionado com sucesso.");
         }
 
+        //Aqui temos o problema de um utilizador nao poder pedir emprestado duas vezes a mesma coisa porque isso
+        //causaria a repeticao de atributos para nao acontecer isso acrecentamos outra PK que seja o id de cada instancia
         [HttpPost("adquirir-item/{itemId}")]
-        [Authorize] 
+        [Authorize]
         public async Task<IActionResult> AdquirirItem(int itemId)
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
@@ -173,7 +179,7 @@ namespace CommuniCare.Controllers
             }
 
             var itemEmprestimo = await _context.ItensEmprestimo
-                .Include(i => i.Utilizadores) 
+                .Include(i => i.Utilizadores) // Opcional, pode remover se não estiver a usar diretamente
                 .FirstOrDefaultAsync(i => i.ItemId == itemId);
 
             if (itemEmprestimo == null)
@@ -181,7 +187,11 @@ namespace CommuniCare.Controllers
                 return NotFound("Item de empréstimo não encontrado.");
             }
 
-            if (itemEmprestimo.Utilizadores.Any(u => u.UtilizadorId == utilizadorId))
+            // Verificar se o utilizador já está associado como Dono
+            var jaEDono = await _context.ItemEmprestimoUtilizadores
+                .AnyAsync(r => r.ItemId == itemId && r.UtilizadorId == utilizadorId && r.TipoRelacao == "Dono");
+
+            if (jaEDono)
             {
                 return BadRequest("Não pode adquirir o item que você mesmo colocou.");
             }
@@ -189,6 +199,13 @@ namespace CommuniCare.Controllers
             if (itemEmprestimo.Disponivel == 0)
             {
                 return BadRequest("Este item não está disponível para empréstimo.");
+            }
+
+            // Verificar se o utilizador tem Cares suficientes
+            int comissao = itemEmprestimo.ComissaoCares ?? 0;
+            if (utilizador.NumCares < comissao)
+            {
+                return BadRequest("Saldo de Cares insuficiente para adquirir este item.");
             }
 
             itemEmprestimo.Disponivel = 0;
@@ -199,16 +216,24 @@ namespace CommuniCare.Controllers
                 Items = new List<ItemEmprestimo> { itemEmprestimo },
             };
 
-            itemEmprestimo.Utilizadores.Add(utilizador);
+            // Criar ligação com TipoRelacao = Requisitante
+            var relacao = new ItemEmprestimoUtilizador
+            {
+                ItemId = itemId,
+                UtilizadorId = utilizadorId,
+                TipoRelacao = "Comprador"
+                            
+            };
 
             _context.Emprestimos.Add(emprestimo);
-
+            _context.ItemEmprestimoUtilizadores.Add(relacao);
             _context.ItensEmprestimo.Update(itemEmprestimo);
 
             await _context.SaveChangesAsync();
 
             return Ok("Item adquirido com sucesso.");
         }
+
 
     }
 }

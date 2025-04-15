@@ -36,6 +36,8 @@ public partial class Utilizador
 
     public virtual ICollection<ItemEmprestimo> ItensEmprestimo { get; set; } = new List<ItemEmprestimo>();
 
+    public virtual ICollection<ItemEmprestimoUtilizador> ItemEmprestimoUtilizadores { get; set; }
+
     #region Metodos
 
     public Utilizador() { }

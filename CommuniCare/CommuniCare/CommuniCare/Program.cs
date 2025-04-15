@@ -100,22 +100,30 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<CommuniCareContext>();
 
-    
+
     if (!db.TipoContactos.Any(tc => tc.TipoContactoId == 1))
     {
         db.TipoContactos.Add(new TipoContacto
         {
-            
+
             DescContacto = "email"
         });
     }
+    if (!db.TipoContactos.Any(tc => tc.TipoContactoId == 2))
+    {
+        db.TipoContactos.Add(new TipoContacto
+        {
 
-    
+            DescContacto = "numTelemovel"
+        });
+    }
+
+
     if (!db.TipoUtilizadors.Any(tu => tu.TipoUtilizadorId == 1))
     {
         db.TipoUtilizadors.Add(new TipoUtilizador
         {
-            
+
             DescTU = "utilizador"
         });
     }
@@ -123,12 +131,12 @@ using (var scope = app.Services.CreateScope())
     {
         db.TipoUtilizadors.Add(new TipoUtilizador
         {
-            
+
             DescTU = "administrador"
         });
     }
 
-    
+
     db.SaveChanges();
 }
 

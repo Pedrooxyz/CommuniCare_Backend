@@ -545,6 +545,38 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "CommuniCare.Controllers.EmprestimosController",
+    "Method": "ConcluirEmprestimo",
+    "RelativePath": "api/Emprestimos/devolucao-item/{emprestimoId}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "emprestimoId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.EmprestimosController",
+    "Method": "ValidarDevolucaoEmprestimo",
+    "RelativePath": "api/Emprestimos/validar-devolucao/{emprestimoId}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "emprestimoId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "CommuniCare.Controllers.ItensEmprestimoController",
     "Method": "GetItemEmprestimos",
     "RelativePath": "api/ItensEmprestimo",
@@ -679,22 +711,6 @@
     "Parameters": [
       {
         "Name": "itemId",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.ItensEmprestimoController",
-    "Method": "ConcluirEmprestimo",
-    "RelativePath": "api/ItensEmprestimo/devolucao-item/{emprestimoId}",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "emprestimoId",
         "Type": "System.Int32",
         "IsRequired": true
       }

@@ -53,6 +53,9 @@ public partial class CommuniCareContext : DbContext
 
     public virtual DbSet<Voluntariado> Voluntariados { get; set; }
 
+    public virtual DbSet<ItemEmprestimoUtilizador> ItemEmprestimoUtilizadores { get; set; }
+
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263. 
         => optionsBuilder.UseSqlServer("Data Source=localhost; Database=CommuniCare; Integrated Security=True; Encrypt=False");
@@ -197,24 +200,37 @@ public partial class CommuniCareContext : DbContext
                         j.IndexerProperty<int>("EmprestimoId").HasColumnName("emprestimoID");
                     });
 
-            entity.HasMany(d => d.Utilizadores).WithMany(p => p.ItensEmprestimo)
-                .UsingEntity<Dictionary<string, object>>(
-                    "ItemEmprestimoUtilizador",
-                    r => r.HasOne<Utilizador>().WithMany()
-                        .HasForeignKey("UtilizadorId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FKItemEmpres234174"),
-                    l => l.HasOne<ItemEmprestimo>().WithMany()
-                        .HasForeignKey("ItemId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FKItemEmpres991231"),
-                    j =>
-                    {
-                        j.HasKey("ItemId", "UtilizadorId").HasName("PK__ItemEmpr__39C0F0DBD085C080");
-                        j.ToTable("ItemEmprestimo_Utilizador");
-                        j.IndexerProperty<int>("ItemId").HasColumnName("itemID");
-                        j.IndexerProperty<int>("UtilizadorId").HasColumnName("utilizadorID");
-                    });
+              entity.HasMany(d => d.Utilizadores)
+                        .WithMany(p => p.ItensEmprestimo)
+                        .UsingEntity<ItemEmprestimoUtilizador>(
+                j => j.HasOne(ue => ue.Utilizador)
+                      .WithMany(u => u.ItemEmprestimoUtilizadores)
+                      .HasForeignKey(ue => ue.UtilizadorId)
+                      .OnDelete(DeleteBehavior.ClientSetNull)
+                      .HasConstraintName("FK_ItemEmprestimo_Utilizador_Utilizador"),
+
+                j => j.HasOne(ue => ue.ItemEmprestimo)
+                      .WithMany(i => i.ItemEmprestimoUtilizadores)
+                      .HasForeignKey(ue => ue.ItemId)
+                      .OnDelete(DeleteBehavior.ClientSetNull)
+                      .HasConstraintName("FK_ItemEmprestimo_Utilizador_ItemEmprestimo"),
+
+                j =>
+                {
+                    j.HasKey(ue => new { ue.ItemId, ue.UtilizadorId })
+                      .HasName("PK_ItemEmprestimo_Utilizador");
+
+                    j.ToTable("ItemEmprestimoUtilizador");
+
+                    j.Property(ue => ue.ItemId).HasColumnName("itemID");
+                    j.Property(ue => ue.UtilizadorId).HasColumnName("utilizadorID");
+
+                    j.Property(ue => ue.TipoRelacao)
+                      .HasColumnName("tipoRelacao")  
+                      .HasMaxLength(10)              
+                      .IsRequired();
+                });
+
         });
 
         modelBuilder.Entity<Loja>(entity =>

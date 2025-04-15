@@ -929,6 +929,52 @@
         }
       }
     },
+    "/api/Emprestimos/devolucao-item/{emprestimoId}": {
+      "post": {
+        "tags": [
+          "Emprestimos"
+        ],
+        "parameters": [
+          {
+            "name": "emprestimoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Emprestimos/validar-devolucao/{emprestimoId}": {
+      "post": {
+        "tags": [
+          "Emprestimos"
+        ],
+        "parameters": [
+          {
+            "name": "emprestimoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/ItensEmprestimo": {
       "get": {
         "tags": [
@@ -1153,29 +1199,6 @@
         "parameters": [
           {
             "name": "itemId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/ItensEmprestimo/devolucao-item/{emprestimoId}": {
-      "post": {
-        "tags": [
-          "ItensEmprestimo"
-        ],
-        "parameters": [
-          {
-            "name": "emprestimoId",
             "in": "path",
             "required": true,
             "schema": {
@@ -4318,6 +4341,10 @@
             "format": "int32",
             "nullable": true
           },
+          "idEmprestador": {
+            "type": "integer",
+            "format": "int32"
+          },
           "notificacaos": {
             "type": "array",
             "items": {
@@ -4336,6 +4363,13 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/Utilizador"
+            },
+            "nullable": true
+          },
+          "itemEmprestimoUtilizadores": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ItemEmprestimoUtilizador"
             },
             "nullable": true
           }
@@ -4357,6 +4391,30 @@
             "type": "integer",
             "format": "int32",
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ItemEmprestimoUtilizador": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "utilizadorId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tipoRelacao": {
+            "type": "string",
+            "nullable": true
+          },
+          "itemEmprestimo": {
+            "$ref": "#/components/schemas/ItemEmprestimo"
+          },
+          "utilizador": {
+            "$ref": "#/components/schemas/Utilizador"
           }
         },
         "additionalProperties": false
@@ -4873,6 +4931,13 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ItemEmprestimo"
+            },
+            "nullable": true
+          },
+          "itemEmprestimoUtilizadores": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ItemEmprestimoUtilizador"
             },
             "nullable": true
           }

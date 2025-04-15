@@ -136,86 +136,106 @@ namespace CommuniCare.Controllers
             return Ok("Data de devolução registada com sucesso.");
         }
 
-        //[HttpPost("validar-devolucao/{emprestimoId}")]
-        //[Authorize]
-        //public async Task<IActionResult> ValidarDevolucaoEmprestimo(int emprestimoId)
-        //{
-        //    var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-        //    if (userIdClaim == null)
-        //    {
-        //        return Unauthorized("Utilizador não autenticado.");
-        //    }
+        [HttpPost("validar-devolucao/{emprestimoId}")]
+        [Authorize]
+        public async Task<IActionResult> ValidarDevolucaoEmprestimo(int emprestimoId)
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Unauthorized("Utilizador não autenticado.");
+            }
 
-        //    int utilizadorId = int.Parse(userIdClaim.Value);
+            int utilizadorId = int.Parse(userIdClaim.Value);
 
-        //    var utilizador = await _context.Utilizadores.FindAsync(utilizadorId);
-        //    if (utilizador == null || utilizador.TipoUtilizadorId != 2)
-        //    {
-        //        return Forbid("Apenas utilizadores do tipo 2 podem validar devoluções.");
-        //    }
+            var utilizador = await _context.Utilizadores.FindAsync(utilizadorId);
+            if (utilizador == null || utilizador.TipoUtilizadorId != 2)
+            {
+                return Forbid("Apenas utilizadores do tipo 2 podem validar devoluções.");
+            }
 
-        //    var emprestimo = await _context.Emprestimos
-        //        .Include(e => e.Items)
-        //            .ThenInclude(i => i.Utilizadores) // Aceder ao(s) dono(s) dos itens
-        //        .FirstOrDefaultAsync(e => e.EmprestimoId == emprestimoId);
+            var emprestimo = await _context.Emprestimos
+                .Include(e => e.Items)
+                    .ThenInclude(ie => ie.ItemEmprestimoUtilizadores)
+                        .ThenInclude(ieiu => ieiu.Utilizador)
+                .FirstOrDefaultAsync(e => e.EmprestimoId == emprestimoId);
 
-        //    if (emprestimo == null)
-        //    {
-        //        return NotFound("Empréstimo não encontrado.");
-        //    }
+            if (emprestimo == null)
+            {
+                return NotFound("Empréstimo não encontrado.");
+            }
 
-        //    if (emprestimo.DataDev != null)
-        //    {
-        //        return BadRequest("Este empréstimo já foi concluído.");
-        //    }
+            // Tornar todos os itens disponíveis novamente
+            foreach (var itemEmprestimo in emprestimo.Items)
+            {
+                itemEmprestimo.Disponivel = 1;
+            }
 
-        //    // Registar a data de devolução
-        //    emprestimo.DataDev = DateTime.UtcNow;
+            if (emprestimo.DataDev.HasValue && emprestimo.DataIni.HasValue)
+            {
+                TimeSpan diferenca = emprestimo.DataDev.Value - emprestimo.DataIni.Value;
 
-        //    // Tornar todos os itens disponíveis novamente
-        //    foreach (var itemEmprestimo in emprestimo.Items)
-        //    {
-        //        itemEmprestimo.Disponivel = 1;
-        //    }
+                int nHoras = Math.Max(1, (int)Math.Ceiling(diferenca.TotalHours));
 
-        //    // Calcular horas de empréstimo (mínimo de 1 hora)
-        //    int nHoras = (int)Math.Max(1, (emprestimo.DataDev.Value - emprestimo.DataIni).TotalHours);
+                // Calcular total da comissão
+                int totalComissao = emprestimo.Items
+                    .Sum(i => i.ComissaoCares ?? 0);
 
-        //    // Calcular total da comissão
-        //    int totalComissao = emprestimo.Items
-        //        .Sum(i => i.ComissaoCares ?? 0);
+                var primeiroItem = emprestimo.Items.FirstOrDefault();
+                if (primeiroItem == null)
+                {
+                    return BadRequest("Empréstimo não contém itens.");
+                }
 
-        //    // Obter dono do primeiro item (quem emprestou)
-        //    var primeiroItem = emprestimo.Items.FirstOrDefault();
-        //    int? recetorId = primeiroItem?.Utilizadores.FirstOrDefault(u => u.UtilizadorId != emprestimo.UtilizadorId)?.UtilizadorId;
+                var comprador = primeiroItem.ItemEmprestimoUtilizadores
+                    .FirstOrDefault(rel => rel.TipoRelacao == "Comprador")?.Utilizador;
 
-        //    // Quem requisitou (quem pagará)
-        //    int? pagaId = emprestimo.UtilizadorId;
+                var dono = primeiroItem.ItemEmprestimoUtilizadores
+                    .FirstOrDefault(rel => rel.TipoRelacao == "Dono")?.Utilizador;
 
-        //    var transacao = new Transacao
-        //    {
-        //        DataTransacao = DateTime.UtcNow,
-        //        Quantidade = nHoras * totalComissao
-        //    };
+                if (comprador == null || dono == null)
+                {
+                    return BadRequest("Não foi possível determinar o dono ou o comprador do item.");
+                }
 
-        //    var transacaoEmprestimo = new TransacaoEmprestimo
-        //    {
-        //        NHoras = nHoras,
-        //        RecetorTran = recetorId,
-        //        PagaTran = pagaId,
-        //        Transacao = transacao,
-        //        Emprestimos = new List<Emprestimo> { emprestimo }
-        //    };
+                int quantidadeCares = nHoras * totalComissao;
 
-        //    _context.Transacoes.Add(transacao);
-        //    _context.TransacoesEmprestimo.Add(transacaoEmprestimo);
+                // Atualiza os saldos
+                if (comprador.NumCares < quantidadeCares)
+                {
+                    return BadRequest("O comprador não tem cares suficientes.");
+                }
 
-        //    await _context.SaveChangesAsync();
+                comprador.NumCares -= quantidadeCares;
+                dono.NumCares += quantidadeCares;
 
-        //    return Ok("Empréstimo validado, itens atualizados e transação registada.");
-        //}
+                var transacao = new Transacao
+                {
+                    DataTransacao = DateTime.UtcNow,
+                    Quantidade = quantidadeCares
+                };
 
+                var transacaoEmprestimo = new TransacaoEmprestimo
+                {
+                    NHoras = nHoras,
+                    RecetorTran = dono.UtilizadorId,
+                    PagaTran = comprador.UtilizadorId,
+                    Transacao = transacao,
+                    Emprestimos = new List<Emprestimo> { emprestimo }
+                };
 
+                _context.Transacoes.Add(transacao);
+                _context.TransacoesEmprestimo.Add(transacaoEmprestimo);
+
+                await _context.SaveChangesAsync();
+
+                return Ok("Empréstimo validado, saldo atualizado e transação registada.");
+            }
+            else
+            {
+                return BadRequest("Data de devolução ou data de início inválida.");
+            }
+        }
 
     }
 }

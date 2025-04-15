@@ -4,6 +4,7 @@ using CommuniCare.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CommuniCare.Migrations
 {
     [DbContext(typeof(CommuniCareContext))]
-    partial class CommuniCareContextModelSnapshot : ModelSnapshot
+    [Migration("20250415145218_CommuniCareAtualizado7")]
+    partial class CommuniCareAtualizado7
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

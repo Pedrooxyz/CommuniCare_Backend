@@ -718,6 +718,63 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "CommuniCare.Controllers.ItensEmprestimoController",
+    "Method": "AtualizarDescricaoItem",
+    "RelativePath": "api/ItensEmprestimo/atualizar-descricao/{itemId}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "itemId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "novaDescricao",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.ItensEmprestimoController",
+    "Method": "GetItensDisponiveis",
+    "RelativePath": "api/ItensEmprestimo/disponiveis",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[CommuniCare.Models.ItemEmprestimo, CommuniCare, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.ItensEmprestimoController",
+    "Method": "EliminarItemEmprestimo",
+    "RelativePath": "api/ItensEmprestimo/indisponibilizar-permanente-item/{itemId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "itemId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "CommuniCare.Controllers.LojasController",
     "Method": "GetLojas",
     "RelativePath": "api/Lojas",
@@ -821,6 +878,22 @@
       {
         "Name": "id",
         "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.LojasController",
+    "Method": "CriarLoja",
+    "RelativePath": "api/Lojas/criar-loja",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "lojaDto",
+        "Type": "CommuniCare.DTOs.LojaDto",
         "IsRequired": true
       }
     ],

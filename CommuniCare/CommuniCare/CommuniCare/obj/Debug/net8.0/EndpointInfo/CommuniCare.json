@@ -1214,6 +1214,109 @@
         }
       }
     },
+    "/api/ItensEmprestimo/disponiveis": {
+      "get": {
+        "tags": [
+          "ItensEmprestimo"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ItemEmprestimo"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ItemEmprestimo"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ItemEmprestimo"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/ItensEmprestimo/indisponibilizar-permanente-item/{itemId}": {
+      "delete": {
+        "tags": [
+          "ItensEmprestimo"
+        ],
+        "parameters": [
+          {
+            "name": "itemId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/ItensEmprestimo/atualizar-descricao/{itemId}": {
+      "put": {
+        "tags": [
+          "ItensEmprestimo"
+        ],
+        "parameters": [
+          {
+            "name": "itemId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "string"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Lojas": {
       "get": {
         "tags": [
@@ -1392,6 +1495,37 @@
             }
           }
         ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Lojas/criar-loja": {
+      "post": {
+        "tags": [
+          "Lojas"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LojaDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LojaDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/LojaDto"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "OK"
@@ -4569,6 +4703,20 @@
             "items": {
               "$ref": "#/components/schemas/Artigo"
             },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "LojaDto": {
+        "type": "object",
+        "properties": {
+          "nomeLoja": {
+            "type": "string",
+            "nullable": true
+          },
+          "descLoja": {
+            "type": "string",
             "nullable": true
           }
         },

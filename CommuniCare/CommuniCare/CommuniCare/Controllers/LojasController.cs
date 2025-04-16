@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CommuniCare.Models;
+using CommuniCare.DTOs;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace CommuniCare.Controllers
 {

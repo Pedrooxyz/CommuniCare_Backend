@@ -103,5 +103,44 @@ namespace CommuniCare.Controllers
         {
             return _context.Lojas.Any(e => e.LojaId == id);
         }
+
+        [HttpPost("criar-loja")]
+        [Authorize]
+        public async Task<ActionResult> CriarLoja([FromBody] LojaDto lojaDto)
+        {
+
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Unauthorized("Utilizador não autenticado.");
+            }
+
+            int utilizadorId = int.Parse(userIdClaim.Value);
+
+            var utilizador = await _context.Utilizadores.FindAsync(utilizadorId);
+            if (utilizador == null || utilizador.TipoUtilizadorId != 2)
+            {
+                return Forbid("Apenas utilizadores do tipo 2 podem validar devoluções.");
+            }
+
+            // Criar um novo objeto Loja com os campos permitidos
+            var novaLoja = new Loja
+            {
+                NomeLoja = lojaDto.NomeLoja,
+                DescLoja = lojaDto.DescLoja
+            };
+
+            // Adicionar a nova loja à base de dados
+            _context.Lojas.Add(novaLoja);
+            await _context.SaveChangesAsync();
+
+            // Retornar a loja criada, com os campos simplificados
+            return CreatedAtAction("GetLoja", new { id = novaLoja.LojaId }, new
+            {
+                lojaId = novaLoja.LojaId,
+                nomeLoja = novaLoja.NomeLoja,
+                descLoja = novaLoja.DescLoja
+            });
+        }
     }
 }

@@ -234,6 +234,16 @@ namespace CommuniCare.Controllers
             return Ok("Item adquirido com sucesso.");
         }
 
+        [HttpGet("disponiveis")]
+        public async Task<ActionResult<IEnumerable<ItemEmprestimo>>> GetItensDisponiveis()
+        {
+            var itensDisponiveis = await _context.ItensEmprestimo
+                .Where(item => item.Disponivel == 1)
+                .ToListAsync();
+
+            return Ok(itensDisponiveis);
+        }
+
 
     }
 }

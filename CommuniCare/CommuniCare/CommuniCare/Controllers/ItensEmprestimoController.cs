@@ -244,6 +244,53 @@ namespace CommuniCare.Controllers
             return Ok(itensDisponiveis);
         }
 
+        [HttpDelete("indisponibilizar-permanente-item/{itemId}")]
+        [Authorize] 
+        public async Task<IActionResult> EliminarItemEmprestimo(int itemId)
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Unauthorized("Utilizador não autenticado.");
+            }
+
+            int utilizadorId;
+            if (!int.TryParse(userIdClaim.Value, out utilizadorId))
+            {
+                return Unauthorized("ID de utilizador inválido.");
+            }
+
+            var itemEmprestimoUtilizador = await _context.ItemEmprestimoUtilizadores
+                .Include(ie => ie.ItemEmprestimo) 
+                .Include(ie => ie.Utilizador) 
+                .FirstOrDefaultAsync(ie => ie.ItemId == itemId && ie.UtilizadorId == utilizadorId);
+
+            if (itemEmprestimoUtilizador == null)
+            {
+                return NotFound("Item de empréstimo ou relação de utilizador não encontrado.");
+            }
+
+            if (itemEmprestimoUtilizador.TipoRelacao != "Dono")
+            {
+                return Unauthorized("Você não tem permissão para alterar este item.");
+            }
+
+            var itemEmprestimo = await _context.ItensEmprestimo
+                .FirstOrDefaultAsync(i => i.ItemId == itemId);
+
+
+            if (itemEmprestimo == null)
+            {
+                return NotFound("Item de empréstimo não encontrado.");
+            }
+
+            itemEmprestimo.Disponivel = 0; 
+
+            _context.ItensEmprestimo.Update(itemEmprestimo);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
 
     }
 }

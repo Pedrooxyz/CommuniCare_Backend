@@ -108,15 +108,17 @@ namespace CommuniCare.Controllers
         }
 
         [HttpPost("pedir")]
-        [Authorize] // Garante que só utilizadores autenticados podem aceder
-        public async Task<IActionResult> PedirPedirAjuda([FromBody] PedidoAjudaDTO pedidoData)
+        [Authorize]
+        public async Task<IActionResult> CriarPedidoAjuda([FromBody] PedidoAjudaDTO pedidoData)
         {
-            if (pedidoData == null)
+            if (pedidoData == null ||
+                string.IsNullOrWhiteSpace(pedidoData.DescPedido) ||
+                pedidoData.NHoras <= 0 ||
+                pedidoData.NPessoas <= 0)
             {
                 return BadRequest("Dados inválidos.");
             }
 
-            // Obter o ID do utilizador autenticado a partir do JWT
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
             {
@@ -131,43 +133,52 @@ namespace CommuniCare.Controllers
                 return NotFound("Utilizador não encontrado.");
             }
 
-            bool pedidoCriado = utilizador.PedirAjuda(
-                pedidoData.DescPedido,
-                pedidoData.HorarioAjuda,
-                pedidoData.NHoras,
-                pedidoData.NPessoas,
-                utilizadorId
-            );
-
-
-            if (!pedidoCriado)
+            var pedido = new PedidoAjuda
             {
-                return StatusCode(500, "Erro ao criar o pedido de ajuda.");
-            }
+                DescPedido = pedidoData.DescPedido,
+                HorarioAjuda = pedidoData.HorarioAjuda,
+                NHoras = pedidoData.NHoras,
+                NPessoas = pedidoData.NPessoas,
+                UtilizadorId = utilizadorId,
+                Estado = EstadoPedido.Pendente
+            };
 
+            _context.PedidosAjuda.Add(pedido);
             await _context.SaveChangesAsync();
 
-            return Ok("Pedido de ajuda criado com sucesso.");
+            return Ok(new
+            {
+                Mensagem = "Pedido de ajuda criado com sucesso."
+            });
         }
 
-        [HttpPost("{pedidoId}/voluntariar/{utilizadorId}")]
-        public async Task<IActionResult> Voluntariar(int pedidoId, int utilizadorId)
+
+        [HttpPost("{pedidoId}/voluntariar")]
+        [Authorize]
+        public async Task<IActionResult> Voluntariar(int pedidoId)
         {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Unauthorized("Utilizador não autenticado.");
+            }
+
+            int utilizadorId = int.Parse(userIdClaim.Value);
+
             var pedido = await _context.PedidosAjuda.FindAsync(pedidoId);
             if (pedido == null || pedido.Estado != EstadoPedido.Aberto)
             {
                 return BadRequest("Pedido não encontrado ou já fechado.");
             }
 
-            // Verifica se o utilizador já se voluntariou
             bool jaVoluntariado = await _context.Voluntariados
                 .AnyAsync(v => v.PedidoId == pedidoId && v.UtilizadorId == utilizadorId);
+
             if (jaVoluntariado)
             {
                 return BadRequest("Utilizador já se voluntariou para este pedido.");
             }
 
-            // Adiciona o voluntário
             var voluntariado = new Voluntariado
             {
                 PedidoId = pedidoId,
@@ -180,11 +191,30 @@ namespace CommuniCare.Controllers
             return Ok("Utilizador voluntariado com sucesso.");
         }
 
+        #region Administrador
+
         [HttpPost("{pedidoId}/aceitar/{voluntarioId}")]
+        [Authorize]
         public async Task<IActionResult> AceitarVoluntario(int pedidoId, int voluntarioId)
         {
-            var pedido = await _context.PedidosAjuda.Include(p => p.Voluntariados)
-                                                    .FirstOrDefaultAsync(p => p.PedidoId == pedidoId);
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Unauthorized("Utilizador não autenticado.");
+            }
+
+            int utilizadorId = int.Parse(userIdClaim.Value);
+
+            var utilizador = await _context.Utilizadores.FindAsync(utilizadorId);
+            if (utilizador == null || utilizador.TipoUtilizadorId != 2)
+            {
+                return Forbid("Apenas administradores podem aceitar voluntários.");
+            }
+
+            var pedido = await _context.PedidosAjuda
+                .Include(p => p.Voluntariados)
+                .FirstOrDefaultAsync(p => p.PedidoId == pedidoId);
+
             if (pedido == null || pedido.Estado != EstadoPedido.Aberto)
             {
                 return BadRequest("Pedido não encontrado ou já fechado.");
@@ -200,8 +230,158 @@ namespace CommuniCare.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok("Voluntário aceito com sucesso.");
+            return Ok("Voluntário aceite com sucesso e pedido atualizado para 'Em Progresso'.");
         }
+
+        [HttpPost("{pedidoId}/rejeitar")]
+        [Authorize]
+        public async Task<IActionResult> RejeitarPedidoAjuda(int pedidoId)
+        {
+            // Obter o ID do utilizador autenticado
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Unauthorized("Utilizador não autenticado.");
+            }
+
+            int utilizadorId = int.Parse(userIdClaim.Value);
+
+            // Verificar se é administrador
+            var utilizador = await _context.Utilizadores.FindAsync(utilizadorId);
+            if (utilizador == null || utilizador.TipoUtilizadorId != 2)
+            {
+                return Forbid("Apenas administradores podem validar pedidos de ajuda.");
+            }
+
+            // Obter o pedido
+            var pedido = await _context.PedidosAjuda.FindAsync(pedidoId);
+            if (pedido == null)
+            {
+                return NotFound("Pedido de ajuda não encontrado.");
+            }
+
+            if (pedido.Estado != EstadoPedido.Pendente)
+            {
+                return BadRequest("Este pedido já foi validado ou está em progresso/concluído.");
+            }
+
+            // Atualizar o estado
+            pedido.Estado = EstadoPedido.Rejeitado;
+
+            await _context.SaveChangesAsync();
+
+            return Ok("Pedido de ajuda validado com sucesso e colocado como 'Aberto'.");
+        }
+
+        [HttpPost("{pedidoId}/validar")]
+        [Authorize]
+        public async Task<IActionResult> ValidarPedidoAjuda(int pedidoId)
+        {
+            // Obter o ID do utilizador autenticado
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Unauthorized("Utilizador não autenticado.");
+            }
+
+            int utilizadorId = int.Parse(userIdClaim.Value);
+
+            // Verificar se é administrador
+            var utilizador = await _context.Utilizadores.FindAsync(utilizadorId);
+            if (utilizador == null || utilizador.TipoUtilizadorId != 2)
+            {
+                return Forbid("Apenas administradores podem validar pedidos de ajuda.");
+            }
+
+            // Obter o pedido
+            var pedido = await _context.PedidosAjuda.FindAsync(pedidoId);
+            if (pedido == null)
+            {
+                return NotFound("Pedido de ajuda não encontrado.");
+            }
+
+            if (pedido.Estado != EstadoPedido.Pendente)
+            {
+                return BadRequest("Este pedido já foi validado ou está em progresso/concluído.");
+            }
+
+            // Atualizar o estado
+            pedido.Estado = EstadoPedido.Aberto;
+
+            await _context.SaveChangesAsync();
+
+            return Ok("Pedido de ajuda validado com sucesso e colocado como 'Aberto'.");
+        }
+
+        [HttpPost("validar-conclusao/{pedidoId}")]
+        [Authorize]
+        public async Task<IActionResult> ValidarConclusaoPedidoAjuda(int pedidoId)
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Unauthorized("Utilizador não autenticado.");
+            }
+
+            int utilizadorId = int.Parse(userIdClaim.Value);
+
+            var utilizador = await _context.Utilizadores.FindAsync(utilizadorId);
+            if (utilizador == null || utilizador.TipoUtilizadorId != 2)
+            {
+                return Forbid("Apenas administradores podem validar pedidos de ajuda.");
+            }
+
+            var pedido = await _context.PedidosAjuda
+                .Include(p => p.Utilizador) 
+                .FirstOrDefaultAsync(p => p.PedidoId == pedidoId);
+
+            if (pedido == null)
+            {
+                return NotFound("Pedido de ajuda não encontrado.");
+            }
+
+            if (pedido.Estado != EstadoPedido.EmProgresso)
+            {
+                return BadRequest("O pedido não está em progresso ou já foi concluído.");
+            }
+
+            var recetor = pedido.Utilizador;
+
+            if (recetor == null)
+            {
+                return BadRequest("Não foi possível determinar o recetor do pedido.");
+            }
+
+            int recompensa = pedido.RecompensaCares ?? 0;
+
+            recetor.NumCares += recompensa;
+
+            var transacao = new Transacao
+            {
+                DataTransacao = DateTime.UtcNow,
+                Quantidade = recompensa
+            };
+
+            var transacaoAjuda = new TransacaoAjuda
+            {
+                RecetorTran = recetor.UtilizadorId,
+                Transacao = transacao,
+                PedidoAjuda = new List<PedidoAjuda> { pedido }
+            };
+
+            pedido.Estado = EstadoPedido.Concluido;
+
+            _context.Transacoes.Add(transacao);
+            _context.TransacaoAjuda.Add(transacaoAjuda);
+
+            await _context.SaveChangesAsync();
+
+            return Ok("Pedido de ajuda concluído com sucesso. Recompensa atribuída e transação registada.");
+        }
+
+
+        #endregion
+
 
     }
 }

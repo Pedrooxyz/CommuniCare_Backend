@@ -2170,7 +2170,7 @@
         }
       }
     },
-    "/api/PedidosAjuda/{pedidoId}/voluntariar/{utilizadorId}": {
+    "/api/PedidosAjuda/{pedidoId}/voluntariar": {
       "post": {
         "tags": [
           "PedidosAjuda"
@@ -2178,15 +2178,6 @@
         "parameters": [
           {
             "name": "pedidoId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "utilizadorId",
             "in": "path",
             "required": true,
             "schema": {
@@ -2219,6 +2210,75 @@
           },
           {
             "name": "voluntarioId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/PedidosAjuda/{pedidoId}/rejeitar": {
+      "post": {
+        "tags": [
+          "PedidosAjuda"
+        ],
+        "parameters": [
+          {
+            "name": "pedidoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/PedidosAjuda/{pedidoId}/validar": {
+      "post": {
+        "tags": [
+          "PedidosAjuda"
+        ],
+        "parameters": [
+          {
+            "name": "pedidoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/PedidosAjuda/validar-conclusao/{pedidoId}": {
+      "post": {
+        "tags": [
+          "PedidosAjuda"
+        ],
+        "parameters": [
+          {
+            "name": "pedidoId",
             "in": "path",
             "required": true,
             "schema": {
@@ -4311,7 +4371,9 @@
         "enum": [
           0,
           1,
-          2
+          2,
+          3,
+          4
         ],
         "type": "integer",
         "format": "int32"

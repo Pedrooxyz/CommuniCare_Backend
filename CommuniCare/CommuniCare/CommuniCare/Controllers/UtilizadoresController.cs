@@ -15,6 +15,8 @@ using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Cryptography;
 
+
+//É NECESSÁRIO COLOCAR O ESTADO DO UTILIZADOR
 namespace CommuniCare.Controllers
 {
     [Route("api/[controller]")]

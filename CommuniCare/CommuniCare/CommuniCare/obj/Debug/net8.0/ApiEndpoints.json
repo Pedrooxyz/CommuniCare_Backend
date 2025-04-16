@@ -1285,8 +1285,8 @@
   },
   {
     "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",
-    "Method": "Voluntariar",
-    "RelativePath": "api/PedidosAjuda/{pedidoId}/voluntariar/{utilizadorId}",
+    "Method": "RejeitarPedidoAjuda",
+    "RelativePath": "api/PedidosAjuda/{pedidoId}/rejeitar",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -1295,9 +1295,20 @@
         "Name": "pedidoId",
         "Type": "System.Int32",
         "IsRequired": true
-      },
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",
+    "Method": "ValidarPedidoAjuda",
+    "RelativePath": "api/PedidosAjuda/{pedidoId}/validar",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
       {
-        "Name": "utilizadorId",
+        "Name": "pedidoId",
         "Type": "System.Int32",
         "IsRequired": true
       }
@@ -1306,7 +1317,23 @@
   },
   {
     "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",
-    "Method": "PedirPedirAjuda",
+    "Method": "Voluntariar",
+    "RelativePath": "api/PedidosAjuda/{pedidoId}/voluntariar",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pedidoId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",
+    "Method": "CriarPedidoAjuda",
     "RelativePath": "api/PedidosAjuda/pedir",
     "HttpMethod": "POST",
     "IsController": true,
@@ -1315,6 +1342,22 @@
       {
         "Name": "pedidoData",
         "Type": "CommuniCare.DTOs.PedidoAjudaDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",
+    "Method": "ValidarConclusaoPedidoAjuda",
+    "RelativePath": "api/PedidosAjuda/validar-conclusao/{pedidoId}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pedidoId",
+        "Type": "System.Int32",
         "IsRequired": true
       }
     ],

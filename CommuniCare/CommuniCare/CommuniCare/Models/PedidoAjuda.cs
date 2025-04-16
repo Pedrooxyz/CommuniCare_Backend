@@ -6,9 +6,11 @@ namespace CommuniCare.Models;
 
 public enum EstadoPedido
 {
-    Aberto = 0,
-    EmProgresso = 1,
-    Concluido = 2
+    Pendente = 0,
+    Aberto = 1,
+    EmProgresso = 2,
+    Concluido = 3,
+    Rejeitado = 4
 }
 
 public partial class PedidoAjuda

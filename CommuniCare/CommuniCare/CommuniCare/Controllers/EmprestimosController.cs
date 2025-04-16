@@ -136,6 +136,8 @@ namespace CommuniCare.Controllers
             return Ok("Data de devolução registada com sucesso.");
         }
 
+        #region Administrador
+
         [HttpPost("validar-devolucao/{emprestimoId}")]
         [Authorize]
         public async Task<IActionResult> ValidarDevolucaoEmprestimo(int emprestimoId)
@@ -151,7 +153,7 @@ namespace CommuniCare.Controllers
             var utilizador = await _context.Utilizadores.FindAsync(utilizadorId);
             if (utilizador == null || utilizador.TipoUtilizadorId != 2)
             {
-                return Forbid("Apenas utilizadores do tipo 2 podem validar devoluções.");
+                return Forbid("Apenas administradores podem validar devoluções.");
             }
 
             var emprestimo = await _context.Emprestimos
@@ -236,6 +238,8 @@ namespace CommuniCare.Controllers
                 return BadRequest("Data de devolução ou data de início inválida.");
             }
         }
+
+        #endregion
 
     }
 }

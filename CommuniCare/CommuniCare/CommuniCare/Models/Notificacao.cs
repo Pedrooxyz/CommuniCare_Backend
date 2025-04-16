@@ -13,11 +13,11 @@ public partial class Notificacao
 
     public DateTime? DataMensagem { get; set; }
 
-    public int PedidoId { get; set; }
+    public int? PedidoId { get; set; }
 
     public int UtilizadorId { get; set; }
 
-    public int ItemId { get; set; }
+    public int? ItemId { get; set; }
 
     public virtual ItemEmprestimo Item { get; set; } = null!;
 

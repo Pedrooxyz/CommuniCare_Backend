@@ -1154,6 +1154,16 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "CommuniCare.Controllers.NotificacoesController",
+    "Method": "VerNotificacoes",
+    "RelativePath": "api/Notificacoes/notificacoes",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",
     "Method": "GetPedidoAjuda",
     "RelativePath": "api/PedidosAjuda",
@@ -1265,18 +1275,13 @@
   {
     "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",
     "Method": "AceitarVoluntario",
-    "RelativePath": "api/PedidosAjuda/{pedidoId}/aceitar/{voluntarioId}",
+    "RelativePath": "api/PedidosAjuda/{pedidoId}/aceitar-voluntario",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
         "Name": "pedidoId",
-        "Type": "System.Int32",
-        "IsRequired": true
-      },
-      {
-        "Name": "voluntarioId",
         "Type": "System.Int32",
         "IsRequired": true
       }
@@ -1286,7 +1291,23 @@
   {
     "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",
     "Method": "RejeitarPedidoAjuda",
-    "RelativePath": "api/PedidosAjuda/{pedidoId}/rejeitar",
+    "RelativePath": "api/PedidosAjuda/{pedidoId}/rejeitar-pedido",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pedidoId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",
+    "Method": "RejeitarVoluntario",
+    "RelativePath": "api/PedidosAjuda/{pedidoId}/rejeitar-voluntario",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -1302,7 +1323,7 @@
   {
     "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",
     "Method": "ValidarPedidoAjuda",
-    "RelativePath": "api/PedidosAjuda/{pedidoId}/validar",
+    "RelativePath": "api/PedidosAjuda/{pedidoId}/validar-pedido",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -1319,6 +1340,22 @@
     "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",
     "Method": "Voluntariar",
     "RelativePath": "api/PedidosAjuda/{pedidoId}/voluntariar",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pedidoId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",
+    "Method": "ConcluirPedidoAjuda",
+    "RelativePath": "api/PedidosAjuda/concluir/{pedidoId}",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,

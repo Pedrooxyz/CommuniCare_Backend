@@ -1954,6 +1954,18 @@
         }
       }
     },
+    "/api/Notificacoes/notificacoes": {
+      "get": {
+        "tags": [
+          "Notificacoes"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/PedidosAjuda": {
       "get": {
         "tags": [
@@ -2193,39 +2205,7 @@
         }
       }
     },
-    "/api/PedidosAjuda/{pedidoId}/aceitar/{voluntarioId}": {
-      "post": {
-        "tags": [
-          "PedidosAjuda"
-        ],
-        "parameters": [
-          {
-            "name": "pedidoId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "voluntarioId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/PedidosAjuda/{pedidoId}/rejeitar": {
+    "/api/PedidosAjuda/{pedidoId}/aceitar-voluntario": {
       "post": {
         "tags": [
           "PedidosAjuda"
@@ -2248,7 +2228,76 @@
         }
       }
     },
-    "/api/PedidosAjuda/{pedidoId}/validar": {
+    "/api/PedidosAjuda/{pedidoId}/rejeitar-voluntario": {
+      "post": {
+        "tags": [
+          "PedidosAjuda"
+        ],
+        "parameters": [
+          {
+            "name": "pedidoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/PedidosAjuda/{pedidoId}/rejeitar-pedido": {
+      "post": {
+        "tags": [
+          "PedidosAjuda"
+        ],
+        "parameters": [
+          {
+            "name": "pedidoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/PedidosAjuda/{pedidoId}/validar-pedido": {
+      "post": {
+        "tags": [
+          "PedidosAjuda"
+        ],
+        "parameters": [
+          {
+            "name": "pedidoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/PedidosAjuda/concluir/{pedidoId}": {
       "post": {
         "tags": [
           "PedidosAjuda"
@@ -4630,7 +4679,8 @@
           },
           "pedidoId": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
           "utilizadorId": {
             "type": "integer",
@@ -4638,7 +4688,8 @@
           },
           "itemId": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
           "item": {
             "$ref": "#/components/schemas/ItemEmprestimo"

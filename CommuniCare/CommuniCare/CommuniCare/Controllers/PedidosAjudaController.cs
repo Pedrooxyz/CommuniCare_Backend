@@ -146,9 +146,26 @@ namespace CommuniCare.Controllers
             _context.PedidosAjuda.Add(pedido);
             await _context.SaveChangesAsync();
 
+            var administradores = await _context.Utilizadores
+                .Where(u => u.TipoUtilizadorId == 2)
+                .ToListAsync();
+
+            var notificacoes = administradores.Select(admin => new Notificacao
+            {
+                Mensagem = $"Foi criado um novo pedido de ajuda por {utilizador.NomeUtilizador}.",
+                Lida = 0,
+                DataMensagem = DateTime.Now,
+                PedidoId = pedido.PedidoId,
+                UtilizadorId = admin.UtilizadorId,
+                ItemId = null
+            }).ToList();
+
+            _context.Notificacaos.AddRange(notificacoes);
+            await _context.SaveChangesAsync();
+
             return Ok(new
             {
-                Mensagem = "Pedido de ajuda criado com sucesso."
+                Mensagem = "Pedido de ajuda criado com sucesso. Notificações enviadas aos administradores."
             });
         }
 
@@ -188,14 +205,40 @@ namespace CommuniCare.Controllers
             _context.Voluntariados.Add(voluntariado);
             await _context.SaveChangesAsync();
 
-            return Ok("Utilizador voluntariado com sucesso.");
+            var admins = await _context.Utilizadores
+                .Where(u => u.TipoUtilizadorId == 2)
+                .ToListAsync();
+
+            var utilizador = await _context.Utilizadores.FindAsync(utilizadorId);
+
+            foreach (var admin in admins)
+            {
+                var notificacao = new Notificacao
+                {
+                    Mensagem = $"{utilizador?.NomeUtilizador ?? "Um utilizador"} voluntariou-se para o pedido #{pedidoId}.",
+                    Lida = 0,
+                    DataMensagem = DateTime.Now,
+                    PedidoId = pedidoId,
+                    UtilizadorId = admin.UtilizadorId,
+                    ItemId = null 
+                };
+
+                _context.Notificacaos.Add(notificacao);
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Ok("Pedido de voluntariado registado com sucesso. Aguardando aprovação do administrador.");
         }
+
 
         #region Administrador
 
-        [HttpPost("{pedidoId}/aceitar/{voluntarioId}")]
+
+        //É NECESSÁRIO VER COMO FAZEMOS PARA SE FOREM VÁRIOS VOLUNTARIOS E NAO SO 1
+        [HttpPost("{pedidoId}/aceitar-voluntario")]
         [Authorize]
-        public async Task<IActionResult> AceitarVoluntario(int pedidoId, int voluntarioId)
+        public async Task<IActionResult> AceitarVoluntario(int pedidoId)
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
@@ -213,6 +256,7 @@ namespace CommuniCare.Controllers
 
             var pedido = await _context.PedidosAjuda
                 .Include(p => p.Voluntariados)
+                .Include(p => p.Utilizador)
                 .FirstOrDefaultAsync(p => p.PedidoId == pedidoId);
 
             if (pedido == null || pedido.Estado != EstadoPedido.Aberto)
@@ -220,24 +264,45 @@ namespace CommuniCare.Controllers
                 return BadRequest("Pedido não encontrado ou já fechado.");
             }
 
-            var voluntariado = pedido.Voluntariados.FirstOrDefault(v => v.UtilizadorId == voluntarioId);
+            var voluntariado = pedido.Voluntariados.FirstOrDefault();
             if (voluntariado == null)
             {
-                return BadRequest("Este utilizador não se voluntariou para este pedido.");
+                return BadRequest("Nenhum voluntário disponível para este pedido.");
             }
 
             pedido.Estado = EstadoPedido.EmProgresso;
+
+            var notificacaoVoluntario = new Notificacao
+            {
+                Mensagem = $"Foste aceite como voluntário para o pedido #{pedido.PedidoId}.",
+                Lida = 0,
+                DataMensagem = DateTime.Now,
+                PedidoId = pedido.PedidoId,
+                UtilizadorId = voluntariado.UtilizadorId,
+                ItemId = null
+            };
+            _context.Notificacaos.Add(notificacaoVoluntario);
+
+            var notificacaoRequisitante = new Notificacao
+            {
+                Mensagem = $"Um voluntário foi aceite para o teu pedido #{pedido.PedidoId}.",
+                Lida = 0,
+                DataMensagem = DateTime.Now,
+                PedidoId = pedido.PedidoId,
+                UtilizadorId = pedido.UtilizadorId,
+                ItemId = null
+            };
+            _context.Notificacaos.Add(notificacaoRequisitante);
 
             await _context.SaveChangesAsync();
 
             return Ok("Voluntário aceite com sucesso e pedido atualizado para 'Em Progresso'.");
         }
 
-        [HttpPost("{pedidoId}/rejeitar")]
+        [HttpPost("{pedidoId}/rejeitar-voluntario")]
         [Authorize]
-        public async Task<IActionResult> RejeitarPedidoAjuda(int pedidoId)
+        public async Task<IActionResult> RejeitarVoluntario(int pedidoId)
         {
-            // Obter o ID do utilizador autenticado
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
             {
@@ -246,38 +311,49 @@ namespace CommuniCare.Controllers
 
             int utilizadorId = int.Parse(userIdClaim.Value);
 
-            // Verificar se é administrador
             var utilizador = await _context.Utilizadores.FindAsync(utilizadorId);
             if (utilizador == null || utilizador.TipoUtilizadorId != 2)
             {
-                return Forbid("Apenas administradores podem validar pedidos de ajuda.");
+                return Forbid("Apenas administradores podem rejeitar voluntários.");
             }
 
-            // Obter o pedido
-            var pedido = await _context.PedidosAjuda.FindAsync(pedidoId);
-            if (pedido == null)
+            var pedido = await _context.PedidosAjuda
+                .Include(p => p.Voluntariados)
+                .Include(p => p.Utilizador) // Requisitante
+                .FirstOrDefaultAsync(p => p.PedidoId == pedidoId);
+
+            if (pedido == null || pedido.Estado != EstadoPedido.Aberto)
             {
-                return NotFound("Pedido de ajuda não encontrado.");
+                return BadRequest("Pedido não encontrado ou já fechado.");
             }
 
-            if (pedido.Estado != EstadoPedido.Pendente)
+            var voluntariado = pedido.Voluntariados.FirstOrDefault();
+            if (voluntariado == null)
             {
-                return BadRequest("Este pedido já foi validado ou está em progresso/concluído.");
+                return BadRequest("Nenhum voluntário disponível para este pedido.");
             }
 
-            // Atualizar o estado
-            pedido.Estado = EstadoPedido.Rejeitado;
+            var notificacaoVoluntario = new Notificacao
+            {
+                Mensagem = $"A tua candidatura como voluntário para o pedido #{pedido.PedidoId} foi rejeitada.",
+                Lida = 0,
+                DataMensagem = DateTime.Now,
+                PedidoId = pedido.PedidoId,
+                UtilizadorId = voluntariado.UtilizadorId,
+                ItemId = null
+            };
+            _context.Notificacaos.Add(notificacaoVoluntario);
 
             await _context.SaveChangesAsync();
 
-            return Ok("Pedido de ajuda validado com sucesso e colocado como 'Aberto'.");
+            return Ok("Voluntário rejeitado com sucesso e pedido atualizado para 'Pendente'.");
         }
 
-        [HttpPost("{pedidoId}/validar")]
+
+        [HttpPost("{pedidoId}/rejeitar-pedido")]
         [Authorize]
-        public async Task<IActionResult> ValidarPedidoAjuda(int pedidoId)
+        public async Task<IActionResult> RejeitarPedidoAjuda(int pedidoId)
         {
-            // Obter o ID do utilizador autenticado
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
             {
@@ -286,14 +362,62 @@ namespace CommuniCare.Controllers
 
             int utilizadorId = int.Parse(userIdClaim.Value);
 
-            // Verificar se é administrador
             var utilizador = await _context.Utilizadores.FindAsync(utilizadorId);
             if (utilizador == null || utilizador.TipoUtilizadorId != 2)
             {
                 return Forbid("Apenas administradores podem validar pedidos de ajuda.");
             }
 
-            // Obter o pedido
+            var pedido = await _context.PedidosAjuda
+                .Include(p => p.Utilizador)
+                .FirstOrDefaultAsync(p => p.PedidoId == pedidoId);
+
+            if (pedido == null)
+            {
+                return NotFound("Pedido de ajuda não encontrado.");
+            }
+
+            if (pedido.Estado != EstadoPedido.Pendente)
+            {
+                return BadRequest("Este pedido já foi validado ou está em progresso/concluído.");
+            }
+
+            pedido.Estado = EstadoPedido.Rejeitado;
+
+            var notificacao = new Notificacao
+            {
+                Mensagem = $"O teu pedido de ajuda #{pedido.PedidoId} foi rejeitado por um administrador por ser considerado inválido.",
+                Lida = 0,
+                DataMensagem = DateTime.Now,
+                PedidoId = pedido.PedidoId,
+                UtilizadorId = pedido.UtilizadorId,
+                ItemId = null
+            };
+            _context.Notificacaos.Add(notificacao);
+
+            await _context.SaveChangesAsync();
+
+            return Ok("Pedido de ajuda rejeitado com sucesso.");
+        }
+
+        [HttpPost("{pedidoId}/validar-pedido")]
+        [Authorize]
+        public async Task<IActionResult> ValidarPedidoAjuda(int pedidoId)
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Unauthorized("Utilizador não autenticado.");
+            }
+
+            int utilizadorId = int.Parse(userIdClaim.Value);
+
+            var utilizador = await _context.Utilizadores.FindAsync(utilizadorId);
+            if (utilizador == null || utilizador.TipoUtilizadorId != 2)
+            {
+                return Forbid("Apenas administradores podem validar pedidos de ajuda.");
+            }
+
             var pedido = await _context.PedidosAjuda.FindAsync(pedidoId);
             if (pedido == null)
             {
@@ -305,13 +429,87 @@ namespace CommuniCare.Controllers
                 return BadRequest("Este pedido já foi validado ou está em progresso/concluído.");
             }
 
-            // Atualizar o estado
             pedido.Estado = EstadoPedido.Aberto;
 
             await _context.SaveChangesAsync();
 
+            var outrosUtilizadores = await _context.Utilizadores
+                .Where(u => u.UtilizadorId != utilizadorId)
+                .ToListAsync();
+
+            var notificacoes = outrosUtilizadores.Select(u => new Notificacao
+            {
+                Mensagem = $"O utilizador {utilizador.NomeUtilizador} criou um novo pedido de ajuda.",
+                Lida = 0,
+                DataMensagem = DateTime.Now,
+                PedidoId = pedido.PedidoId,
+                UtilizadorId = pedido.UtilizadorId,
+                ItemId = null
+            }).ToList();
+
+            _context.Notificacaos.AddRange(notificacoes);
+            await _context.SaveChangesAsync();
+
             return Ok("Pedido de ajuda validado com sucesso e colocado como 'Aberto'.");
         }
+
+        [HttpPost("concluir/{pedidoId}")]
+        [Authorize]
+        public async Task<IActionResult> ConcluirPedidoAjuda(int pedidoId)
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Unauthorized("Utilizador não autenticado.");
+            }
+
+            int utilizadorId = int.Parse(userIdClaim.Value);
+
+            var pedido = await _context.PedidosAjuda
+                .Include(p => p.Utilizador)
+                .Include(p => p.Voluntariados)
+                .FirstOrDefaultAsync(p => p.PedidoId == pedidoId);
+
+            if (pedido == null)
+            {
+                return NotFound("Pedido de ajuda não encontrado.");
+            }
+
+            if (pedido.UtilizadorId != utilizadorId)
+            {
+                return Forbid("Apenas o requisitante do pedido pode marcá-lo como concluído.");
+            }
+
+            if (pedido.Estado != EstadoPedido.EmProgresso)
+            {
+                return BadRequest("O pedido não está em progresso ou já foi concluído.");
+            }
+
+            pedido.Estado = EstadoPedido.Concluido;
+
+            var admins = await _context.Utilizadores
+                .Where(u => u.TipoUtilizadorId == 2)
+                .ToListAsync();
+
+            foreach (var admin in admins)
+            {
+                var notificacaoAdmin = new Notificacao
+                {
+                    Mensagem = $"O utilizador {pedido.Utilizador.NomeUtilizador} marcou o pedido #{pedido.PedidoId} como concluído. Valida esta conclusão.",
+                    Lida = 0,
+                    DataMensagem = DateTime.Now,
+                    PedidoId = pedido.PedidoId,
+                    UtilizadorId = admin.UtilizadorId,
+                    ItemId = null
+                };
+                _context.Notificacaos.Add(notificacaoAdmin);
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Ok("O pedido foi marcado como concluído. Os administradores foram notificados para validar a conclusão.");
+        }
+
 
         [HttpPost("validar-conclusao/{pedidoId}")]
         [Authorize]
@@ -333,6 +531,7 @@ namespace CommuniCare.Controllers
 
             var pedido = await _context.PedidosAjuda
                 .Include(p => p.Utilizador) 
+                .Include(p => p.Voluntariados)
                 .FirstOrDefaultAsync(p => p.PedidoId == pedidoId);
 
             if (pedido == null)
@@ -340,9 +539,9 @@ namespace CommuniCare.Controllers
                 return NotFound("Pedido de ajuda não encontrado.");
             }
 
-            if (pedido.Estado != EstadoPedido.EmProgresso)
+            if (pedido.Estado != EstadoPedido.Concluido)
             {
-                return BadRequest("O pedido não está em progresso ou já foi concluído.");
+                return BadRequest("O pedido não ainda não foi concluído.");
             }
 
             var recetor = pedido.Utilizador;
@@ -369,15 +568,29 @@ namespace CommuniCare.Controllers
                 PedidoAjuda = new List<PedidoAjuda> { pedido }
             };
 
-            pedido.Estado = EstadoPedido.Concluido;
-
             _context.Transacoes.Add(transacao);
             _context.TransacaoAjuda.Add(transacaoAjuda);
 
+            var voluntariado = pedido.Voluntariados.FirstOrDefault();
+            if (voluntariado != null)
+            {
+                var notificacaoVoluntario = new Notificacao
+                {
+                    Mensagem = $"A transação foi efetuada com sucesso para o pedido #{pedido.PedidoId}. Obrigado pela tua ajuda!",
+                    Lida = 0,
+                    DataMensagem = DateTime.Now,
+                    PedidoId = pedido.PedidoId,
+                    UtilizadorId = voluntariado.UtilizadorId,
+                    ItemId = null
+                };
+                _context.Notificacaos.Add(notificacaoVoluntario);
+            }
+
             await _context.SaveChangesAsync();
 
-            return Ok("Pedido de ajuda concluído com sucesso. Recompensa atribuída e transação registada.");
+            return Ok("Pedido de ajuda concluído com sucesso. Recompensa atribuída, transação registada e notificação enviada.");
         }
+
 
 
         #endregion

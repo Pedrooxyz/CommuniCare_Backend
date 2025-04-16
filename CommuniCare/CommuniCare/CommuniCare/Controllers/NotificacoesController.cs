@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CommuniCare.Models;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace CommuniCare.Controllers
 {
@@ -103,5 +105,34 @@ namespace CommuniCare.Controllers
         {
             return _context.Notificacaos.Any(e => e.NotificacaoId == id);
         }
+
+        [HttpGet("notificacoes")]
+        [Authorize]
+        public async Task<IActionResult> VerNotificacoes()
+        {
+            // Obter o ID do utilizador autenticado
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Unauthorized("Utilizador não autenticado.");
+            }
+
+            int utilizadorId = int.Parse(userIdClaim.Value);
+
+            // Obter todas as notificações do utilizador autenticado, onde Lida == 0 (não lidas)
+            var notificacoes = await _context.Notificacaos
+                .Where(n => n.UtilizadorId == utilizadorId)
+                .OrderByDescending(n => n.DataMensagem) // Ordenar pela data mais recente
+                .ToListAsync();
+
+            if (notificacoes == null || !notificacoes.Any())
+            {
+                return NotFound("Não há notificações para mostrar.");
+            }
+
+            // Retornar as notificações para o utilizador
+            return Ok(notificacoes);
+        }
+
     }
 }

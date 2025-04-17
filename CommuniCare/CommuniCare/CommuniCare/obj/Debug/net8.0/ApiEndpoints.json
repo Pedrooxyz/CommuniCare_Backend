@@ -562,8 +562,40 @@
   },
   {
     "ContainingType": "CommuniCare.Controllers.EmprestimosController",
+    "Method": "RejeitarEmprestimo",
+    "RelativePath": "api/Emprestimos/rejeitar-emprestimo/{emprestimoId}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "emprestimoId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.EmprestimosController",
     "Method": "ValidarDevolucaoEmprestimo",
     "RelativePath": "api/Emprestimos/validar-devolucao/{emprestimoId}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "emprestimoId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.EmprestimosController",
+    "Method": "ValidarEmprestimo",
+    "RelativePath": "api/Emprestimos/validar-emprestimo/{emprestimoId}",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -763,6 +795,38 @@
     "Method": "EliminarItemEmprestimo",
     "RelativePath": "api/ItensEmprestimo/indisponibilizar-permanente-item/{itemId}",
     "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "itemId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.ItensEmprestimoController",
+    "Method": "RejeitarItemEmprestimo",
+    "RelativePath": "api/ItensEmprestimo/rejeitar-item/{itemId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "itemId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.ItensEmprestimoController",
+    "Method": "ValidarItemEmprestimo",
+    "RelativePath": "api/ItensEmprestimo/validar-item/{itemId}",
+    "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [

@@ -11,6 +11,20 @@ using System.Security.Claims;
 var builder = WebApplication.CreateBuilder(args);
 
 
+const string DevClient = "DevClient";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(DevClient, p =>
+    {
+        p.WithOrigins("http://localhost:3000")
+         .WithMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") 
+         .WithHeaders("content-type", "authorization")                          
+         .AllowCredentials();
+    });
+});
+
+
 // ? Configurar licen�a da QuestPDF antes de adicionar outros servi�os
 var questPdfLicense = builder.Configuration["QuestPDF:LicenseKey"];
 if (!string.IsNullOrEmpty(questPdfLicense))
@@ -147,11 +161,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
+app.UseRouting();
+app.UseCors(DevClient);
 
 app.UseAuthentication(); // <--- Muito importante: antes do Authorization
 app.UseAuthorization();
 
-app.MapControllers();
 
+
+app.MapControllers();
 app.Run();

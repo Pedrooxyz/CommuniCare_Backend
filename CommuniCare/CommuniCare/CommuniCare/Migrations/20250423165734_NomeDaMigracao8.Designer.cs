@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CommuniCare.Migrations
 {
     [DbContext(typeof(CommuniCareContext))]
-    [Migration("20250423161841_AtributoEstadoVoluntariado")]
-    partial class AtributoEstadoVoluntariado
+    [Migration("20250423165734_NomeDaMigracao8")]
+    partial class NomeDaMigracao8
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -56,6 +56,9 @@ namespace CommuniCare.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(255)")
                         .HasColumnName("nomeArtigo");
+
+                    b.Property<int>("QuantidadeDisponivel")
+                        .HasColumnType("int");
 
                     b.Property<int?>("TransacaoId")
                         .HasColumnType("int")

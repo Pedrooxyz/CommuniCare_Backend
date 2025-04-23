@@ -85,7 +85,8 @@ namespace CommuniCare.Controllers
                 NomeArtigo = dto.NomeArtigo,
                 DescArtigo = dto.DescArtigo,
                 CustoCares = dto.CustoCares,
-                LojaId = dto.LojaId
+                LojaId = dto.LojaId,
+                QuantidadeDisponivel = dto.QuantidadeDisponivel
             };
 
             _context.Artigos.Add(artigo);
@@ -153,6 +154,7 @@ namespace CommuniCare.Controllers
                 DescArtigo = dto.DescArtigo,
                 CustoCares = dto.CustoCares,
                 LojaId = dto.LojaId,
+                QuantidadeDisponivel = dto.QuantidadeDisponivel,
                 Estado = EstadoArtigo.Disponivel // Define o estado como "Disponível"
             };
 

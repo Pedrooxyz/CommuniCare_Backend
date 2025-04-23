@@ -4689,6 +4689,10 @@
             "format": "int32",
             "nullable": true
           },
+          "quantidadeDisponivel": {
+            "type": "integer",
+            "format": "int32"
+          },
           "loja": {
             "$ref": "#/components/schemas/Loja"
           },
@@ -4716,6 +4720,10 @@
             "type": "integer",
             "format": "int32",
             "nullable": true
+          },
+          "quantidadeDisponivel": {
+            "type": "integer",
+            "format": "int32"
           },
           "lojaId": {
             "type": "integer",

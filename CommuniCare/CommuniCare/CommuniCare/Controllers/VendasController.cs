@@ -155,14 +155,33 @@ namespace CommuniCare.Controllers
                     .Select(c => c.NumContacto)
                     .FirstOrDefaultAsync();
 
+                // Verificar disponibilidade dos artigos
+                var artigosDisponiveis = await _context.Artigos
+                    .Where(a => request.ArtigosIds.Contains(a.ArtigoId))
+                    .ToListAsync();
 
+                if (artigosDisponiveis.Any(a => a.QuantidadeDisponivel <= 0))
+                {
+                    return BadRequest(new
+                    {
+                        Sucesso = false,
+                        Erro = "Um ou mais artigos selecionados não estão disponíveis no momento."
+                    });
+                }
 
                 var (venda, transacao, artigos, dataCompra) = await _transacaoServico.ProcessarCompraAsync(userId, request.ArtigosIds);
 
-                // Gerar um único PDF com todos os artigos
+                // Atualiza a quantidade disponível
+                foreach (var artigo in artigos)
+                {
+                    artigo.QuantidadeDisponivel -= 1;
+                }
+
+                transacao.Quantidade = artigos.Sum(a => a.CustoCares ?? 0);
+                await _context.SaveChangesAsync();
+
                 var comprovativoUnico = ComprovativoGenerator.GerarComprovativoUnicoPDF(venda, user, artigos);
 
-                // Enviar o PDF por email
                 await _emailService.EnviarComprovativoCompra(emailContacto, user.NomeUtilizador, comprovativoUnico);
 
                 return Ok(new
@@ -179,7 +198,6 @@ namespace CommuniCare.Controllers
             }
         }
 
-
         [HttpPost("comprar-download")]
         [Authorize]
         public async Task<IActionResult> ComprarDownload([FromBody] PedidoCompraDTO request)
@@ -190,7 +208,30 @@ namespace CommuniCare.Controllers
             {
                 var user = await _context.Utilizadores.FindAsync(userId);
 
+                // Verificar disponibilidade dos artigos
+                var artigosDisponiveis = await _context.Artigos
+                    .Where(a => request.ArtigosIds.Contains(a.ArtigoId))
+                    .ToListAsync();
+
+                if (artigosDisponiveis.Any(a => a.QuantidadeDisponivel <= 0))
+                {
+                    return BadRequest(new
+                    {
+                        Sucesso = false,
+                        Erro = "Um ou mais artigos selecionados não estão disponíveis no momento."
+                    });
+                }
+
                 var (venda, transacao, artigos, dataCompra) = await _transacaoServico.ProcessarCompraAsync(userId, request.ArtigosIds);
+
+                // Atualiza a quantidade disponível
+                foreach (var artigo in artigos)
+                {
+                    artigo.QuantidadeDisponivel -= 1;
+                }
+
+                transacao.Quantidade = artigos.Sum(a => a.CustoCares ?? 0);
+                await _context.SaveChangesAsync();
 
                 var comprovativoUnico = ComprovativoGenerator.GerarComprovativoUnicoPDF(venda, user, artigos);
 
@@ -205,7 +246,5 @@ namespace CommuniCare.Controllers
             }
         }
     }
-
-
-
 }
+

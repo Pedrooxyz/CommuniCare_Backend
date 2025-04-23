@@ -54,6 +54,9 @@ namespace CommuniCare.Migrations
                         .HasColumnType("varchar(255)")
                         .HasColumnName("nomeArtigo");
 
+                    b.Property<int>("QuantidadeDisponivel")
+                        .HasColumnType("int");
+
                     b.Property<int?>("TransacaoId")
                         .HasColumnType("int")
                         .HasColumnName("transacaoID");

@@ -169,7 +169,6 @@ namespace CommuniCare.Controllers
             });
         }
 
-
         [HttpPost("{pedidoId}/voluntariar")]
         [Authorize]
         public async Task<IActionResult> Voluntariar(int pedidoId)
@@ -182,15 +181,23 @@ namespace CommuniCare.Controllers
 
             int utilizadorId = int.Parse(userIdClaim.Value);
 
-            var pedido = await _context.PedidosAjuda.FindAsync(pedidoId);
+            var pedido = await _context.PedidosAjuda
+                .Include(p => p.Voluntariados)
+                .FirstOrDefaultAsync(p => p.PedidoId == pedidoId);
+
             if (pedido == null || pedido.Estado != EstadoPedido.Aberto)
             {
                 return BadRequest("Pedido não encontrado ou já fechado.");
             }
 
-            bool jaVoluntariado = await _context.Voluntariados
-                .AnyAsync(v => v.PedidoId == pedidoId && v.UtilizadorId == utilizadorId);
+            // Verificar se já atingiu o número máximo de voluntários
+            if (pedido.NPessoas.HasValue && pedido.Voluntariados.Count >= pedido.NPessoas.Value)
+            {
+                return BadRequest("Número máximo de voluntários já atingido para este pedido.");
+            }
 
+            // Verificar se o utilizador já se voluntariou
+            bool jaVoluntariado = pedido.Voluntariados.Any(v => v.UtilizadorId == utilizadorId);
             if (jaVoluntariado)
             {
                 return BadRequest("Utilizador já se voluntariou para este pedido.");
@@ -199,12 +206,13 @@ namespace CommuniCare.Controllers
             var voluntariado = new Voluntariado
             {
                 PedidoId = pedidoId,
-                UtilizadorId = utilizadorId
+                UtilizadorId = utilizadorId,
+                Estado = EstadoVoluntariado.Pendente
             };
 
             _context.Voluntariados.Add(voluntariado);
-            await _context.SaveChangesAsync();
 
+            // Enviar notificação aos administradores
             var admins = await _context.Utilizadores
                 .Where(u => u.TipoUtilizadorId == 2)
                 .ToListAsync();
@@ -220,7 +228,7 @@ namespace CommuniCare.Controllers
                     DataMensagem = DateTime.Now,
                     PedidoId = pedidoId,
                     UtilizadorId = admin.UtilizadorId,
-                    ItemId = null 
+                    ItemId = null
                 };
 
                 _context.Notificacaos.Add(notificacao);
@@ -231,14 +239,11 @@ namespace CommuniCare.Controllers
             return Ok("Pedido de voluntariado registado com sucesso. Aguardando aprovação do administrador.");
         }
 
-
         #region Administrador
 
-
-        //É NECESSÁRIO VER COMO FAZEMOS PARA SE FOREM VÁRIOS VOLUNTARIOS E NAO SO 1
-        [HttpPost("{pedidoId}/aceitar-voluntario")]
+        [HttpPost("{pedidoId}/aceitar-voluntario/{utilizadorId}")]
         [Authorize]
-        public async Task<IActionResult> AceitarVoluntario(int pedidoId)
+        public async Task<IActionResult> AceitarVoluntario(int pedidoId, int utilizadorId)
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
@@ -246,9 +251,10 @@ namespace CommuniCare.Controllers
                 return Unauthorized("Utilizador não autenticado.");
             }
 
-            int utilizadorId = int.Parse(userIdClaim.Value);
+            int adminId = int.Parse(userIdClaim.Value);
 
-            var utilizador = await _context.Utilizadores.FindAsync(utilizadorId);
+            // Verificar se o utilizador é administrador
+            var utilizador = await _context.Utilizadores.FindAsync(adminId);
             if (utilizador == null || utilizador.TipoUtilizadorId != 2)
             {
                 return Forbid("Apenas administradores podem aceitar voluntários.");
@@ -264,14 +270,26 @@ namespace CommuniCare.Controllers
                 return BadRequest("Pedido não encontrado ou já fechado.");
             }
 
-            var voluntariado = pedido.Voluntariados.FirstOrDefault();
+            // Encontrar o voluntariado associado ao voluntário especificado
+            var voluntariado = pedido.Voluntariados
+                .FirstOrDefault(v => v.UtilizadorId == utilizadorId && v.Estado == EstadoVoluntariado.Pendente);
+
             if (voluntariado == null)
             {
-                return BadRequest("Nenhum voluntário disponível para este pedido.");
+                return BadRequest("Voluntário não encontrado ou não está pendente.");
             }
 
-            pedido.Estado = EstadoPedido.EmProgresso;
+            // Alterar o estado do voluntariado para "Aceite"
+            voluntariado.Estado = EstadoVoluntariado.Aceite;
 
+            // Verificar se o número de voluntários atingiu o limite
+            int voluntariosAceites = pedido.Voluntariados.Count(v => v.Estado == EstadoVoluntariado.Aceite);
+            if (pedido.NPessoas.HasValue && voluntariosAceites >= pedido.NPessoas.Value)
+            {
+                pedido.Estado = EstadoPedido.EmProgresso;
+            }
+
+            // Notificação ao voluntário aceite
             var notificacaoVoluntario = new Notificacao
             {
                 Mensagem = $"Foste aceite como voluntário para o pedido #{pedido.PedidoId}.",
@@ -283,6 +301,7 @@ namespace CommuniCare.Controllers
             };
             _context.Notificacaos.Add(notificacaoVoluntario);
 
+            // Notificação ao requisitante
             var notificacaoRequisitante = new Notificacao
             {
                 Mensagem = $"Um voluntário foi aceite para o teu pedido #{pedido.PedidoId}.",
@@ -296,8 +315,10 @@ namespace CommuniCare.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok("Voluntário aceite com sucesso e pedido atualizado para 'Em Progresso'.");
+            return Ok("Voluntário aceite com sucesso" + (pedido.Estado == EstadoPedido.EmProgresso ? " e pedido atualizado para 'Em Progresso'." : "."));
         }
+
+
 
         [HttpPost("{pedidoId}/rejeitar-voluntario")]
         [Authorize]

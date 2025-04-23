@@ -2578,7 +2578,7 @@
         }
       }
     },
-    "/api/PedidosAjuda/{pedidoId}/aceitar-voluntario": {
+    "/api/PedidosAjuda/{pedidoId}/aceitar-voluntario/{utilizadorId}": {
       "post": {
         "tags": [
           "PedidosAjuda"
@@ -2586,6 +2586,15 @@
         "parameters": [
           {
             "name": "pedidoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "utilizadorId",
             "in": "path",
             "required": true,
             "schema": {
@@ -4887,6 +4896,14 @@
         "type": "integer",
         "format": "int32"
       },
+      "EstadoVoluntariado": {
+        "enum": [
+          1,
+          2
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
       "ItemEmprestimo": {
         "type": "object",
         "properties": {
@@ -5601,6 +5618,9 @@
           "idVoluntariado": {
             "type": "integer",
             "format": "int32"
+          },
+          "estado": {
+            "$ref": "#/components/schemas/EstadoVoluntariado"
           },
           "pedido": {
             "$ref": "#/components/schemas/PedidoAjuda"

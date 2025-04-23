@@ -18,8 +18,8 @@ builder.Services.AddCors(options =>
     options.AddPolicy(DevClient, p =>
     {
         p.WithOrigins("http://localhost:3000")
-         .WithMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") 
-         .WithHeaders("content-type", "authorization")                          
+         .WithMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+         .WithHeaders("content-type", "authorization")
          .AllowCredentials();
     });
 });
@@ -115,43 +115,80 @@ using (var scope = app.Services.CreateScope())
     var db = scope.ServiceProvider.GetRequiredService<CommuniCareContext>();
 
 
-    if (!db.TipoContactos.Any(tc => tc.TipoContactoId == 1))
-    {
-        db.TipoContactos.Add(new TipoContacto
-        {
 
-            DescContacto = "email"
-        });
-    }
-    if (!db.TipoContactos.Any(tc => tc.TipoContactoId == 2))
-    {
-        db.TipoContactos.Add(new TipoContacto
-        {
+    if (!db.TipoContactos.Any())
+        db.TipoContactos.AddRange(
+            new TipoContacto { DescContacto = "email" },
+            new TipoContacto { DescContacto = "numTelemovel" }
+        );
 
-            DescContacto = "numTelemovel"
-        });
-    }
+    if (!db.TipoUtilizadors.Any())
+        db.TipoUtilizadors.AddRange(
+            new TipoUtilizador { DescTU = "utilizador" },
+            new TipoUtilizador { DescTU = "administrador" }
+        );
 
-
-    if (!db.TipoUtilizadors.Any(tu => tu.TipoUtilizadorId == 1))
-    {
-        db.TipoUtilizadors.Add(new TipoUtilizador
-        {
-
-            DescTU = "utilizador"
-        });
-    }
-    if (!db.TipoUtilizadors.Any(tu => tu.TipoUtilizadorId == 2))
-    {
-        db.TipoUtilizadors.Add(new TipoUtilizador
-        {
-
-            DescTU = "administrador"
-        });
-    }
-
+    var cp = db.Cps.FirstOrDefault(c => c.CPostal == "0000-000");
+    if (cp is null)
+        db.Cps.Add(new Cp { CPostal = "0000-000", Localidade = "000000" });
 
     db.SaveChanges();
+
+
+
+    var defaultAddress = db.Morada.FirstOrDefault(m => m.Rua == "A definir");
+    if (defaultAddress is null)
+    {
+        defaultAddress = new Morada
+        {
+            Rua = "A definir",
+            NumPorta = null,
+            CPostal = "0000-000"
+        };
+        db.Morada.Add(defaultAddress);
+        db.SaveChanges();
+    }
+
+
+
+    var adminTipoId = db.TipoUtilizadors
+                        .First(t => t.DescTU == "administrador")
+                        .TipoUtilizadorId;
+
+    var admin = db.Utilizadores
+                  .FirstOrDefault(u => u.NomeUtilizador.ToLower() == "admin");
+
+    if (admin is null)
+    {
+        admin = new Utilizador
+        {
+            NomeUtilizador = "admin",
+
+            Password = BCrypt.Net.BCrypt.HashPassword("string"),
+            NumCares = 0,
+            TipoUtilizadorId = adminTipoId,
+            MoradaId = defaultAddress.MoradaId
+        };
+        db.Utilizadores.Add(admin);
+        db.SaveChanges();
+    }
+
+
+
+    var emailTipoId = db.TipoContactos
+                        .First(t => t.DescContacto == "email")
+                        .TipoContactoId;
+
+    if (!db.Contactos.Any(c => c.NumContacto.ToLower() == "admin@admin.com"))
+    {
+        db.Contactos.Add(new Contacto
+        {
+            NumContacto = "admin@admin.com",
+            UtilizadorId = admin.UtilizadorId,
+            TipoContactoId = emailTipoId
+        });
+        db.SaveChanges();
+    }
 }
 
 // 4. Middleware

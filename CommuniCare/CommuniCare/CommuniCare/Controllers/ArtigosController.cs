@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using CommuniCare.Models;
 using CommuniCare.DTOs;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CommuniCare.Controllers
 {
@@ -162,5 +163,43 @@ namespace CommuniCare.Controllers
             // Retornar a resposta de sucesso
             return CreatedAtAction(nameof(GetArtigosDisponiveis), new { id = artigo.ArtigoId }, artigo);
         }
+
+        [Authorize]
+        [HttpPut("indisponibilizar/{id}")]
+        public async Task<IActionResult> IndisponibilizarArtigo(int id)
+        {
+            // Obter ID do utilizador autenticado
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Unauthorized("Utilizador não autenticado.");
+            }
+
+            int utilizadorId = int.Parse(userIdClaim.Value);
+
+            // Verificar se o utilizador é administrador
+            var utilizador = await _context.Utilizadores.FindAsync(utilizadorId);
+            if (utilizador == null || utilizador.TipoUtilizadorId != 2)
+            {
+                return Forbid("Apenas administradores podem indisponibilizar artigos.");
+            }
+
+            // Procurar o artigo
+            var artigo = await _context.Artigos.FindAsync(id);
+            if (artigo == null)
+            {
+                return NotFound("Artigo não encontrado.");
+            }
+
+            // Alterar o estado do artigo
+            artigo.Estado = EstadoArtigo.Indisponivel;
+
+            // Guardar as alterações
+            _context.Artigos.Update(artigo);
+            await _context.SaveChangesAsync();
+
+            return Ok("Artigo indisponibilizado com sucesso.");
+        }
+
     }
 }

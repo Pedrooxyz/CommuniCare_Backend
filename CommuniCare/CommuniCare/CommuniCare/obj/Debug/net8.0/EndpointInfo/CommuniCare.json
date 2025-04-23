@@ -190,6 +190,115 @@
         }
       }
     },
+    "/api/Artigos/disponiveis": {
+      "get": {
+        "tags": [
+          "Artigos"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Artigo"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Artigo"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Artigo"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Artigos/publicar": {
+      "post": {
+        "tags": [
+          "Artigos"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArtigoDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArtigoDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArtigoDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Artigo"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Artigo"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Artigo"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Artigos/indisponibilizar/{id}": {
+      "put": {
+        "tags": [
+          "Artigos"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Chats": {
       "get": {
         "tags": [
@@ -4576,6 +4685,9 @@
           },
           "transacao": {
             "$ref": "#/components/schemas/Venda"
+          },
+          "estado": {
+            "$ref": "#/components/schemas/EstadoArtigo"
           }
         },
         "additionalProperties": false
@@ -4755,6 +4867,14 @@
           }
         },
         "additionalProperties": false
+      },
+      "EstadoArtigo": {
+        "enum": [
+          0,
+          1
+        ],
+        "type": "integer",
+        "format": "int32"
       },
       "EstadoPedido": {
         "enum": [

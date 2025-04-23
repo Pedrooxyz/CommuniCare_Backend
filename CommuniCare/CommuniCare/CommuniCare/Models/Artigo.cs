@@ -3,6 +3,12 @@ using System.Collections.Generic;
 
 namespace CommuniCare.Models;
 
+
+public enum EstadoArtigo
+{
+    Disponivel,
+    Indisponivel
+}
 public partial class Artigo
 {
     public int ArtigoId { get; set; }
@@ -20,4 +26,6 @@ public partial class Artigo
     public virtual Loja Loja { get; set; } = null!;
 
     public virtual Venda? Transacao { get; set; }
+
+    public EstadoArtigo Estado { get; set; } = EstadoArtigo.Disponivel;
 }

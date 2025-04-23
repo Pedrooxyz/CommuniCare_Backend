@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CommuniCare.Models;
 using CommuniCare.DTOs;
+using System.Security.Claims;
 
 namespace CommuniCare.Controllers
 {
@@ -112,6 +113,54 @@ namespace CommuniCare.Controllers
         private bool ArtigoExists(int id)
         {
             return _context.Artigos.Any(e => e.ArtigoId == id);
+        }
+
+        [HttpGet("disponiveis")]
+        public async Task<ActionResult<IEnumerable<Artigo>>> GetArtigosDisponiveis()
+        {
+            var artigosDisponiveis = await _context.Artigos
+                .Where(a => a.Estado == EstadoArtigo.Disponivel)
+                .ToListAsync();
+
+            return Ok(artigosDisponiveis);
+        }
+
+        [HttpPost("publicar")]
+        public async Task<ActionResult<Artigo>> PublicarArtigo(ArtigoDto dto)
+        {
+            // Obter o ID do utilizador a partir do token
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Unauthorized("Utilizador não autenticado.");
+            }
+
+            // Converter o ID do utilizador para um número inteiro
+            int utilizadorId = int.Parse(userIdClaim.Value);
+
+            // Verificar se o utilizador é um administrador (TipoUtilizadorId == 2)
+            var utilizador = await _context.Utilizadores.FindAsync(utilizadorId);
+            if (utilizador == null || utilizador.TipoUtilizadorId != 2)
+            {
+                return Forbid("Apenas administradores podem publicar artigos.");
+            }
+
+            // Criar o artigo e definir o estado como 'Disponível'
+            var artigo = new Artigo
+            {
+                NomeArtigo = dto.NomeArtigo,
+                DescArtigo = dto.DescArtigo,
+                CustoCares = dto.CustoCares,
+                LojaId = dto.LojaId,
+                Estado = EstadoArtigo.Disponivel // Define o estado como "Disponível"
+            };
+
+            // Adicionar o artigo à base de dados
+            _context.Artigos.Add(artigo);
+            await _context.SaveChangesAsync();
+
+            // Retornar a resposta de sucesso
+            return CreatedAtAction(nameof(GetArtigosDisponiveis), new { id = artigo.ArtigoId }, artigo);
         }
     }
 }

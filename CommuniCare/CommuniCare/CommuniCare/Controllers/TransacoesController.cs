@@ -103,5 +103,50 @@ namespace CommuniCare.Controllers
         {
             return _context.Transacoes.Any(e => e.TransacaoId == id);
         }
+
+
+        [HttpGet("Historico/{utilizadorId}")]
+        public async Task<ActionResult<IEnumerable<object>>> GetHistoricoTransacoes(int utilizadorId)
+        {
+            var transacoesAjuda = await _context.Transacoes
+                .Where(t => t.TransacaoAjuda != null && t.TransacaoAjuda.RecetorTran == utilizadorId)
+                .ToListAsync();
+
+            var transacoesEmprestimo = await _context.Transacoes
+                .Where(t => t.TransacaoEmprestimo != null &&
+                       (t.TransacaoEmprestimo.RecetorTran == utilizadorId || t.TransacaoEmprestimo.PagaTran == utilizadorId))
+                .ToListAsync();
+
+            var transacoesVenda = await _context.Transacoes
+                .Where(t => t.Venda != null && t.Venda.UtilizadorId == utilizadorId)
+                .ToListAsync();
+
+            var historico = transacoesAjuda
+                .Select(t => new
+                {
+                    t.TransacaoId,
+                    Tipo = "Ajuda",
+                    Data = ((DateTime)t.DataTransacao).ToString("dd/MM HH:mm"),
+                    NumeroCarenciasTransferido = t.Quantidade
+                })
+                .Concat(transacoesEmprestimo.Select(t => new
+                {
+                    t.TransacaoId,
+                    Tipo = "Emprestimo",
+                    Data = ((DateTime)t.DataTransacao).ToString("dd/MM HH:mm"),
+                    NumeroCarenciasTransferido = t.Quantidade
+                }))
+                .Concat(transacoesVenda.Select(t => new
+                {
+                    t.TransacaoId,
+                    Tipo = "Venda",
+                    Data = ((DateTime)t.DataTransacao).ToString("dd/MM HH:mm"),
+                    NumeroCarenciasTransferido = t.Quantidade
+                }))
+                .OrderByDescending(t => t.Data)
+                .ToList();
+
+            return historico;
+        }
     }
 }

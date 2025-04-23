@@ -591,9 +591,50 @@ namespace CommuniCare.Controllers
             return Ok("Pedido de ajuda concluído com sucesso. Recompensa atribuída, transação registada e notificação enviada.");
         }
 
-
-
         #endregion
+
+        [Authorize]
+        [HttpGet("pedidos-disponiveis")]
+        public async Task<ActionResult<IEnumerable<PedidoAjuda>>> GetPedidosAjudaDisponiveis()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier); 
+
+            if (userIdClaim == null)
+            {
+                return Unauthorized("Utilizador não autenticado.");
+            }
+
+            int utilizadorId = int.Parse(userIdClaim.Value);
+
+            var pedidosDisponiveis = await _context.PedidosAjuda
+                .Where(p => p.Estado == EstadoPedido.Aberto && p.UtilizadorId != utilizadorId)
+                .ToListAsync();
+
+            return Ok(pedidosDisponiveis);
+        }
+
+
+        [Authorize]
+        [HttpGet("meus-pedidos")]
+        public async Task<ActionResult<IEnumerable<PedidoAjuda>>> GetMeusPedidosAjuda()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier); 
+
+            if (userIdClaim == null)
+            {
+                return Unauthorized("Utilizador não autenticado.");
+            }
+
+            int utilizadorId = int.Parse(userIdClaim.Value);
+
+            var meusPedidos = await _context.PedidosAjuda
+                .Where(p => p.UtilizadorId == utilizadorId)
+                .ToListAsync();
+
+            return Ok(meusPedidos);
+        }
+
+
 
 
     }

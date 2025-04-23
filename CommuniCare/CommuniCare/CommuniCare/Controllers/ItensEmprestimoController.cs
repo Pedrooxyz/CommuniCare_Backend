@@ -240,7 +240,6 @@ namespace CommuniCare.Controllers
             _context.ItemEmprestimoUtilizadores.Add(relacao);
             _context.ItensEmprestimo.Update(itemEmprestimo);
 
-            // 🔔 Notificar todos os administradores
             var admins = await _context.Utilizadores
                 .Where(u => u.TipoUtilizadorId == 2) 
                 .ToListAsync();
@@ -381,15 +380,56 @@ namespace CommuniCare.Controllers
 
         #endregion
 
+        [Authorize]
         [HttpGet("disponiveis")]
         public async Task<ActionResult<IEnumerable<ItemEmprestimo>>> GetItensDisponiveis()
         {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+
+            if (userIdClaim == null)
+            {
+                return Unauthorized("Utilizador não autenticado.");
+            }
+
+            int utilizadorId = int.Parse(userIdClaim.Value);
+
+            var meusItemIds = await _context.ItemEmprestimoUtilizadores
+                .Where(rel => rel.UtilizadorId == utilizadorId && rel.TipoRelacao == "Dono")
+                .Select(rel => rel.ItemId)
+                .ToListAsync();
+
             var itensDisponiveis = await _context.ItensEmprestimo
-                .Where(item => item.Disponivel == 1)
+                .Where(item => item.Disponivel == 1 && !meusItemIds.Contains(item.ItemId))
                 .ToListAsync();
 
             return Ok(itensDisponiveis);
         }
+
+        [Authorize]
+        [HttpGet("meus-itens")]
+        public async Task<ActionResult<IEnumerable<ItemEmprestimo>>> GetMeusItens()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+
+            if (userIdClaim == null)
+            {
+                return Unauthorized("Utilizador não autenticado.");
+            }
+
+            int utilizadorId = int.Parse(userIdClaim.Value);
+
+            var meusItemIds = await _context.ItemEmprestimoUtilizadores
+                .Where(rel => rel.UtilizadorId == utilizadorId && rel.TipoRelacao == "Dono")
+                .Select(rel => rel.ItemId)
+                .ToListAsync();
+
+            var meusItens = await _context.ItensEmprestimo
+                .Where(item => meusItemIds.Contains(item.ItemId))
+                .ToListAsync();
+
+            return Ok(meusItens);
+        }
+
 
         [HttpDelete("indisponibilizar-permanente-item/{itemId}")]
         [Authorize] 

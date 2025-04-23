@@ -1344,6 +1344,44 @@
         }
       }
     },
+    "/api/ItensEmprestimo/meus-itens": {
+      "get": {
+        "tags": [
+          "ItensEmprestimo"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ItemEmprestimo"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ItemEmprestimo"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ItemEmprestimo"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/ItensEmprestimo/indisponibilizar-permanente-item/{itemId}": {
       "delete": {
         "tags": [
@@ -2565,6 +2603,82 @@
         "responses": {
           "200": {
             "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/PedidosAjuda/pedidos-disponiveis": {
+      "get": {
+        "tags": [
+          "PedidosAjuda"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PedidoAjuda"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PedidoAjuda"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PedidoAjuda"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/PedidosAjuda/meus-pedidos": {
+      "get": {
+        "tags": [
+          "PedidosAjuda"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PedidoAjuda"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PedidoAjuda"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PedidoAjuda"
+                  }
+                }
+              }
+            }
           }
         }
       }

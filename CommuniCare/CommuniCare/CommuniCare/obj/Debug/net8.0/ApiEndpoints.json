@@ -808,6 +808,26 @@
   },
   {
     "ContainingType": "CommuniCare.Controllers.ItensEmprestimoController",
+    "Method": "GetMeusItens",
+    "RelativePath": "api/ItensEmprestimo/meus-itens",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[CommuniCare.Models.ItemEmprestimo, CommuniCare, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.ItensEmprestimoController",
     "Method": "RejeitarItemEmprestimo",
     "RelativePath": "api/ItensEmprestimo/rejeitar-item/{itemId}",
     "HttpMethod": "DELETE",
@@ -1504,6 +1524,46 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",
+    "Method": "GetMeusPedidosAjuda",
+    "RelativePath": "api/PedidosAjuda/meus-pedidos",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[CommuniCare.Models.PedidoAjuda, CommuniCare, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",
+    "Method": "GetPedidosAjudaDisponiveis",
+    "RelativePath": "api/PedidosAjuda/pedidos-disponiveis",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[CommuniCare.Models.PedidoAjuda, CommuniCare, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
   },
   {
     "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",

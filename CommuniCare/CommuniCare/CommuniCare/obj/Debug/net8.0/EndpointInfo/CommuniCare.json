@@ -41,52 +41,6 @@
             }
           }
         }
-      },
-      "post": {
-        "tags": [
-          "Artigos"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ArtigoDto"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ArtigoDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/ArtigoDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/Artigo"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Artigo"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Artigo"
-                }
-              }
-            }
-          }
-        }
       }
     },
     "/api/Artigos/{id}": {
@@ -1765,6 +1719,29 @@
             }
           }
         },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Lojas/ativar-loja/{id}": {
+      "put": {
+        "tags": [
+          "Lojas"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -4767,10 +4744,6 @@
           "quantidadeDisponivel": {
             "type": "integer",
             "format": "int32"
-          },
-          "lojaId": {
-            "type": "integer",
-            "format": "int32"
           }
         },
         "additionalProperties": false
@@ -4936,6 +4909,14 @@
         "type": "integer",
         "format": "int32"
       },
+      "EstadoLoja": {
+        "enum": [
+          0,
+          1
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
       "EstadoPedido": {
         "enum": [
           0,
@@ -5091,6 +5072,9 @@
           "descLoja": {
             "type": "string",
             "nullable": true
+          },
+          "estado": {
+            "$ref": "#/components/schemas/EstadoLoja"
           },
           "artigos": {
             "type": "array",

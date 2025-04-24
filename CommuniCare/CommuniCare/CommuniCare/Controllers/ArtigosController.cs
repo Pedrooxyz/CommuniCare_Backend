@@ -75,25 +75,25 @@ namespace CommuniCare.Controllers
             return NoContent();
         }
 
-        // POST: api/Artigos
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Artigo>> PostArtigo(ArtigoDto dto)
-        {
-            var artigo = new Artigo
-            {
-                NomeArtigo = dto.NomeArtigo,
-                DescArtigo = dto.DescArtigo,
-                CustoCares = dto.CustoCares,
-                LojaId = dto.LojaId,
-                QuantidadeDisponivel = dto.QuantidadeDisponivel
-            };
+        //// POST: api/Artigos
+        //// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        //[HttpPost]
+        //public async Task<ActionResult<Artigo>> PostArtigo(ArtigoDto dto)
+        //{
+        //    var artigo = new Artigo
+        //    {
+        //        NomeArtigo = dto.NomeArtigo,
+        //        DescArtigo = dto.DescArtigo,
+        //        CustoCares = dto.CustoCares,
+        //        //LojaId = dto.LojaId,
+        //        QuantidadeDisponivel = dto.QuantidadeDisponivel
+        //    };
 
-            _context.Artigos.Add(artigo);
-            await _context.SaveChangesAsync();
+        //    _context.Artigos.Add(artigo);
+        //    await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetArtigo", new { id = artigo.ArtigoId }, artigo);
-        }
+        //    return CreatedAtAction("GetArtigo", new { id = artigo.ArtigoId }, artigo);
+        //}
 
 
         // DELETE: api/Artigos/5
@@ -127,44 +127,52 @@ namespace CommuniCare.Controllers
             return Ok(artigosDisponiveis);
         }
 
+
         [HttpPost("publicar")]
         public async Task<ActionResult<Artigo>> PublicarArtigo(ArtigoDto dto)
         {
-            // Obter o ID do utilizador a partir do token
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
             {
                 return Unauthorized("Utilizador não autenticado.");
             }
 
-            // Converter o ID do utilizador para um número inteiro
             int utilizadorId = int.Parse(userIdClaim.Value);
 
-            // Verificar se o utilizador é um administrador (TipoUtilizadorId == 2)
             var utilizador = await _context.Utilizadores.FindAsync(utilizadorId);
             if (utilizador == null || utilizador.TipoUtilizadorId != 2)
             {
                 return Forbid("Apenas administradores podem publicar artigos.");
             }
 
-            // Criar o artigo e definir o estado como 'Disponível'
+            // Obter a loja ativa
+            var lojaAtiva = await _context.Lojas
+                .FirstOrDefaultAsync(l => l.Estado == EstadoLoja.Ativo);
+
+            if (lojaAtiva == null)
+            {
+                return BadRequest("Não existe nenhuma loja ativa no momento.");
+            }
+
+            // Criar o artigo e associar à loja ativa
             var artigo = new Artigo
             {
                 NomeArtigo = dto.NomeArtigo,
                 DescArtigo = dto.DescArtigo,
                 CustoCares = dto.CustoCares,
-                LojaId = dto.LojaId,
+                LojaId = lojaAtiva.LojaId,
                 QuantidadeDisponivel = dto.QuantidadeDisponivel,
-                Estado = EstadoArtigo.Disponivel // Define o estado como "Disponível"
+                Estado = EstadoArtigo.Disponivel
             };
 
-            // Adicionar o artigo à base de dados
             _context.Artigos.Add(artigo);
             await _context.SaveChangesAsync();
 
-            // Retornar a resposta de sucesso
             return CreatedAtAction(nameof(GetArtigosDisponiveis), new { id = artigo.ArtigoId }, artigo);
         }
+
+
+
 
         [Authorize]
         [HttpPut("indisponibilizar/{id}")]

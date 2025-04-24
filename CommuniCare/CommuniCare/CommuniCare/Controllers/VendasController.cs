@@ -155,8 +155,8 @@ namespace CommuniCare.Controllers
                     .Select(c => c.NumContacto)
                     .FirstOrDefaultAsync();
 
-                // Verificar disponibilidade dos artigos
                 var artigosDisponiveis = await _context.Artigos
+                    .Include(a => a.Loja)
                     .Where(a => request.ArtigosIds.Contains(a.ArtigoId))
                     .ToListAsync();
 
@@ -169,9 +169,17 @@ namespace CommuniCare.Controllers
                     });
                 }
 
+                if (artigosDisponiveis.Any(a => a.Loja == null || a.Loja.Estado != EstadoLoja.Ativo))
+                {
+                    return BadRequest(new
+                    {
+                        Sucesso = false,
+                        Erro = "Um ou mais artigos pertencem a lojas que não estão ativas no momento."
+                    });
+                }
+
                 var (venda, transacao, artigos, dataCompra) = await _transacaoServico.ProcessarCompraAsync(userId, request.ArtigosIds);
 
-                // Atualiza a quantidade disponível
                 foreach (var artigo in artigos)
                 {
                     artigo.QuantidadeDisponivel -= 1;
@@ -198,6 +206,7 @@ namespace CommuniCare.Controllers
             }
         }
 
+
         [HttpPost("comprar-download")]
         [Authorize]
         public async Task<IActionResult> ComprarDownload([FromBody] PedidoCompraDTO request)
@@ -208,8 +217,8 @@ namespace CommuniCare.Controllers
             {
                 var user = await _context.Utilizadores.FindAsync(userId);
 
-                // Verificar disponibilidade dos artigos
                 var artigosDisponiveis = await _context.Artigos
+                    .Include(a => a.Loja)
                     .Where(a => request.ArtigosIds.Contains(a.ArtigoId))
                     .ToListAsync();
 
@@ -222,9 +231,17 @@ namespace CommuniCare.Controllers
                     });
                 }
 
+                if (artigosDisponiveis.Any(a => a.Loja == null || a.Loja.Estado != EstadoLoja.Ativo))
+                {
+                    return BadRequest(new
+                    {
+                        Sucesso = false,
+                        Erro = "Um ou mais artigos pertencentes à lojas que não estão ativas no momento."
+                    });
+                }
+
                 var (venda, transacao, artigos, dataCompra) = await _transacaoServico.ProcessarCompraAsync(userId, request.ArtigosIds);
 
-                // Atualiza a quantidade disponível
                 foreach (var artigo in artigos)
                 {
                     artigo.QuantidadeDisponivel -= 1;
@@ -245,6 +262,7 @@ namespace CommuniCare.Controllers
                 return BadRequest(new { Sucesso = false, Erro = ex.Message });
             }
         }
+
     }
 }
 

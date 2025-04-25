@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace CommuniCare.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ArtigosController : ControllerBase

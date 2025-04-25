@@ -171,7 +171,8 @@ using (var scope = app.Services.CreateScope())
             Password = BCrypt.Net.BCrypt.HashPassword("string"),
             NumCares = 0,
             TipoUtilizadorId = adminTipoId,
-            MoradaId = defaultAddress.MoradaId
+            MoradaId = defaultAddress.MoradaId,
+            EstadoUtilizador = EstadoUtilizador.Ativo
         };
         db.Utilizadores.Add(admin);
         db.SaveChanges();

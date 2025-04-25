@@ -119,28 +119,28 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<CommuniCareContext>();
 
-
-
+    // Adicionar TipoContacto "email" e "numTelemovel" se não existirem
     if (!db.TipoContactos.Any())
         db.TipoContactos.AddRange(
             new TipoContacto { DescContacto = "email" },
             new TipoContacto { DescContacto = "numTelemovel" }
         );
 
+    // Adicionar TipoUtilizador "utilizador" e "administrador" se não existirem
     if (!db.TipoUtilizadors.Any())
         db.TipoUtilizadors.AddRange(
             new TipoUtilizador { DescTU = "utilizador" },
             new TipoUtilizador { DescTU = "administrador" }
         );
 
+    // Adicionar o código postal padrão se não existir
     var cp = db.Cps.FirstOrDefault(c => c.CPostal == "0000-000");
     if (cp is null)
         db.Cps.Add(new Cp { CPostal = "0000-000", Localidade = "000000" });
 
     db.SaveChanges();
 
-
-
+    // Adicionar morada padrão se não existir
     var defaultAddress = db.Morada.FirstOrDefault(m => m.Rua == "A definir");
     if (defaultAddress is null)
     {
@@ -154,47 +154,65 @@ using (var scope = app.Services.CreateScope())
         db.SaveChanges();
     }
 
+    // Criar utilizador de tipo "utilizador" (TipoUtilizadorId = 1) com UtilizadorId = 1
+    var userTipoId = db.TipoUtilizadors.First(t => t.DescTU == "utilizador").TipoUtilizadorId;
+    var normalUser = db.Utilizadores.FirstOrDefault(u => u.UtilizadorId == 1);
 
-
-    var adminTipoId = db.TipoUtilizadors
-                        .First(t => t.DescTU == "administrador")
-                        .TipoUtilizadorId;
-
-    var admin = db.Utilizadores
-                  .FirstOrDefault(u => u.NomeUtilizador.ToLower() == "admin");
-
-    if (admin is null)
+    if (normalUser is null)
     {
-        admin = new Utilizador
+        normalUser = new Utilizador
         {
-            NomeUtilizador = "admin",
+            UtilizadorId = 1,  // Definir o ID explicitamente
+            NomeUtilizador = "utilizador",
+            Password = BCrypt.Net.BCrypt.HashPassword("string"), // Senha encriptada
+            NumCares = 0,
+            TipoUtilizadorId = userTipoId,
+            MoradaId = defaultAddress.MoradaId
+        };
+        db.Utilizadores.Add(normalUser);
+        db.SaveChanges();
 
-            Password = BCrypt.Net.BCrypt.HashPassword("string"),
+        // Adicionar contacto "utilizador@teste.pt" para o utilizador comum
+        var emailTipoId = db.TipoContactos.First(t => t.DescContacto == "email").TipoContactoId;
+        db.Contactos.Add(new Contacto
+        {
+            NumContacto = "utilizador@teste.pt",
+            UtilizadorId = normalUser.UtilizadorId,
+            TipoContactoId = emailTipoId
+        });
+        db.SaveChanges();
+    }
+
+    // Criar utilizador de tipo "administrador" (TipoUtilizadorId = 2) com UtilizadorId = 2
+    var adminTipoId = db.TipoUtilizadors.First(t => t.DescTU == "administrador").TipoUtilizadorId;
+    var adminUser = db.Utilizadores.FirstOrDefault(u => u.UtilizadorId == 2);
+
+    if (adminUser is null)
+    {
+        adminUser = new Utilizador
+        {
+            UtilizadorId = 2,  // Definir o ID explicitamente
+            NomeUtilizador = "admin",
+            Password = BCrypt.Net.BCrypt.HashPassword("string"), // Senha encriptada
             NumCares = 0,
             TipoUtilizadorId = adminTipoId,
             MoradaId = defaultAddress.MoradaId
         };
-        db.Utilizadores.Add(admin);
+        db.Utilizadores.Add(adminUser);
         db.SaveChanges();
-    }
 
-
-
-    var emailTipoId = db.TipoContactos
-                        .First(t => t.DescContacto == "email")
-                        .TipoContactoId;
-
-    if (!db.Contactos.Any(c => c.NumContacto.ToLower() == "admin@admin.com"))
-    {
+        // Adicionar contacto "admin@admin.com" para o utilizador administrador
+        var emailTipoId = db.TipoContactos.First(t => t.DescContacto == "email").TipoContactoId;
         db.Contactos.Add(new Contacto
         {
-            NumContacto = "admin@admin.com",
-            UtilizadorId = admin.UtilizadorId,
+            NumContacto = "admin@teste.pt",
+            UtilizadorId = adminUser.UtilizadorId,
             TipoContactoId = emailTipoId
         });
         db.SaveChanges();
     }
 }
+
 
 // 4. Middleware
 if (app.Environment.IsDevelopment())

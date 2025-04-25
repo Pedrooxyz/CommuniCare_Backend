@@ -134,7 +134,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "CommuniCare.Models.Artigo",
+        "Type": "CommuniCare.DTOs.ArtigoRespostaDto",
         "MediaTypes": [
           "text/plain",
           "application/json",

@@ -129,7 +129,7 @@ namespace CommuniCare.Controllers
 
 
         [HttpPost("publicar")]
-        public async Task<ActionResult<Artigo>> PublicarArtigo(ArtigoDto dto)
+        public async Task<ActionResult<ArtigoRespostaDto>> PublicarArtigo(ArtigoDto dto)
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
@@ -140,12 +140,11 @@ namespace CommuniCare.Controllers
             int utilizadorId = int.Parse(userIdClaim.Value);
 
             var utilizador = await _context.Utilizadores.FindAsync(utilizadorId);
-            if (utilizador == null || utilizador.TipoUtilizadorId != 2)
+            if (utilizador == null)
             {
-                return Forbid("Apenas administradores podem publicar artigos.");
+                return NotFound("Utilizador não encontrado.");
             }
 
-            // Obter a loja ativa
             var lojaAtiva = await _context.Lojas
                 .FirstOrDefaultAsync(l => l.Estado == EstadoLoja.Ativo);
 
@@ -154,7 +153,6 @@ namespace CommuniCare.Controllers
                 return BadRequest("Não existe nenhuma loja ativa no momento.");
             }
 
-            // Criar o artigo e associar à loja ativa
             var artigo = new Artigo
             {
                 NomeArtigo = dto.NomeArtigo,
@@ -168,11 +166,17 @@ namespace CommuniCare.Controllers
             _context.Artigos.Add(artigo);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetArtigosDisponiveis), new { id = artigo.ArtigoId }, artigo);
+            var respostaDto = new ArtigoRespostaDto
+            {
+                ArtigoId = artigo.ArtigoId,
+                NomeArtigo = artigo.NomeArtigo,
+                DescArtigo = artigo.DescArtigo,
+                CustoCares = artigo.CustoCares,
+                QuantidadeDisponivel = artigo.QuantidadeDisponivel
+            };
+
+            return CreatedAtAction(nameof(GetArtigosDisponiveis), new { id = artigo.ArtigoId }, respostaDto);
         }
-
-
-
 
         [Authorize]
         [HttpPut("indisponibilizar/{id}")]

@@ -215,5 +215,72 @@ namespace CommuniCare.Controllers
             return Ok("Artigo indisponibilizado com sucesso.");
         }
 
+        [HttpPut("{id}/repor-stock")]
+        public async Task<ActionResult<ArtigoRespostaDto>> ReporStock(int id, [FromBody] ReporStockDto dto)
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Unauthorized("Utilizador não autenticado.");
+            }
+
+            int utilizadorId = int.Parse(userIdClaim.Value);
+
+            var utilizador = await _context.Utilizadores.FindAsync(utilizadorId);
+            if (utilizador == null)
+            {
+                return NotFound("Utilizador não encontrado.");
+            }
+
+            var lojaAtiva = await _context.Lojas
+                .FirstOrDefaultAsync(l => l.Estado == EstadoLoja.Ativo);
+            if (lojaAtiva == null)
+            {
+                return BadRequest("Não existe nenhuma loja ativa no momento.");
+            }
+
+            if (dto.Quantidade <= 0)
+            {
+                return BadRequest("A quantidade deve ser maior que zero.");
+            }
+
+            var artigo = await _context.Artigos.FindAsync(id);
+            if (artigo == null)
+            {
+                return NotFound("Artigo não encontrado.");
+            }
+
+            if (artigo.LojaId != lojaAtiva.LojaId)
+            {
+                return BadRequest("O artigo não pertence à loja ativa.");
+            }
+
+            try
+            {
+                artigo.QuantidadeDisponivel += dto.Quantidade;
+                artigo.Estado = artigo.QuantidadeDisponivel > 0
+                    ? EstadoArtigo.Disponivel
+                    : EstadoArtigo.Indisponivel;
+
+                _context.Entry(artigo).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+
+                var respostaDto = new ArtigoRespostaDto
+                {
+                    ArtigoId = artigo.ArtigoId,
+                    NomeArtigo = artigo.NomeArtigo,
+                    DescArtigo = artigo.DescArtigo,
+                    CustoCares = artigo.CustoCares,
+                    QuantidadeDisponivel = artigo.QuantidadeDisponivel
+                };
+
+                return Ok(respostaDto);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro ao repor stock: {ex.Message}");
+            }
+        }
+
     }
 }

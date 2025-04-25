@@ -84,6 +84,37 @@
   },
   {
     "ContainingType": "CommuniCare.Controllers.ArtigosController",
+    "Method": "ReporStock",
+    "RelativePath": "api/Artigos/{id}/repor-stock",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "CommuniCare.DTOs.ReporStockDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "CommuniCare.DTOs.ArtigoRespostaDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.ArtigosController",
     "Method": "GetArtigosDisponiveis",
     "RelativePath": "api/Artigos/disponiveis",
     "HttpMethod": "GET",

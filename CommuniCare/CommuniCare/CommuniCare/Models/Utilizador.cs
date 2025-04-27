@@ -19,6 +19,8 @@ public partial class Utilizador
 
     public string? Password { get; set; }
 
+    public string? FotoUtil { get; set; }
+
     public int? NumCares { get; set; }
 
     public int MoradaId { get; set; }

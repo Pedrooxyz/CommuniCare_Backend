@@ -25,6 +25,8 @@ public partial class CommuniCareContext : DbContext
 
     public virtual DbSet<Emprestimo> Emprestimos { get; set; }
 
+    public virtual DbSet<Favoritos> Favoritos { get; set; }
+
     public virtual DbSet<ItemEmprestimo> ItensEmprestimo { get; set; }
 
     public virtual DbSet<Loja> Lojas { get; set; }
@@ -163,6 +165,22 @@ public partial class CommuniCareContext : DbContext
                 .HasConstraintName("FKEmprestimo891193");
         });
 
+        modelBuilder.Entity<Favoritos>(f =>
+    {
+        f.HasKey(x => new { x.UtilizadorId, x.ArtigoId });
+
+        f.HasOne(x => x.Utilizador)
+         .WithMany(u => u.ArtigosFavoritos)
+         .HasForeignKey(x => x.UtilizadorId)
+         .OnDelete(DeleteBehavior.Cascade);
+
+        f.HasOne(x => x.Artigo)
+         .WithMany(a => a.FavoritoPor)
+         .HasForeignKey(x => x.ArtigoId)
+         .OnDelete(DeleteBehavior.Cascade);
+    });
+
+
         modelBuilder.Entity<ItemEmprestimo>(entity =>
         {
             entity.HasKey(e => e.ItemId).HasName("PK__ItemEmpr__56A1284AB54FF227");
@@ -200,36 +218,36 @@ public partial class CommuniCareContext : DbContext
                         j.IndexerProperty<int>("EmprestimoId").HasColumnName("emprestimoID");
                     });
 
-              entity.HasMany(d => d.Utilizadores)
-                        .WithMany(p => p.ItensEmprestimo)
-                        .UsingEntity<ItemEmprestimoUtilizador>(
-                j => j.HasOne(ue => ue.Utilizador)
-                      .WithMany(u => u.ItemEmprestimoUtilizadores)
-                      .HasForeignKey(ue => ue.UtilizadorId)
-                      .OnDelete(DeleteBehavior.ClientSetNull)
-                      .HasConstraintName("FK_ItemEmprestimo_Utilizador_Utilizador"),
+            entity.HasMany(d => d.Utilizadores)
+                      .WithMany(p => p.ItensEmprestimo)
+                      .UsingEntity<ItemEmprestimoUtilizador>(
+              j => j.HasOne(ue => ue.Utilizador)
+                    .WithMany(u => u.ItemEmprestimoUtilizadores)
+                    .HasForeignKey(ue => ue.UtilizadorId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ItemEmprestimo_Utilizador_Utilizador"),
 
-                j => j.HasOne(ue => ue.ItemEmprestimo)
-                      .WithMany(i => i.ItemEmprestimoUtilizadores)
-                      .HasForeignKey(ue => ue.ItemId)
-                      .OnDelete(DeleteBehavior.ClientSetNull)
-                      .HasConstraintName("FK_ItemEmprestimo_Utilizador_ItemEmprestimo"),
+              j => j.HasOne(ue => ue.ItemEmprestimo)
+                    .WithMany(i => i.ItemEmprestimoUtilizadores)
+                    .HasForeignKey(ue => ue.ItemId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ItemEmprestimo_Utilizador_ItemEmprestimo"),
 
-                j =>
-                {
-                    j.HasKey(ue => new { ue.ItemId, ue.UtilizadorId })
-                      .HasName("PK_ItemEmprestimo_Utilizador");
+              j =>
+              {
+                  j.HasKey(ue => new { ue.ItemId, ue.UtilizadorId })
+                    .HasName("PK_ItemEmprestimo_Utilizador");
 
-                    j.ToTable("ItemEmprestimoUtilizador");
+                  j.ToTable("ItemEmprestimoUtilizador");
 
-                    j.Property(ue => ue.ItemId).HasColumnName("itemID");
-                    j.Property(ue => ue.UtilizadorId).HasColumnName("utilizadorID");
+                  j.Property(ue => ue.ItemId).HasColumnName("itemID");
+                  j.Property(ue => ue.UtilizadorId).HasColumnName("utilizadorID");
 
-                    j.Property(ue => ue.TipoRelacao)
-                      .HasColumnName("tipoRelacao")  
-                      .HasMaxLength(10)              
-                      .IsRequired();
-                });
+                  j.Property(ue => ue.TipoRelacao)
+                    .HasColumnName("tipoRelacao")
+                    .HasMaxLength(10)
+                    .IsRequired();
+              });
 
         });
 

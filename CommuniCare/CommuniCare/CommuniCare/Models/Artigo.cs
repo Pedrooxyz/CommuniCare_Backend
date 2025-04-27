@@ -32,4 +32,6 @@ public partial class Artigo
     public virtual Venda? Transacao { get; set; }
 
     public EstadoArtigo Estado { get; set; } = EstadoArtigo.Disponivel;
+
+    public virtual ICollection<Favoritos> FavoritoPor { get; set; } = new List<Favoritos>();
 }

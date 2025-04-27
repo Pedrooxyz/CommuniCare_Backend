@@ -436,10 +436,10 @@ namespace CommuniCare.Controllers
 
             var claims = new[]
             {
-        new Claim(ClaimTypes.NameIdentifier, utilizadorId.ToString()),
-        new Claim(ClaimTypes.Name, email),
-        new Claim(ClaimTypes.Role, tipoUtilizadorId.ToString())
-    };
+            new Claim(ClaimTypes.NameIdentifier, utilizadorId.ToString()),
+            new Claim(ClaimTypes.Name, email),
+            new Claim(ClaimTypes.Role, tipoUtilizadorId.ToString())
+            };
 
             var token = new JwtSecurityToken(
                 issuer: jwtSettings.Issuer,

@@ -206,7 +206,7 @@ if (app.Environment.IsDevelopment())
 app.UseRouting();
 app.UseCors(DevClient);
 
-app.UseAuthentication(); // <--- Muito importante: antes do Authorization
+app.UseAuthentication();
 app.UseAuthorization();
 
 

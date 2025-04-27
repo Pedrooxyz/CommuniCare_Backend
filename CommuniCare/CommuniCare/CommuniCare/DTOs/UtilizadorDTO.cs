@@ -29,4 +29,9 @@ namespace CommuniCare.DTOs
 
         public int TipoUtilizadorId { get; set; }
     }
+
+    public class FotoUrlDto
+    {
+        public required string FotoUrl { get; init; }
+    }
 }

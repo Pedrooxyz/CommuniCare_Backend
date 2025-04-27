@@ -204,31 +204,31 @@ namespace CommuniCare.Controllers
         }
 
         [HttpGet("InfoUtilizador")]
-        [Authorize]                      
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<UtilizadorInfoDto>> GetCurrentUser()
         {
-            
+
             var idClaim = User.FindFirst(ClaimTypes.NameIdentifier) ?? User.FindFirst("sub");
             if (idClaim is null) return Unauthorized();
 
             if (!int.TryParse(idClaim.Value, out var userId))
-                return Unauthorized();     
+                return Unauthorized();
 
-            
+
             var utilizador = await _context.Utilizadores
                                       .AsNoTracking()
                                       .SingleOrDefaultAsync(u => u.UtilizadorId == userId);
 
-            if (utilizador is null) return Unauthorized();  
+            if (utilizador is null) return Unauthorized();
 
-           
+
             var dto = new UtilizadorInfoDto
             {
                 UtilizadorId = utilizador.UtilizadorId,
                 NomeUtilizador = utilizador.NomeUtilizador,
-                FotoUtil = utilizador.FotoUtil,  
+                FotoUtil = utilizador.FotoUtil,
                 NumCares = utilizador.NumCares,
                 MoradaId = utilizador.MoradaId,
                 TipoUtilizadorId = utilizador.TipoUtilizadorId
@@ -236,6 +236,37 @@ namespace CommuniCare.Controllers
 
             return Ok(dto);
         }
+
+        [HttpPut("EditarFoto")]
+        [Authorize]
+        public async Task<IActionResult> UpdateFotoUrl([FromBody] FotoUrlDto dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.FotoUrl))
+                return BadRequest("FotoUrl cannot be empty.");
+
+
+            var idStr =
+                User.FindFirstValue(ClaimTypes.NameIdentifier) ??
+                User.FindFirstValue("sub") ??
+                User.FindFirstValue("uid") ??
+                User.FindFirstValue("id");
+
+            if (!int.TryParse(idStr, out var userId))
+                return Unauthorized();
+
+
+            var utilizador = await _context.Utilizadores
+                                           .SingleOrDefaultAsync(u => u.UtilizadorId == userId);
+
+            if (utilizador is null)
+                return Unauthorized();
+
+            utilizador.FotoUtil = dto.FotoUrl;
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
 
         #region Administrador
 

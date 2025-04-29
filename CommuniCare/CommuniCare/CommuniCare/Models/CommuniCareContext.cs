@@ -65,6 +65,7 @@ public partial class CommuniCareContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+
         modelBuilder.Entity<Artigo>(entity =>
         {
             entity.HasKey(e => e.ArtigoId).HasName("PK__Artigo__34661042A75121D9");
@@ -219,35 +220,52 @@ public partial class CommuniCareContext : DbContext
                     });
 
             entity.HasMany(d => d.Utilizadores)
-                      .WithMany(p => p.ItensEmprestimo)
-                      .UsingEntity<ItemEmprestimoUtilizador>(
-              j => j.HasOne(ue => ue.Utilizador)
-                    .WithMany(u => u.ItemEmprestimoUtilizadores)
-                    .HasForeignKey(ue => ue.UtilizadorId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_ItemEmprestimo_Utilizador_Utilizador"),
+              .WithMany(p => p.ItensEmprestimo)
+              .UsingEntity<ItemEmprestimoUtilizador>(
+                    j => j.HasOne(ue => ue.Utilizador)
+                        .WithMany(u => u.ItemEmprestimoUtilizadores)
+                        .HasForeignKey(ue => ue.UtilizadorId)
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("FK_ItemEmprestimo_Utilizador_Utilizador"),
 
-              j => j.HasOne(ue => ue.ItemEmprestimo)
-                    .WithMany(i => i.ItemEmprestimoUtilizadores)
-                    .HasForeignKey(ue => ue.ItemId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_ItemEmprestimo_Utilizador_ItemEmprestimo"),
+                    j => j.HasOne(ue => ue.ItemEmprestimo)
+                      .WithMany(i => i.ItemEmprestimoUtilizadores)
+                      .HasForeignKey(ue => ue.ItemId)
+                      .OnDelete(DeleteBehavior.ClientSetNull)
+                      .HasConstraintName("FK_ItemEmprestimo_Utilizador_ItemEmprestimo"),
 
-              j =>
-              {
-                  j.HasKey(ue => new { ue.ItemId, ue.UtilizadorId })
-                    .HasName("PK_ItemEmprestimo_Utilizador");
+                    j =>
+                    {
+                        j.HasKey(ue => ue.ItemEmpId)
+                         .HasName("PK_ItemEmprestimo_Utilizador");
 
-                  j.ToTable("ItemEmprestimoUtilizador");
+                        j.ToTable("ItemEmprestimoUtilizador");
 
-                  j.Property(ue => ue.ItemId).HasColumnName("itemID");
-                  j.Property(ue => ue.UtilizadorId).HasColumnName("utilizadorID");
+                        j.Property(ue => ue.ItemEmpId)
+                         .HasColumnName("itemEmpID")
+                         .ValueGeneratedOnAdd();
 
-                  j.Property(ue => ue.TipoRelacao)
-                    .HasColumnName("tipoRelacao")
-                    .HasMaxLength(10)
-                    .IsRequired();
-              });
+                        j.Property(ue => ue.ItemId).HasColumnName("itemID");
+                        j.Property(ue => ue.UtilizadorId).HasColumnName("utilizadorID");
+
+                        j.Property(ue => ue.EmprestimoId)
+                          .HasColumnName("emprestimoID")
+                          .IsRequired(false);
+
+                        j.HasOne(ue => ue.Emprestimo)
+                         .WithMany(e => e.ItemEmprestimoUtilizadores)
+                         .HasForeignKey(ue => ue.EmprestimoId)
+                         .OnDelete(DeleteBehavior.ClientSetNull)  // ou Restrict
+                         .IsRequired(false);
+
+
+                        j.Property(ue => ue.TipoRelacao)
+                         .HasColumnName("tipoRelacao")
+                         .HasMaxLength(10)
+                         .IsRequired();
+
+                    });
+
 
         });
 
@@ -509,6 +527,13 @@ public partial class CommuniCareContext : DbContext
         });
 
         OnModelCreatingPartial(modelBuilder);
+
+        modelBuilder.Entity<ItemEmprestimoUtilizador>()
+            .HasOne(ue => ue.Emprestimo)
+            .WithMany(e => e.ItemEmprestimoUtilizadores)
+            .HasForeignKey(ue => ue.EmprestimoId)
+            .IsRequired();
+
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

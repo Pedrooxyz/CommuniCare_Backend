@@ -8308,19 +8308,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\123ru\\.nuget\\packages\\": {}
+    "C:\\Users\\ferna\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "Z:\\Universidade\\Semestre1\\24-25\\PDS\\PDS_Api\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\CommuniCare.csproj",
+      "projectUniqueName": "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\CommuniCare.csproj",
       "projectName": "CommuniCare",
-      "projectPath": "Z:\\Universidade\\Semestre1\\24-25\\PDS\\PDS_Api\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\CommuniCare.csproj",
-      "packagesPath": "C:\\Users\\123ru\\.nuget\\packages\\",
-      "outputPath": "Z:\\Universidade\\Semestre1\\24-25\\PDS\\PDS_Api\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\obj\\",
+      "projectPath": "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\CommuniCare.csproj",
+      "packagesPath": "C:\\Users\\ferna\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\123ru\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\ferna\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -8345,7 +8350,8 @@
         "enableAudit": "true",
         "auditLevel": "low",
         "auditMode": "direct"
-      }
+      },
+      "SdkAnalysisLevel": "9.0.200"
     },
     "frameworks": {
       "net8.0": {
@@ -8413,7 +8419,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.205/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

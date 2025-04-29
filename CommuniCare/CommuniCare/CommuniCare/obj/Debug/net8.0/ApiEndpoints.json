@@ -676,6 +676,58 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "CommuniCare.Controllers.FavoritosController",
+    "Method": "ListFavorites",
+    "RelativePath": "api/Favoritos",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[CommuniCare.DTOs.ArtigoDto, CommuniCare, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.FavoritosController",
+    "Method": "AddFavorite",
+    "RelativePath": "api/Favoritos/{artigoId}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "artigoId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.FavoritosController",
+    "Method": "RemoveFavorite",
+    "RelativePath": "api/Favoritos/{artigoId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "artigoId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "CommuniCare.Controllers.ItensEmprestimoController",
     "Method": "GetItemEmprestimos",
     "RelativePath": "api/ItensEmprestimo",
@@ -2399,6 +2451,22 @@
   },
   {
     "ContainingType": "CommuniCare.Controllers.UtilizadoresController",
+    "Method": "AprovarUtilizador",
+    "RelativePath": "api/Utilizadores/aprovar-utilizador/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.UtilizadoresController",
     "Method": "CompletarRegisto",
     "RelativePath": "api/Utilizadores/completar-registo",
     "HttpMethod": "POST",
@@ -2428,6 +2496,51 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.UtilizadoresController",
+    "Method": "UpdateFotoUrl",
+    "RelativePath": "api/Utilizadores/EditarFoto",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "CommuniCare.DTOs.FotoUrlDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.UtilizadoresController",
+    "Method": "GetCurrentUser",
+    "RelativePath": "api/Utilizadores/InfoUtilizador",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "CommuniCare.DTOs.UtilizadorInfoDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 401
+      }
+    ]
   },
   {
     "ContainingType": "CommuniCare.Controllers.UtilizadoresController",
@@ -2472,6 +2585,22 @@
       {
         "Name": "dto",
         "Type": "CommuniCare.DTOs.UtilizadorDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.UtilizadoresController",
+    "Method": "RejeitarUtilizador",
+    "RelativePath": "api/Utilizadores/rejeitar-utilizador/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
         "IsRequired": true
       }
     ],

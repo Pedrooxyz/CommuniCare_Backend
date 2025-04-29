@@ -4,6 +4,7 @@ using CommuniCare.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CommuniCare.Migrations
 {
     [DbContext(typeof(CommuniCareContext))]
-    partial class CommuniCareContextModelSnapshot : ModelSnapshot
+    [Migration("20250429104600_CoisasNovas8")]
+    partial class CoisasNovas8
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -235,9 +238,8 @@ namespace CommuniCare.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ItemEmpId"));
 
-                    b.Property<int?>("EmprestimoId")
-                        .HasColumnType("int")
-                        .HasColumnName("emprestimoID");
+                    b.Property<int>("EmprestimoId")
+                        .HasColumnType("int");
 
                     b.Property<int>("ItemId")
                         .HasColumnType("int")
@@ -755,6 +757,7 @@ namespace CommuniCare.Migrations
                     b.HasOne("CommuniCare.Models.Emprestimo", "Emprestimo")
                         .WithMany("ItemEmprestimoUtilizadores")
                         .HasForeignKey("EmprestimoId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("CommuniCare.Models.ItemEmprestimo", "ItemEmprestimo")

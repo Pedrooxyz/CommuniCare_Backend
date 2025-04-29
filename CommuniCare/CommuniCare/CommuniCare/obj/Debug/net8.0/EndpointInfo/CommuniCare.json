@@ -1143,6 +1143,88 @@
         }
       }
     },
+    "/api/Favoritos/{artigoId}": {
+      "post": {
+        "tags": [
+          "Favoritos"
+        ],
+        "parameters": [
+          {
+            "name": "artigoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Favoritos"
+        ],
+        "parameters": [
+          {
+            "name": "artigoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Favoritos": {
+      "get": {
+        "tags": [
+          "Favoritos"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArtigoDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArtigoDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArtigoDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/ItensEmprestimo": {
       "get": {
         "tags": [
@@ -4021,6 +4103,132 @@
         }
       }
     },
+    "/api/Utilizadores/InfoUtilizador": {
+      "get": {
+        "tags": [
+          "Utilizadores"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/UtilizadorInfoDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UtilizadorInfoDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UtilizadorInfoDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Utilizadores/EditarFoto": {
+      "put": {
+        "tags": [
+          "Utilizadores"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FotoUrlDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FotoUrlDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/FotoUrlDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Utilizadores/aprovar-utilizador/{id}": {
+      "put": {
+        "tags": [
+          "Utilizadores"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Utilizadores/rejeitar-utilizador/{id}": {
+      "put": {
+        "tags": [
+          "Utilizadores"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Utilizadores/completar-registo": {
       "post": {
         "tags": [
@@ -4780,6 +4988,13 @@
           },
           "estado": {
             "$ref": "#/components/schemas/EstadoArtigo"
+          },
+          "favoritoPor": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Favoritos"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -4988,6 +5203,13 @@
               "$ref": "#/components/schemas/ItemEmprestimo"
             },
             "nullable": true
+          },
+          "itemEmprestimoUtilizadores": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ItemEmprestimoUtilizador"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -5019,6 +5241,15 @@
         "type": "integer",
         "format": "int32"
       },
+      "EstadoUtilizador": {
+        "enum": [
+          0,
+          1,
+          2
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
       "EstadoVoluntariado": {
         "enum": [
           1,
@@ -5026,6 +5257,43 @@
         ],
         "type": "integer",
         "format": "int32"
+      },
+      "Favoritos": {
+        "type": "object",
+        "properties": {
+          "utilizadorId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "utilizador": {
+            "$ref": "#/components/schemas/Utilizador"
+          },
+          "artigoId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "artigo": {
+            "$ref": "#/components/schemas/Artigo"
+          },
+          "addedOn": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "FotoUrlDto": {
+        "required": [
+          "fotoUrl"
+        ],
+        "type": "object",
+        "properties": {
+          "fotoUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
       },
       "ItemEmprestimo": {
         "type": "object",
@@ -5109,6 +5377,10 @@
       "ItemEmprestimoUtilizador": {
         "type": "object",
         "properties": {
+          "itemEmpId": {
+            "type": "integer",
+            "format": "int32"
+          },
           "itemId": {
             "type": "integer",
             "format": "int32"
@@ -5120,6 +5392,14 @@
           "tipoRelacao": {
             "type": "string",
             "nullable": true
+          },
+          "emprestimoId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "emprestimo": {
+            "$ref": "#/components/schemas/Emprestimo"
           },
           "itemEmprestimo": {
             "$ref": "#/components/schemas/ItemEmprestimo"
@@ -5436,6 +5716,33 @@
         },
         "additionalProperties": false
       },
+      "ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": { }
+      },
       "RecuperarSenhaDTO": {
         "required": [
           "email"
@@ -5606,6 +5913,10 @@
             "type": "string",
             "nullable": true
           },
+          "fotoUtil": {
+            "type": "string",
+            "nullable": true
+          },
           "numCares": {
             "type": "integer",
             "format": "int32",
@@ -5618,6 +5929,9 @@
           "tipoUtilizadorId": {
             "type": "integer",
             "format": "int32"
+          },
+          "estadoUtilizador": {
+            "$ref": "#/components/schemas/EstadoUtilizador"
           },
           "chats": {
             "type": "array",
@@ -5680,6 +5994,13 @@
               "$ref": "#/components/schemas/ItemEmprestimoUtilizador"
             },
             "nullable": true
+          },
+          "artigosFavoritos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Favoritos"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -5704,6 +6025,37 @@
           "password": {
             "minLength": 1,
             "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UtilizadorInfoDto": {
+        "type": "object",
+        "properties": {
+          "utilizadorId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nomeUtilizador": {
+            "type": "string",
+            "nullable": true
+          },
+          "fotoUtil": {
+            "type": "string",
+            "nullable": true
+          },
+          "numCares": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "moradaId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tipoUtilizadorId": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false

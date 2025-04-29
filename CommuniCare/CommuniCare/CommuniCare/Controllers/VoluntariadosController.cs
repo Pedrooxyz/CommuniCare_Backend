@@ -237,8 +237,5 @@ namespace CommuniCare.Controllers
 
             return Ok("Voluntário aceite com sucesso" + (pedido.Estado == EstadoPedido.EmProgresso ? " e pedido atualizado para 'Em Progresso'." : "."));
         }
-
-
-
     }
 }

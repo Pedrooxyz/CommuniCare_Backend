@@ -241,6 +241,7 @@ namespace CommuniCare.Controllers
 
         #region Administrador
 
+
         [HttpPost("{pedidoId}/rejeitar-pedido")]
         [Authorize]
         public async Task<IActionResult> RejeitarPedidoAjuda(int pedidoId)

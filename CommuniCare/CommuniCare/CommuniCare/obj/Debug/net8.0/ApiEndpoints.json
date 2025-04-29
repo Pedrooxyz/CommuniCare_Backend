@@ -1566,45 +1566,8 @@
   },
   {
     "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",
-    "Method": "AceitarVoluntario",
-    "RelativePath": "api/PedidosAjuda/{pedidoId}/aceitar-voluntario/{utilizadorId}",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "pedidoId",
-        "Type": "System.Int32",
-        "IsRequired": true
-      },
-      {
-        "Name": "utilizadorId",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",
     "Method": "RejeitarPedidoAjuda",
     "RelativePath": "api/PedidosAjuda/{pedidoId}/rejeitar-pedido",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "pedidoId",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",
-    "Method": "RejeitarVoluntario",
-    "RelativePath": "api/PedidosAjuda/{pedidoId}/rejeitar-voluntario",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -2897,6 +2860,38 @@
     "Parameters": [
       {
         "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.VoluntariadosController",
+    "Method": "AceitarVoluntario",
+    "RelativePath": "api/Voluntariados/aceitar-voluntario/{idVoluntariado}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idVoluntariado",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.VoluntariadosController",
+    "Method": "RejeitarVoluntario",
+    "RelativePath": "api/Voluntariados/rejeitar-voluntario/{idVoluntariado}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idVoluntariado",
         "Type": "System.Int32",
         "IsRequired": true
       }

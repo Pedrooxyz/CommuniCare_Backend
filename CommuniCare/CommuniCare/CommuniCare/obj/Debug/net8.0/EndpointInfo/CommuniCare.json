@@ -2696,61 +2696,6 @@
         }
       }
     },
-    "/api/PedidosAjuda/{pedidoId}/aceitar-voluntario/{utilizadorId}": {
-      "post": {
-        "tags": [
-          "PedidosAjuda"
-        ],
-        "parameters": [
-          {
-            "name": "pedidoId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "utilizadorId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/PedidosAjuda/{pedidoId}/rejeitar-voluntario": {
-      "post": {
-        "tags": [
-          "PedidosAjuda"
-        ],
-        "parameters": [
-          {
-            "name": "pedidoId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
     "/api/PedidosAjuda/{pedidoId}/rejeitar-pedido": {
       "post": {
         "tags": [
@@ -4915,6 +4860,52 @@
         "parameters": [
           {
             "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Voluntariados/rejeitar-voluntario/{idVoluntariado}": {
+      "post": {
+        "tags": [
+          "Voluntariados"
+        ],
+        "parameters": [
+          {
+            "name": "idVoluntariado",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Voluntariados/aceitar-voluntario/{idVoluntariado}": {
+      "post": {
+        "tags": [
+          "Voluntariados"
+        ],
+        "parameters": [
+          {
+            "name": "idVoluntariado",
             "in": "path",
             "required": true,
             "schema": {

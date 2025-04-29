@@ -1,0 +1,203 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\João\\OneDrive - Instituto Politécnico do Cávado e do Ave\\Desktop\\ipca\\ano 2\\2º semestre\\PDS\\Segunda Fase\\Codigo\\CommuniCare\\CommuniCare\\MSTest Test Project\\MSTest Test Project.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\João\\OneDrive - Instituto Politécnico do Cávado e do Ave\\Desktop\\ipca\\ano 2\\2º semestre\\PDS\\Segunda Fase\\Codigo\\CommuniCare\\CommuniCare\\CommuniCare\\CommuniCare.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\João\\OneDrive - Instituto Politécnico do Cávado e do Ave\\Desktop\\ipca\\ano 2\\2º semestre\\PDS\\Segunda Fase\\Codigo\\CommuniCare\\CommuniCare\\CommuniCare\\CommuniCare.csproj",
+        "projectName": "CommuniCare",
+        "projectPath": "C:\\Users\\João\\OneDrive - Instituto Politécnico do Cávado e do Ave\\Desktop\\ipca\\ano 2\\2º semestre\\PDS\\Segunda Fase\\Codigo\\CommuniCare\\CommuniCare\\CommuniCare\\CommuniCare.csproj",
+        "packagesPath": "C:\\Users\\João\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\João\\OneDrive - Instituto Politécnico do Cávado e do Ave\\Desktop\\ipca\\ano 2\\2º semestre\\PDS\\Segunda Fase\\Codigo\\CommuniCare\\CommuniCare\\CommuniCare\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\João\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.200"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "BCrypt.Net-Next": {
+              "target": "Package",
+              "version": "[4.0.3, )"
+            },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[8.0.14, )"
+            },
+            "Microsoft.AspNetCore.Mvc.Testing": {
+              "target": "Package",
+              "version": "[8.0.15, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[9.0.3, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[9.0.3, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.3, )"
+            },
+            "Microsoft.Extensions.Configuration": {
+              "target": "Package",
+              "version": "[9.0.3, )"
+            },
+            "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
+              "target": "Package",
+              "version": "[8.0.7, )"
+            },
+            "QuestPDF": {
+              "target": "Package",
+              "version": "[2025.4.0, )"
+            },
+            "SendGrid": {
+              "target": "Package",
+              "version": "[9.29.3, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.6.2, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\João\\OneDrive - Instituto Politécnico do Cávado e do Ave\\Desktop\\ipca\\ano 2\\2º semestre\\PDS\\Segunda Fase\\Codigo\\CommuniCare\\CommuniCare\\MSTest Test Project\\MSTest Test Project.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\João\\OneDrive - Instituto Politécnico do Cávado e do Ave\\Desktop\\ipca\\ano 2\\2º semestre\\PDS\\Segunda Fase\\Codigo\\CommuniCare\\CommuniCare\\MSTest Test Project\\MSTest Test Project.csproj",
+        "projectName": "MSTest Test Project",
+        "projectPath": "C:\\Users\\João\\OneDrive - Instituto Politécnico do Cávado e do Ave\\Desktop\\ipca\\ano 2\\2º semestre\\PDS\\Segunda Fase\\Codigo\\CommuniCare\\CommuniCare\\MSTest Test Project\\MSTest Test Project.csproj",
+        "packagesPath": "C:\\Users\\João\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\João\\OneDrive - Instituto Politécnico do Cávado e do Ave\\Desktop\\ipca\\ano 2\\2º semestre\\PDS\\Segunda Fase\\Codigo\\CommuniCare\\CommuniCare\\MSTest Test Project\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\João\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "C:\\Users\\João\\OneDrive - Instituto Politécnico do Cávado e do Ave\\Desktop\\ipca\\ano 2\\2º semestre\\PDS\\Segunda Fase\\Codigo\\CommuniCare\\CommuniCare\\CommuniCare\\CommuniCare.csproj": {
+                "projectPath": "C:\\Users\\João\\OneDrive - Instituto Politécnico do Cávado e do Ave\\Desktop\\ipca\\ano 2\\2º semestre\\PDS\\Segunda Fase\\Codigo\\CommuniCare\\CommuniCare\\CommuniCare\\CommuniCare.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.200"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "MSTest": {
+              "target": "Package",
+              "version": "[3.6.4, )"
+            },
+            "Microsoft.NET.Test.Sdk": {
+              "target": "Package",
+              "version": "[17.12.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

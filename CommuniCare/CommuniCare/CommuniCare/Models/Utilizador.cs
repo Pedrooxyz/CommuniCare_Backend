@@ -4,6 +4,13 @@ using System.Reflection.PortableExecutable;
 
 namespace CommuniCare.Models;
 
+public enum EstadoUtilizador
+{
+    Pendente = 0,
+    Ativo = 1,
+    Inativo = 2
+}
+
 public partial class Utilizador
 {
     public int UtilizadorId { get; set; }
@@ -12,11 +19,15 @@ public partial class Utilizador
 
     public string? Password { get; set; }
 
+    public string? FotoUtil { get; set; }
+
     public int? NumCares { get; set; }
 
     public int MoradaId { get; set; }
 
     public int TipoUtilizadorId { get; set; }
+
+    public EstadoUtilizador EstadoUtilizador { get; set; } = EstadoUtilizador.Pendente;
 
     public virtual ICollection<Chat> Chats { get; set; } = new List<Chat>();
 
@@ -37,6 +48,9 @@ public partial class Utilizador
     public virtual ICollection<ItemEmprestimo> ItensEmprestimo { get; set; } = new List<ItemEmprestimo>();
 
     public virtual ICollection<ItemEmprestimoUtilizador> ItemEmprestimoUtilizadores { get; set; }
+
+    public virtual ICollection<Favoritos> ArtigosFavoritos { get; set; } = new List<Favoritos>();
+
 
     #region Metodos
 

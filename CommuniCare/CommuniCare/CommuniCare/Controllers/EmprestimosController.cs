@@ -176,7 +176,7 @@ namespace CommuniCare.Controllers
                 return Forbid("Apenas administradores podem validar empréstimos.");
 
             var emprestimo = await _context.Emprestimos
-                .Include(e => e.Items)
+                .Include(e => e.Items)  // Certificando que a coleção de itens é carregada
                 .FirstOrDefaultAsync(e => e.EmprestimoId == emprestimoId);
 
             if (emprestimo == null)
@@ -187,7 +187,7 @@ namespace CommuniCare.Controllers
 
             emprestimo.DataIni = DateTime.UtcNow;
 
-            var item = emprestimo.Items.FirstOrDefault();
+            var item = emprestimo.Items.FirstOrDefault();  // Pegando o primeiro item associado ao empréstimo
             if (item == null)
                 return BadRequest("Item associado não encontrado.");
 
@@ -241,7 +241,7 @@ namespace CommuniCare.Controllers
                 return Forbid("Apenas administradores podem rejeitar empréstimos.");
 
             var emprestimo = await _context.Emprestimos
-                .Include(e => e.Items)
+                .Include(e => e.Items)  // Incluindo os itens do empréstimo
                 .FirstOrDefaultAsync(e => e.EmprestimoId == emprestimoId);
 
             if (emprestimo == null)
@@ -254,13 +254,14 @@ namespace CommuniCare.Controllers
             if (item == null)
                 return BadRequest("Item associado não encontrado.");
 
+            // Buscar relação de comprador pelo emprestimoId
             var relacaoComprador = await _context.ItemEmprestimoUtilizadores
-                .FirstOrDefaultAsync(r => r.ItemId == item.ItemId && r.TipoRelacao == "Comprador");
+                .FirstOrDefaultAsync(r => r.EmprestimoId == emprestimoId && r.TipoRelacao == "Comprador");
 
             if (relacaoComprador == null)
                 return BadRequest("Relação do comprador não encontrada.");
 
-            // Cria a notificação
+            // Criação da notificação
             var notificacao = new Notificacao
             {
                 UtilizadorId = relacaoComprador.UtilizadorId,
@@ -271,23 +272,20 @@ namespace CommuniCare.Controllers
             };
             _context.Notificacaos.Add(notificacao);
 
-            // Marca o item como disponível
+            // Marca o item como disponível novamente
             item.Disponivel = 1;
 
-            // Guarda os IDs dos ItemEmprestimo associados
-            var itemEmprestimoIds = emprestimo.Items.Select(i => i.ItemId).ToList();
-
-            // Remove só a relação do comprador
-            var relacoesComprador = await _context.ItemEmprestimoUtilizadores
-                .Where(r => itemEmprestimoIds.Contains(r.ItemId) && r.TipoRelacao == "Comprador")
+            // Remove as relações de comprador
+            var relacoesCompradorRemover = await _context.ItemEmprestimoUtilizadores
+                .Where(r => r.EmprestimoId == emprestimoId && r.TipoRelacao == "Comprador")
                 .ToListAsync();
-            _context.ItemEmprestimoUtilizadores.RemoveRange(relacoesComprador);
+            _context.ItemEmprestimoUtilizadores.RemoveRange(relacoesCompradorRemover);
 
-            // Remove o empréstimo
-            emprestimo.Items.Clear(); // Importante para não quebrar a FK
+            // Remove o empréstimo e seus itens
+            emprestimo.Items.Clear(); // Remover relações de itens
             _context.Emprestimos.Remove(emprestimo);
 
-
+            // Salvar alterações no banco de dados
             await _context.SaveChangesAsync();
 
             return Ok("Empréstimo rejeitado, relações removidas e notificação enviada.");
@@ -313,8 +311,8 @@ namespace CommuniCare.Controllers
 
             var emprestimo = await _context.Emprestimos
                 .Include(e => e.Items)
-                    .ThenInclude(ie => ie.ItemEmprestimoUtilizadores)
-                        .ThenInclude(ieiu => ieiu.Utilizador)
+                    .ThenInclude(i => i.ItemEmprestimoUtilizadores)
+                        .ThenInclude(rel => rel.Utilizador)
                 .FirstOrDefaultAsync(e => e.EmprestimoId == emprestimoId);
 
             if (emprestimo == null)
@@ -322,42 +320,38 @@ namespace CommuniCare.Controllers
                 return NotFound("Empréstimo não encontrado.");
             }
 
-            foreach (var itemEmprestimo in emprestimo.Items)
+            if (!emprestimo.DataDev.HasValue || !emprestimo.DataIni.HasValue)
             {
-                itemEmprestimo.Disponivel = 1;
+                return BadRequest("Data de devolução ou data de início inválida.");
             }
 
-            if (emprestimo.DataDev.HasValue && emprestimo.DataIni.HasValue)
+            var notificacoes = new List<Notificacao>();
+            var transacoes = new List<Transacao>();
+            var transacoesEmprestimo = new List<TransacaoEmprestimo>();
+
+            TimeSpan diferenca = emprestimo.DataDev.Value - emprestimo.DataIni.Value;
+            int nHoras = Math.Max(1, (int)Math.Ceiling(diferenca.TotalHours));
+
+            foreach (var item in emprestimo.Items)
             {
-                TimeSpan diferenca = emprestimo.DataDev.Value - emprestimo.DataIni.Value;
+                item.Disponivel = 1;
 
-                int nHoras = Math.Max(1, (int)Math.Ceiling(diferenca.TotalHours));
-
-                int totalComissao = emprestimo.Items
-                    .Sum(i => i.ComissaoCares ?? 0);
-
-                var primeiroItem = emprestimo.Items.FirstOrDefault();
-                if (primeiroItem == null)
-                {
-                    return BadRequest("Empréstimo não contém itens.");
-                }
-
-                var comprador = primeiroItem.ItemEmprestimoUtilizadores
+                var comprador = item.ItemEmprestimoUtilizadores
                     .FirstOrDefault(rel => rel.TipoRelacao == "Comprador")?.Utilizador;
-
-                var dono = primeiroItem.ItemEmprestimoUtilizadores
+                var dono = item.ItemEmprestimoUtilizadores
                     .FirstOrDefault(rel => rel.TipoRelacao == "Dono")?.Utilizador;
 
                 if (comprador == null || dono == null)
                 {
-                    return BadRequest("Não foi possível determinar o dono ou o comprador do item.");
+                    return BadRequest("Não foi possível determinar o dono ou o comprador de um dos itens.");
                 }
 
-                int quantidadeCares = nHoras * totalComissao;
+                int comissaoItem = item.ComissaoCares ?? 0;
+                int quantidadeCares = nHoras * comissaoItem;
 
                 if (comprador.NumCares < quantidadeCares)
                 {
-                    return BadRequest("O comprador não tem cares suficientes.");
+                    return BadRequest($"O comprador (ID: {comprador.UtilizadorId}) não tem cares suficientes para pagar pelo item {item.ItemId}.");
                 }
 
                 comprador.NumCares -= quantidadeCares;
@@ -368,6 +362,7 @@ namespace CommuniCare.Controllers
                     DataTransacao = DateTime.UtcNow,
                     Quantidade = quantidadeCares
                 };
+                transacoes.Add(transacao);
 
                 var transacaoEmprestimo = new TransacaoEmprestimo
                 {
@@ -377,37 +372,30 @@ namespace CommuniCare.Controllers
                     Transacao = transacao,
                     Emprestimos = new List<Emprestimo> { emprestimo }
                 };
+                transacoesEmprestimo.Add(transacaoEmprestimo);
 
-                _context.Transacoes.Add(transacao);
-                _context.TransacoesEmprestimo.Add(transacaoEmprestimo);
-
-                // Criar a notificação para o recetor (dono) informando que os "cares" foram enviados
-                var notificacaoRecetor = new Notificacao
+                notificacoes.Add(new Notificacao
                 {
                     UtilizadorId = dono.UtilizadorId,
-                    Mensagem = $"Os cares no valor de {quantidadeCares} foram enviados para sua conta.",
-                };
+                    Mensagem = $"Os cares no valor de {quantidadeCares} foram enviados para sua conta pelo item {item.ItemId}."
+                });
 
-                _context.Notificacaos.Add(notificacaoRecetor);
-
-                // Criar a notificação para o comprador informando que a devolução foi validada
-                var notificacaoComprador = new Notificacao
+                notificacoes.Add(new Notificacao
                 {
                     UtilizadorId = comprador.UtilizadorId,
-                    Mensagem = $"A devolução do item foi validada e os cares foram deduzidos da sua conta.",
-                };
-
-                _context.Notificacaos.Add(notificacaoComprador);
-
-                await _context.SaveChangesAsync();
-
-                return Ok("Empréstimo validado, saldo atualizado e transação registada.");
+                    Mensagem = $"A devolução do item {item.ItemId} foi validada e {quantidadeCares} cares foram deduzidos da sua conta."
+                });
             }
-            else
-            {
-                return BadRequest("Data de devolução ou data de início inválida.");
-            }
+
+            _context.Transacoes.AddRange(transacoes);
+            _context.TransacoesEmprestimo.AddRange(transacoesEmprestimo);
+            _context.Notificacaos.AddRange(notificacoes);
+
+            await _context.SaveChangesAsync();
+
+            return Ok("Empréstimo validado, saldo atualizado e transações registadas.");
         }
+
 
 
         #endregion

@@ -4,6 +4,7 @@ using CommuniCare.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CommuniCare.Migrations
 {
     [DbContext(typeof(CommuniCareContext))]
-    partial class CommuniCareContextModelSnapshot : ModelSnapshot
+    [Migration("20250427122329_Initisfus")]
+    partial class Initisfus
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -170,24 +173,6 @@ namespace CommuniCare.Migrations
                     b.ToTable("Emprestimo", (string)null);
                 });
 
-            modelBuilder.Entity("CommuniCare.Models.Favoritos", b =>
-                {
-                    b.Property<int>("UtilizadorId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ArtigoId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("AddedOn")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("UtilizadorId", "ArtigoId");
-
-                    b.HasIndex("ArtigoId");
-
-                    b.ToTable("Favoritos");
-                });
-
             modelBuilder.Entity("CommuniCare.Models.ItemEmprestimo", b =>
                 {
                     b.Property<int>("ItemId")
@@ -228,20 +213,13 @@ namespace CommuniCare.Migrations
 
             modelBuilder.Entity("CommuniCare.Models.ItemEmprestimoUtilizador", b =>
                 {
-                    b.Property<int>("ItemEmpId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("itemEmpID");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ItemEmpId"));
-
-                    b.Property<int?>("EmprestimoId")
-                        .HasColumnType("int")
-                        .HasColumnName("emprestimoID");
-
                     b.Property<int>("ItemId")
                         .HasColumnType("int")
                         .HasColumnName("itemID");
+
+                    b.Property<int>("UtilizadorId")
+                        .HasColumnType("int")
+                        .HasColumnName("utilizadorID");
 
                     b.Property<string>("TipoRelacao")
                         .IsRequired()
@@ -249,16 +227,8 @@ namespace CommuniCare.Migrations
                         .HasColumnType("nvarchar(10)")
                         .HasColumnName("tipoRelacao");
 
-                    b.Property<int>("UtilizadorId")
-                        .HasColumnType("int")
-                        .HasColumnName("utilizadorID");
-
-                    b.HasKey("ItemEmpId")
+                    b.HasKey("ItemId", "UtilizadorId")
                         .HasName("PK_ItemEmprestimo_Utilizador");
-
-                    b.HasIndex("EmprestimoId");
-
-                    b.HasIndex("ItemId");
 
                     b.HasIndex("UtilizadorId");
 
@@ -571,9 +541,6 @@ namespace CommuniCare.Migrations
                     b.Property<int>("EstadoUtilizador")
                         .HasColumnType("int");
 
-                    b.Property<string>("FotoUtil")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("MoradaId")
                         .HasColumnType("int")
                         .HasColumnName("moradaID");
@@ -731,32 +698,8 @@ namespace CommuniCare.Migrations
                     b.Navigation("Transacao");
                 });
 
-            modelBuilder.Entity("CommuniCare.Models.Favoritos", b =>
-                {
-                    b.HasOne("CommuniCare.Models.Artigo", "Artigo")
-                        .WithMany("FavoritoPor")
-                        .HasForeignKey("ArtigoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CommuniCare.Models.Utilizador", "Utilizador")
-                        .WithMany("ArtigosFavoritos")
-                        .HasForeignKey("UtilizadorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Artigo");
-
-                    b.Navigation("Utilizador");
-                });
-
             modelBuilder.Entity("CommuniCare.Models.ItemEmprestimoUtilizador", b =>
                 {
-                    b.HasOne("CommuniCare.Models.Emprestimo", "Emprestimo")
-                        .WithMany("ItemEmprestimoUtilizadores")
-                        .HasForeignKey("EmprestimoId")
-                        .IsRequired();
-
                     b.HasOne("CommuniCare.Models.ItemEmprestimo", "ItemEmprestimo")
                         .WithMany("ItemEmprestimoUtilizadores")
                         .HasForeignKey("ItemId")
@@ -768,8 +711,6 @@ namespace CommuniCare.Migrations
                         .HasForeignKey("UtilizadorId")
                         .IsRequired()
                         .HasConstraintName("FK_ItemEmprestimo_Utilizador_Utilizador");
-
-                    b.Navigation("Emprestimo");
 
                     b.Navigation("ItemEmprestimo");
 
@@ -934,11 +875,6 @@ namespace CommuniCare.Migrations
                         .HasConstraintName("FKEmprestimo851433");
                 });
 
-            modelBuilder.Entity("CommuniCare.Models.Artigo", b =>
-                {
-                    b.Navigation("FavoritoPor");
-                });
-
             modelBuilder.Entity("CommuniCare.Models.Chat", b =>
                 {
                     b.Navigation("Mensagems");
@@ -947,11 +883,6 @@ namespace CommuniCare.Migrations
             modelBuilder.Entity("CommuniCare.Models.Cp", b =>
                 {
                     b.Navigation("Morada");
-                });
-
-            modelBuilder.Entity("CommuniCare.Models.Emprestimo", b =>
-                {
-                    b.Navigation("ItemEmprestimoUtilizadores");
                 });
 
             modelBuilder.Entity("CommuniCare.Models.ItemEmprestimo", b =>
@@ -1009,8 +940,6 @@ namespace CommuniCare.Migrations
 
             modelBuilder.Entity("CommuniCare.Models.Utilizador", b =>
                 {
-                    b.Navigation("ArtigosFavoritos");
-
                     b.Navigation("Chats");
 
                     b.Navigation("Contactos");

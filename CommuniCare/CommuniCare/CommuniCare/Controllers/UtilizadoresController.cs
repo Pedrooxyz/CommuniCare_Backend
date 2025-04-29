@@ -127,8 +127,6 @@ namespace CommuniCare.Controllers
                 return BadRequest("Já existe uma conta com este email.");
             }
 
-            // Garantir que existe um Código Postal padrão
-            // Garantir que existe um Código Postal padrão
             var codigoPostalPadrao = await _context.Cps.FirstOrDefaultAsync(cp => cp.CPostal == "0000-000");
             if (codigoPostalPadrao == null)
             {
@@ -141,32 +139,29 @@ namespace CommuniCare.Controllers
                 await _context.SaveChangesAsync();
             }
 
-
-            // Criar uma morada temporária associada a esse Código Postal
             var moradaTemporaria = new Morada
             {
                 Rua = "A definir",
                 NumPorta = null,
-                CPostal = codigoPostalPadrao.CPostal // Associar ao Código Postal padrão
+                CPostal = codigoPostalPadrao.CPostal
             };
 
             _context.Morada.Add(moradaTemporaria);
             await _context.SaveChangesAsync();
 
-            // Criar o utilizador associado à morada temporária
             var novoUtilizador = new Utilizador
             {
                 NomeUtilizador = dto.NomeUtilizador,
                 Password = BCrypt.Net.BCrypt.HashPassword(dto.Password),
                 NumCares = 0,
                 TipoUtilizadorId = 1,
-                MoradaId = moradaTemporaria.MoradaId // Associar à morada temporária
+                MoradaId = moradaTemporaria.MoradaId,
+                EstadoUtilizador = EstadoUtilizador.Pendente
             };
 
             _context.Utilizadores.Add(novoUtilizador);
             await _context.SaveChangesAsync();
 
-            // Criar o contacto do utilizador
             var contactoEmail = new Contacto
             {
                 NumContacto = dto.Email,
@@ -177,19 +172,172 @@ namespace CommuniCare.Controllers
             _context.Contactos.Add(contactoEmail);
             await _context.SaveChangesAsync();
 
-            // Gerar token para o utilizador
+            // Notificar todos os administradores ativos
+            var admins = await _context.Utilizadores
+                .Where(u => u.TipoUtilizadorId == 2 && u.EstadoUtilizador == EstadoUtilizador.Ativo)
+                .ToListAsync();
+
+            foreach (var admin in admins)
+            {
+                var notificacao = new Notificacao
+                {
+                    UtilizadorId = admin.UtilizadorId,
+                    Mensagem = $"Nova conta criada: {novoUtilizador.NomeUtilizador}. Aguardando aprovação.",
+                    Lida = 0,
+                    DataMensagem = DateTime.Now,
+                    PedidoId = null,
+                    ItemId = null
+                };
+
+                _context.Notificacaos.Add(notificacao);
+            }
+
+            await _context.SaveChangesAsync();
+
             var token = GerarToken(novoUtilizador.UtilizadorId, dto.Email, novoUtilizador.TipoUtilizadorId);
 
-            // Retornar o token JWT
             return Ok(new
             {
-                Message = "Conta criada com sucesso!",
+                Message = "Conta criada com sucesso! Aguardando aprovação de um administrador.",
                 Token = token
             });
         }
 
+        [HttpGet("InfoUtilizador")]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<UtilizadorInfoDto>> GetCurrentUser()
+        {
+
+            var idClaim = User.FindFirst(ClaimTypes.NameIdentifier) ?? User.FindFirst("sub");
+            if (idClaim is null) return Unauthorized();
+
+            if (!int.TryParse(idClaim.Value, out var userId))
+                return Unauthorized();
+
+
+            var utilizador = await _context.Utilizadores
+                                      .AsNoTracking()
+                                      .SingleOrDefaultAsync(u => u.UtilizadorId == userId);
+
+            if (utilizador is null) return Unauthorized();
+
+
+            var dto = new UtilizadorInfoDto
+            {
+                UtilizadorId = utilizador.UtilizadorId,
+                NomeUtilizador = utilizador.NomeUtilizador,
+                FotoUtil = utilizador.FotoUtil,
+                NumCares = utilizador.NumCares,
+                MoradaId = utilizador.MoradaId,
+                TipoUtilizadorId = utilizador.TipoUtilizadorId
+            };
+
+            return Ok(dto);
+        }
+
+        [HttpPut("EditarFoto")]
+        [Authorize]
+        public async Task<IActionResult> UpdateFotoUrl([FromBody] FotoUrlDto dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.FotoUrl))
+                return BadRequest("FotoUrl cannot be empty.");
+
+
+            var idStr =
+                User.FindFirstValue(ClaimTypes.NameIdentifier) ??
+                User.FindFirstValue("sub") ??
+                User.FindFirstValue("uid") ??
+                User.FindFirstValue("id");
+
+            if (!int.TryParse(idStr, out var userId))
+                return Unauthorized();
+
+
+            var utilizador = await _context.Utilizadores
+                                           .SingleOrDefaultAsync(u => u.UtilizadorId == userId);
+
+            if (utilizador is null)
+                return Unauthorized();
+
+            utilizador.FotoUtil = dto.FotoUrl;
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+
+        #region Administrador
+
+        [HttpPut("aprovar-utilizador/{id}")]
+        public async Task<IActionResult> AprovarUtilizador(int id)
+        {
+            // Buscar o utilizador
+            var utilizador = await _context.Utilizadores.FindAsync(id);
+
+            if (utilizador == null)
+                return NotFound("Utilizador não encontrado.");
+
+            if (utilizador.EstadoUtilizador == EstadoUtilizador.Ativo)
+                return BadRequest("Este utilizador já está ativo.");
+
+            // Atualizar o estado
+            utilizador.EstadoUtilizador = EstadoUtilizador.Ativo;
+            _context.Utilizadores.Update(utilizador);
+            await _context.SaveChangesAsync();
+
+            // Enviar notificação ao próprio utilizador aprovado
+            var notificacao = new Notificacao
+            {
+                UtilizadorId = utilizador.UtilizadorId,
+                Mensagem = "A sua conta foi aprovada por um administrador. Já pode aceder à plataforma.",
+                Lida = 0,
+                DataMensagem = DateTime.Now,
+                PedidoId = null,
+                ItemId = null
+            };
+
+            _context.Notificacaos.Add(notificacao);
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                Message = "Utilizador aprovado com sucesso."
+            });
+        }
+
+        [HttpPut("rejeitar-utilizador/{id}")]
+        public async Task<IActionResult> RejeitarUtilizador(int id)
+        {
+            // Buscar o utilizador
+            var utilizador = await _context.Utilizadores.FindAsync(id);
+
+            if (utilizador == null)
+                return NotFound("Utilizador não encontrado.");
+
+            if (utilizador.EstadoUtilizador == EstadoUtilizador.Inativo)
+                return BadRequest("Este utilizador já foi rejeitado.");
+
+            if (utilizador.EstadoUtilizador == EstadoUtilizador.Ativo)
+                return BadRequest("Não é possível rejeitar um utilizador que já está ativo.");
+
+            // Atualizar o estado para Rejeitado
+            utilizador.EstadoUtilizador = EstadoUtilizador.Inativo;
+            _context.Utilizadores.Update(utilizador);
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                Message = "Utilizador rejeitado com sucesso."
+            });
+        }
+
+        #endregion
+
 
         [HttpPost("completar-registo")]
+        [Authorize]
         public async Task<IActionResult> CompletarRegisto([FromBody] MoradaDTO dto)
         {
             if (!ModelState.IsValid)
@@ -246,8 +394,6 @@ namespace CommuniCare.Controllers
             return Ok(new { Message = "Morada atualizada com sucesso! Registo completo." });
         }
 
-
-
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDTO dto)
         {
@@ -263,6 +409,10 @@ namespace CommuniCare.Controllers
                 return Unauthorized("Email ou password inválidos.");
 
             var utilizador = contacto.Utilizador;
+
+            // Verificar estado
+            if (utilizador.EstadoUtilizador != EstadoUtilizador.Ativo)
+                return Unauthorized("A sua conta ainda não está ativa.");
 
             // Verificar password
             if (!BCrypt.Net.BCrypt.Verify(dto.Password, utilizador.Password))
@@ -286,10 +436,10 @@ namespace CommuniCare.Controllers
 
             var claims = new[]
             {
-        new Claim(ClaimTypes.NameIdentifier, utilizadorId.ToString()),
-        new Claim(ClaimTypes.Name, email),
-        new Claim(ClaimTypes.Role, tipoUtilizadorId.ToString())
-    };
+            new Claim(ClaimTypes.NameIdentifier, utilizadorId.ToString()),
+            new Claim(ClaimTypes.Name, email),
+            new Claim(ClaimTypes.Role, tipoUtilizadorId.ToString())
+            };
 
             var token = new JwtSecurityToken(
                 issuer: jwtSettings.Issuer,

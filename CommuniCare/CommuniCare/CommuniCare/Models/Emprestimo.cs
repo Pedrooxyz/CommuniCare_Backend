@@ -16,4 +16,6 @@ public partial class Emprestimo
     public virtual TransacaoEmprestimo Transacao { get; set; } = null!;
 
     public virtual ICollection<ItemEmprestimo> Items { get; set; } = new List<ItemEmprestimo>();
+
+    public virtual ICollection<ItemEmprestimoUtilizador> ItemEmprestimoUtilizadores { get; set; }
 }

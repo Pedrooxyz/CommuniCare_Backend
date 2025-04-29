@@ -171,7 +171,8 @@ using (var scope = app.Services.CreateScope())
             Password = BCrypt.Net.BCrypt.HashPassword("string"),
             NumCares = 0,
             TipoUtilizadorId = adminTipoId,
-            MoradaId = defaultAddress.MoradaId
+            MoradaId = defaultAddress.MoradaId,
+            EstadoUtilizador = EstadoUtilizador.Ativo
         };
         db.Utilizadores.Add(admin);
         db.SaveChanges();
@@ -205,7 +206,7 @@ if (app.Environment.IsDevelopment())
 app.UseRouting();
 app.UseCors(DevClient);
 
-app.UseAuthentication(); // <--- Muito importante: antes do Authorization
+app.UseAuthentication();
 app.UseAuthorization();
 
 

@@ -2283,3 +2283,13 @@ C:\Users\ferna\Documents\GitHub\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniC
 C:\Users\ferna\Documents\GitHub\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\bin\Debug\net8.0\System.Diagnostics.EventLog.dll
 C:\Users\ferna\Documents\GitHub\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Diagnostics.EventLog.dll
 C:\Users\ferna\Documents\GitHub\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+C:\Users\ferna\Documents\GitHub\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\bin\Debug\net8.0\Castle.Core.dll
+C:\Users\ferna\Documents\GitHub\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.InMemory.dll
+C:\Users\ferna\Documents\GitHub\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\bin\Debug\net8.0\Moq.dll
+C:\Users\ferna\Documents\GitHub\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\bin\Debug\net8.0\xunit.abstractions.dll
+C:\Users\ferna\Documents\GitHub\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\bin\Debug\net8.0\xunit.assert.dll
+C:\Users\ferna\Documents\GitHub\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\bin\Debug\net8.0\xunit.core.dll
+C:\Users\ferna\Documents\GitHub\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\bin\Debug\net8.0\xunit.execution.dotnet.dll
+C:\Users\ferna\Documents\GitHub\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\bin\Debug\net8.0\MockQueryable.Core.dll
+C:\Users\ferna\Documents\GitHub\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\bin\Debug\net8.0\MockQueryable.EntityFrameworkCore.dll
+C:\Users\ferna\Documents\GitHub\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\bin\Debug\net8.0\MockQueryable.Moq.dll

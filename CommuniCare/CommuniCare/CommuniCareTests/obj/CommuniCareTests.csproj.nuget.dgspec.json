@@ -145,6 +145,10 @@
               "target": "Package",
               "version": "[9.0.3, )"
             },
+            "Microsoft.EntityFrameworkCore.InMemory": {
+              "target": "Package",
+              "version": "[8.0.15, )"
+            },
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
               "version": "[9.0.3, )"
@@ -163,6 +167,14 @@
               "target": "Package",
               "version": "[8.0.7, )"
             },
+            "MockQueryable.Moq": {
+              "target": "Package",
+              "version": "[7.0.3, )"
+            },
+            "Moq": {
+              "target": "Package",
+              "version": "[4.20.72, )"
+            },
             "QuestPDF": {
               "target": "Package",
               "version": "[2025.4.0, )"
@@ -174,6 +186,10 @@
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.6.2, )"
+            },
+            "xunit": {
+              "target": "Package",
+              "version": "[2.9.3, )"
             }
           },
           "imports": [

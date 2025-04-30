@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CommuniCareTests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e9431d2cdeaaf86f466b04e187d6dc206f595af9")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d04cba667c655734f4c3da00f698a08dd921cb30")]
 [assembly: System.Reflection.AssemblyProductAttribute("CommuniCareTests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CommuniCareTests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

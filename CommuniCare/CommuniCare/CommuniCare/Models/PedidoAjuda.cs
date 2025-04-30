@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Conventions;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using System;
 using System.Collections.Generic;
 
@@ -32,6 +33,8 @@ public partial class PedidoAjuda
     public int? NPessoas { get; set; }
 
     public int UtilizadorId { get; set; }
+
+    public string? FotografiaPA { get; set; }
 
     public virtual ICollection<Notificacao> Notificacaos { get; set; } = new List<Notificacao>();
 

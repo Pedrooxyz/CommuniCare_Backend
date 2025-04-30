@@ -161,7 +161,8 @@ namespace CommuniCare.Controllers
                 CustoCares = dto.CustoCares,
                 LojaId = lojaAtiva.LojaId,
                 QuantidadeDisponivel = dto.QuantidadeDisponivel,
-                Estado = EstadoArtigo.Disponivel
+                Estado = EstadoArtigo.Disponivel,
+                FotografiaArt = dto.FotografiaArt
             };
 
             _context.Artigos.Add(artigo);

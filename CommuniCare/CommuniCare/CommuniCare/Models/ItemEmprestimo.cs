@@ -13,6 +13,8 @@ public partial class ItemEmprestimo
 
     public byte? Disponivel { get; set; }
 
+    public string? FotografiaItem { get; set; }
+
     public int? ComissaoCares { get; set; }
 
     public int idEmprestador { get; set; }

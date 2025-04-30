@@ -6,5 +6,6 @@
         public DateTime HorarioAjuda { get; set; }
         public int NHoras { get; set; }
         public int NPessoas { get; set; }
+        public string? FotografiaPA { get; set; }
     }
 }

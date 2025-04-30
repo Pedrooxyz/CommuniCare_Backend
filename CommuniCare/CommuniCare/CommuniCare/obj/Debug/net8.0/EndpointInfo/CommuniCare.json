@@ -4971,6 +4971,10 @@
             "type": "integer",
             "format": "int32"
           },
+          "fotografiaArt": {
+            "type": "string",
+            "nullable": true
+          },
           "loja": {
             "$ref": "#/components/schemas/Loja"
           },
@@ -5009,6 +5013,10 @@
           "quantidadeDisponivel": {
             "type": "integer",
             "format": "int32"
+          },
+          "fotografiaArt": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -5306,6 +5314,10 @@
             "format": "int32",
             "nullable": true
           },
+          "fotografiaItem": {
+            "type": "string",
+            "nullable": true
+          },
           "comissaoCares": {
             "type": "integer",
             "format": "int32",
@@ -5360,6 +5372,10 @@
           "comissaoCares": {
             "type": "integer",
             "format": "int32",
+            "nullable": true
+          },
+          "fotografiaItem": {
+            "type": "string",
             "nullable": true
           }
         },
@@ -5648,6 +5664,10 @@
             "type": "integer",
             "format": "int32"
           },
+          "fotografiaPA": {
+            "type": "string",
+            "nullable": true
+          },
           "notificacaos": {
             "type": "array",
             "items": {
@@ -5689,6 +5709,10 @@
           "nPessoas": {
             "type": "integer",
             "format": "int32"
+          },
+          "fotografiaPA": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false

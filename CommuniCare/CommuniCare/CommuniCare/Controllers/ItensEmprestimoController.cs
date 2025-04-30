@@ -135,7 +135,8 @@ namespace CommuniCare.Controllers
                 NomeItem = itemData.NomeItem,
                 DescItem = itemData.DescItem,
                 Disponivel = 0, 
-                ComissaoCares = itemData.ComissaoCares
+                ComissaoCares = itemData.ComissaoCares,
+                FotografiaItem = itemData.FotografiaItem
             };
 
             _context.ItensEmprestimo.Add(itemEmprestimo);

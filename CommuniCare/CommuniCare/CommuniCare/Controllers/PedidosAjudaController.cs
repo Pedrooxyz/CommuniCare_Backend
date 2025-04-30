@@ -140,7 +140,8 @@ namespace CommuniCare.Controllers
                 NHoras = pedidoData.NHoras,
                 NPessoas = pedidoData.NPessoas,
                 UtilizadorId = utilizadorId,
-                Estado = EstadoPedido.Pendente
+                Estado = EstadoPedido.Pendente,
+                FotografiaPA = pedidoData.FotografiaPA
             };
 
             _context.PedidosAjuda.Add(pedido);

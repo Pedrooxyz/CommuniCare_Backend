@@ -26,7 +26,9 @@ public partial class Artigo
     public int? TransacaoId { get; set; }
 
     public int QuantidadeDisponivel { get; set; }
-    
+
+    public string? FotografiaArt { get; set; }
+
     public virtual Loja Loja { get; set; } = null!;
 
     public virtual Venda? Transacao { get; set; }

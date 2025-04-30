@@ -32,7 +32,7 @@ public partial class PedidoAjuda
 
     public int? NPessoas { get; set; }
 
-    public int UtilizadorId { get; set; }
+    public int? UtilizadorId { get; set; }
 
     public string? FotografiaPA { get; set; }
 

@@ -15,7 +15,7 @@ public partial class Notificacao
 
     public int? PedidoId { get; set; }
 
-    public int UtilizadorId { get; set; }
+    public int? UtilizadorId { get; set; }
 
     public int? ItemId { get; set; }
 

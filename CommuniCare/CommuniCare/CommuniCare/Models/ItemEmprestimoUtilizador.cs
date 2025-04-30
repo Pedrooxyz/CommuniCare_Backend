@@ -5,7 +5,7 @@
         public int ItemEmpId { get; set; } 
 
         public int ItemId { get; set; }
-        public int UtilizadorId { get; set; }
+        public int? UtilizadorId { get; set; }
 
         public string TipoRelacao { get; set; }
 

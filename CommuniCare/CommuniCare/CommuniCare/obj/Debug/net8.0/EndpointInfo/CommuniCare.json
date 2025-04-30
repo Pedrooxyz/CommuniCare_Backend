@@ -5100,7 +5100,8 @@
           },
           "utilizadorId": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
           "tipoContactoId": {
             "type": "integer",
@@ -5262,7 +5263,8 @@
         "properties": {
           "utilizadorId": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
           "utilizador": {
             "$ref": "#/components/schemas/Utilizador"
@@ -5394,7 +5396,8 @@
           },
           "utilizadorId": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
           "tipoRelacao": {
             "type": "string",
@@ -5588,7 +5591,8 @@
           },
           "utilizadorId": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
           "itemId": {
             "type": "integer",
@@ -5662,7 +5666,8 @@
           },
           "utilizadorId": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
           "fotografiaPA": {
             "type": "string",
@@ -6085,7 +6090,8 @@
           },
           "utilizadorId": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
           "transacaoId": {
             "type": "integer",
@@ -6116,7 +6122,8 @@
           },
           "utilizadorId": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
           "idVoluntariado": {
             "type": "integer",

@@ -12,7 +12,7 @@ public enum EstadoVoluntariado
 public partial class Voluntariado
 {
     public int PedidoId { get; set; }
-    public int UtilizadorId { get; set; }
+    public int? UtilizadorId { get; set; }
     public int IdVoluntariado { get; set; }
 
     public EstadoVoluntariado Estado { get; set; } = EstadoVoluntariado.Pendente;

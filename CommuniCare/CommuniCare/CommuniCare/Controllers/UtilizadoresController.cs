@@ -16,7 +16,6 @@ using Microsoft.AspNetCore.Authorization;
 using System.Security.Cryptography;
 
 
-//É NECESSÁRIO COLOCAR O ESTADO DO UTILIZADOR
 namespace CommuniCare.Controllers
 {
     [Route("api/[controller]")]
@@ -535,7 +534,6 @@ namespace CommuniCare.Controllers
                 return BadRequest(ModelState);
 
             var utilizadorId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-
             var utilizador = await _context.Utilizadores
                 .Include(u => u.Morada)
                 .Include(u => u.Contactos)
@@ -547,17 +545,35 @@ namespace CommuniCare.Controllers
             if (!BCrypt.Net.BCrypt.Verify(dto.Password, utilizador.Password))
                 return Unauthorized("Password incorreta.");
 
+            // Tornar o utilizador inativo
+            utilizador.EstadoUtilizador = EstadoUtilizador.Inativo;
+
+            // Opcional: anonimizar dados pessoais
+            utilizador.NomeUtilizador = "Utilizador Removido";
+            utilizador.FotoUtil = null;
+            utilizador.Password = null;
+
+            // Tornar FKs null onde necessário
+            var relacoes = await _context.ItemEmprestimoUtilizadores
+                .Where(r => r.UtilizadorId == utilizadorId)
+                .ToListAsync();
+
+            foreach (var r in relacoes)
+                r.UtilizadorId = null;
+
+            // Remover morada/contactos (opcional)
             if (utilizador.Contactos != null)
                 _context.Contactos.RemoveRange(utilizador.Contactos);
 
             if (utilizador.Morada != null)
                 _context.Morada.Remove(utilizador.Morada);
 
-            _context.Utilizadores.Remove(utilizador);
             await _context.SaveChangesAsync();
 
-            return Ok(new { Message = "Conta apagada com sucesso." });
+            return Ok(new { Message = "Conta desativada com sucesso." });
         }
+
+
 
         #region Reset Password
 

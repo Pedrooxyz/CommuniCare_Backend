@@ -9,7 +9,7 @@ public partial class Contacto
 
     public string? NumContacto { get; set; }
 
-    public int UtilizadorId { get; set; }
+    public int? UtilizadorId { get; set; }
 
     public int TipoContactoId { get; set; }
 

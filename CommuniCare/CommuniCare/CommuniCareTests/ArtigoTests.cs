@@ -73,9 +73,67 @@ namespace CommuniCareTests
 
         #endregion
 
+        #region PublicarArtigos
+
+        [TestMethod]
+        public async Task PublicarArtigo_ValidData_ReturnsOk()
+        {
+            // Arrange
+            var ArtigoData = new ArtigoDto
+            {
+                NomeArtigo = "Artigo Teste",
+                DescArtigo = "Descrição do artigo",
+                CustoCares = 100,
+                QuantidadeDisponivel = 10,
+                FotografiaArt = "foto.jpg"
+            };
+
+            var admin = new Utilizador
+            {
+                UtilizadorId = 2,
+                TipoUtilizadorId = 2,
+                NomeUtilizador = "Admin"
+            };
+
+            var utilizadoresList = new List<Utilizador> { admin }.AsQueryable();
+            var mockUtilizadoresDbSet = utilizadoresList.BuildMockDbSet();
+
+            var mockArtigosDbSet = new Mock<DbSet<Artigo>>();
+
+            _mockContext.Setup(c => c.Utilizadores).Returns(mockUtilizadoresDbSet.Object);
+            _mockContext.Setup(c => c.Artigos).Returns(mockArtigosDbSet.Object);
+
+            _mockContext.Setup(c => c.Utilizadores.FindAsync(1)).ReturnsAsync(admin);
+            _mockContext.Setup(c => c.SaveChangesAsync(default)).ReturnsAsync(1);
+
+            // Simula utilizador autenticado
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, "2")
+            };
+            var identity = new ClaimsIdentity(claims, "TestAuth");
+            var principal = new ClaimsPrincipal(identity);
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext { User = principal }
+            };
+
+            // Act
+            var result = await _controller.PublicarArtigo(ArtigoData);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(OkObjectResult));
+            //var okResult = result as OkObjectResult;
+
+            //// Mensagem corrigida para publicação de artigo
+            //Assert.AreEqual("Artigo publicado com sucesso.", okResult.Value);
+        }
+
         #endregion
 
-         #region Testes de Erro
+        #endregion
+
+        #region Testes de Erro
 
         #region GetArtigosDisponiveis
 
@@ -99,6 +157,50 @@ namespace CommuniCareTests
         }
 
         #endregion
+
+        #region PublicarArtigos
+
+[TestMethod]
+public async Task PublicarArtigo_ReturnsBadRequest_WhenNoActiveLoja()
+{
+    // Arrange
+    var utilizadorId = 1;
+    var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+    {
+    new Claim(ClaimTypes.NameIdentifier, utilizadorId.ToString())
+    }, "mock"));
+
+    _controller.ControllerContext = new ControllerContext
+    {
+        HttpContext = new DefaultHttpContext { User = user }
+    };
+
+    var utilizador = new Utilizador { UtilizadorId = utilizadorId };
+
+    _mockContext.Setup(c => c.Utilizadores.FindAsync(utilizadorId))
+                .ReturnsAsync(utilizador);
+    _mockContext.Setup(c => c.Lojas.FirstOrDefaultAsync(It.IsAny<Expression<Func<Loja, bool>>>(), default))
+                .ReturnsAsync((Loja)null); // Nenhuma loja ativa
+
+    var dto = new ArtigoDto
+    {
+        NomeArtigo = "Novo Artigo",
+        DescArtigo = "Descrição",
+        CustoCares = 100,
+        QuantidadeDisponivel = 5,
+        FotografiaArt = "foto.jpg"
+    };
+
+    // Act
+    var result = await _controller.PublicarArtigo(dto);
+
+    // Assert
+    Assert.IsInstanceOfType(result.Result, typeof(BadRequestObjectResult));
+    var badRequestResult = result.Result as BadRequestObjectResult;
+    Assert.AreEqual("Não existe nenhuma loja ativa no momento.", badRequestResult.Value);
+}
+
+#endregion
 
         #endregion
 

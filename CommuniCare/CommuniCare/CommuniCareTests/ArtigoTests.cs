@@ -131,6 +131,88 @@ namespace CommuniCareTests
 
         #endregion
 
+        #region Indisponibilizar
+
+[TestMethod]
+public async Task IndisponibilizarArtigo_Admin_ReturnsOk()
+{
+    // Arrange
+    var artigo = new Artigo { ArtigoId = 1, NomeArtigo = "Artigo Teste", Estado = EstadoArtigo.Disponivel };
+    var utilizador = new Utilizador { UtilizadorId = 2, TipoUtilizadorId = 2, NomeUtilizador = "Admin" };
+
+    _mockContext.Setup(c => c.Artigos.FindAsync(1)).ReturnsAsync(artigo);
+    _mockContext.Setup(c => c.Utilizadores.FindAsync(2)).ReturnsAsync(utilizador);
+    _mockContext.Setup(c => c.SaveChangesAsync(default)).ReturnsAsync(1);
+
+    // Simula utilizador autenticado
+    var claims = new List<Claim> { new Claim(ClaimTypes.NameIdentifier, "2") };
+    var identity = new ClaimsIdentity(claims, "TestAuth");
+    var principal = new ClaimsPrincipal(identity);
+    _controller.ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext { User = principal } };
+
+    // Act
+    var result = await _controller.IndisponibilizarArtigo(1);
+
+    // Assert
+    Assert.IsInstanceOfType(result, typeof(OkObjectResult));
+    var okResult = result as OkObjectResult;
+    Assert.AreEqual("Artigo indisponibilizado com sucesso.", okResult.Value);
+}
+
+#endregion
+        
+        #region ReporStock
+
+        [TestMethod]
+        public async Task ReporStock_ReturnsOk_WhenSuccessful()
+        {
+            // Arrange
+            var utilizadorId = 1;
+            var artigoId = 10;
+            var lojaAtiva = new Loja { LojaId = 5, Estado = EstadoLoja.Ativo };
+            var artigo = new Artigo
+            {
+                ArtigoId = artigoId,
+                NomeArtigo = "Artigo Teste",
+                DescArtigo = "Descrição",
+                CustoCares = 100,
+                QuantidadeDisponivel = 2,
+                LojaId = lojaAtiva.LojaId,
+                Estado = EstadoArtigo.Disponivel
+            };
+
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+        new Claim(ClaimTypes.NameIdentifier, utilizadorId.ToString())
+            }, "mock"));
+
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext { User = user }
+            };
+
+            _mockContext.Setup(c => c.Utilizadores.FindAsync(utilizadorId))
+                        .ReturnsAsync(new Utilizador { UtilizadorId = utilizadorId });
+            _mockContext.Setup(c => c.Lojas.FirstOrDefaultAsync(It.IsAny<Expression<Func<Loja, bool>>>(), default))
+                        .ReturnsAsync(lojaAtiva);
+            _mockContext.Setup(c => c.Artigos.FindAsync(artigoId))
+                        .ReturnsAsync(artigo);
+
+            var dto = new ReporStockDto { Quantidade = 5 };
+
+            // Act
+            var result = await _controller.ReporStock(artigoId, dto);
+
+            // Assert
+            Assert.IsInstanceOfType(result.Result, typeof(OkObjectResult));
+            var okResult = result.Result as OkObjectResult;
+            var resposta = okResult.Value as ArtigoRespostaDto;
+            Assert.AreEqual(7, resposta.QuantidadeDisponivel); // 2 + 5
+            Assert.AreEqual(artigoId, resposta.ArtigoId);
+        }
+
+        #endregion
+
         #endregion
 
         #region Testes de Erro
@@ -201,6 +283,68 @@ public async Task PublicarArtigo_ReturnsBadRequest_WhenNoActiveLoja()
 }
 
 #endregion
+
+        #region Indisponibilizar
+
+        [TestMethod]
+        public async Task IndisponibilizarArtigo_ReturnsForbid_WhenUserIsNotAdmin()
+        {
+            // Arrange
+            int artigoId = 1;
+            var userIdClaim = new Claim(ClaimTypes.NameIdentifier, "1");
+            var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(new[] { userIdClaim }));
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext { User = claimsPrincipal }
+            };
+
+            // Act
+            var result = await _controller.IndisponibilizarArtigo(artigoId);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(ForbidResult));
+        }
+
+        #endregion
+        
+        #region ReporStock
+
+        [TestMethod]
+        public async Task ReporStock_ReturnsBadRequest_WhenQuantidadeInvalid()
+        {
+            // Arrange
+            var utilizadorId = 1;
+            var artigoId = 10;
+            var lojaAtiva = new Loja { LojaId = 5, Estado = EstadoLoja.Ativo };
+
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+        new Claim(ClaimTypes.NameIdentifier, utilizadorId.ToString())
+            }, "mock"));
+
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext { User = user }
+            };
+
+            _mockContext.Setup(c => c.Utilizadores.FindAsync(utilizadorId))
+                        .ReturnsAsync(new Utilizador { UtilizadorId = utilizadorId });
+            _mockContext.Setup(c => c.Lojas.FirstOrDefaultAsync(It.IsAny<Expression<Func<Loja, bool>>>(), default))
+                        .ReturnsAsync(lojaAtiva);
+
+            var dto = new ReporStockDto { Quantidade = 0 }; // Quantidade inválida
+
+            // Act
+            var result = await _controller.ReporStock(artigoId, dto);
+
+            // Assert
+            Assert.IsInstanceOfType(result.Result, typeof(BadRequestObjectResult));
+            var badRequestResult = result.Result as BadRequestObjectResult;
+            Assert.AreEqual("A quantidade deve ser maior que zero.", badRequestResult.Value);
+        }
+
+
+        #endregion
 
         #endregion
 

@@ -643,53 +643,73 @@ namespace CommuniCareTests
         [TestMethod]
         public async Task ConcluirPedidoAjuda_ValidUser_ReturnsOk()
         {
-            // Arrange
-            var pedidoId = 1;
+            //  Arrange 
+            const int pedidoId = 1;
+            const int requesterId = 2;          
 
+            
             var pedido = new PedidoAjuda
             {
                 PedidoId = pedidoId,
                 Estado = EstadoPedido.EmProgresso,
-                UtilizadorId = 2,
-                Utilizador = new Utilizador { UtilizadorId = 2, NomeUtilizador = "User" },
-                Voluntariados = new List<Voluntariado>()   
+                UtilizadorId = requesterId,
+                Utilizador = new Utilizador { UtilizadorId = requesterId, NomeUtilizador = "User" },
+                Voluntariados = new List<Voluntariado>()
             };
 
             
             var pedidosDbSet = new[] { pedido }
                                .AsQueryable()
                                .BuildMockDbSet();
+            _mockContext.Setup(c => c.PedidosAjuda).Returns(pedidosDbSet.Object);
 
-            
+           
             var adminsDbSet = new[]
             {
-                new Utilizador { UtilizadorId = 3, TipoUtilizadorId = 2 }   // 2 == administrador
-            }
+        new Utilizador { UtilizadorId = 3, TipoUtilizadorId = 2 }
+    }
             .AsQueryable()
             .BuildMockDbSet();
-
-            _mockContext.Setup(c => c.PedidosAjuda).Returns(pedidosDbSet.Object);
             _mockContext.Setup(c => c.Utilizadores).Returns(adminsDbSet.Object);
 
             
-            var user = new ClaimsPrincipal(
-                           new ClaimsIdentity(
-                               new[] { new Claim(ClaimTypes.NameIdentifier, "2") }));
+            var notificacoesDbSet = new Mock<DbSet<Notificacao>>();
+            _mockContext.Setup(c => c.Notificacaos).Returns(notificacoesDbSet.Object);
 
+            
+            _mockContext.Setup(c => c.SaveChangesAsync(It.IsAny<CancellationToken>()))
+                        .ReturnsAsync(1);
+
+            
             _controller.ControllerContext = new ControllerContext
             {
-                HttpContext = new DefaultHttpContext { User = user }
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new ClaimsPrincipal(
+                        new ClaimsIdentity(
+                            new[] { new Claim(ClaimTypes.NameIdentifier, requesterId.ToString()) },
+                            "TestAuth"))
+                }
             };
 
-            //Act 
+            //  Act 
             var result = await _controller.ConcluirPedidoAjuda(pedidoId);
 
-            //Assert 
+            //  Assert 
             Assert.IsInstanceOfType(result, typeof(OkObjectResult));
             var ok = (OkObjectResult)result;
             Assert.AreEqual(
                 "O pedido foi marcado como concluído. Os administradores foram notificados para validar a conclusão.",
                 ok.Value);
+
+            
+            Assert.AreEqual(EstadoPedido.Concluido, pedido.Estado);
+
+           
+            notificacoesDbSet.Verify(d => d.Add(It.IsAny<Notificacao>()), Times.Once);
+
+            
+            _mockContext.Verify(c => c.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [TestMethod]

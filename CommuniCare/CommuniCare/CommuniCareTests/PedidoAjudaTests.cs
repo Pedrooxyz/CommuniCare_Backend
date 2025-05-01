@@ -1199,41 +1199,48 @@ namespace CommuniCareTests
         [TestMethod]
         public async Task GetPedidosAjudaDisponiveis_Success_ReturnsPedidosDisponiveis()
         {
-            // Arrange: Criar dados simulados
+            //  Arrange 
+            const int currentUserId = 1;
+
             var pedidos = new List<PedidoAjuda>
     {
         new PedidoAjuda { PedidoId = 1, UtilizadorId = 2, Estado = EstadoPedido.Aberto },
-        new PedidoAjuda { PedidoId = 2, UtilizadorId = 3, Estado = EstadoPedido.Aberto }
+        new PedidoAjuda { PedidoId = 2, UtilizadorId = 3, Estado = EstadoPedido.Aberto },
+        
+        new PedidoAjuda { PedidoId = 3, UtilizadorId = currentUserId, Estado = EstadoPedido.Aberto },
+        new PedidoAjuda { PedidoId = 4, UtilizadorId = 9, Estado = EstadoPedido.Pendente }
     };
 
-            var userId = 1;
-            var userClaims = new List<Claim>
-    {
-        new Claim(ClaimTypes.NameIdentifier, userId.ToString())
-    };
-            var userIdentity = new ClaimsIdentity(userClaims);
-            var userPrincipal = new ClaimsPrincipal(userIdentity);
+            
+            var pedidosDbSet = pedidos.AsQueryable().BuildMockDbSet();
+            _mockContext.Setup(c => c.PedidosAjuda).Returns(pedidosDbSet.Object);
+
+            
             _controller.ControllerContext = new ControllerContext
             {
-                HttpContext = new DefaultHttpContext { User = userPrincipal }
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new ClaimsPrincipal(
+                               new ClaimsIdentity(
+                                   new[] { new Claim(ClaimTypes.NameIdentifier, currentUserId.ToString()) },
+                                   "TestAuth"))
+                }
             };
 
-            var mockDbSetPedidos = new Mock<DbSet<PedidoAjuda>>();
-            mockDbSetPedidos.Setup(p => p.Where(It.IsAny<Expression<Func<PedidoAjuda, bool>>>())).Returns(pedidos.AsQueryable());
-            mockDbSetPedidos.Setup(p => p.ToListAsync(It.IsAny<CancellationToken>())).ReturnsAsync(pedidos);
-            _mockContext.Setup(c => c.PedidosAjuda).Returns(mockDbSetPedidos.Object);
-
-            // Act
+            //  Act 
             var result = await _controller.GetPedidosAjudaDisponiveis();
 
-            // Assert
-            Assert.IsInstanceOfType(result.Result, typeof(OkObjectResult));  // Verifique se a resposta é Ok
-            var okResult = result.Result as OkObjectResult;
-            Assert.IsNotNull(okResult);
+            //  Assert 
+            Assert.IsInstanceOfType(result.Result, typeof(OkObjectResult));
+            var ok = (OkObjectResult)result.Result;
 
-            var returnedPedidos = okResult.Value as IEnumerable<PedidoAjuda>;
-            Assert.IsNotNull(returnedPedidos);
-            Assert.AreEqual(2, returnedPedidos.Count());
+            var returned = ok.Value as IEnumerable<PedidoAjuda>;
+            Assert.IsNotNull(returned);
+
+            var list = returned.ToList();
+            Assert.AreEqual(2, list.Count);                 // só pedido 1 e 2
+            Assert.IsTrue(list.All(p => p.Estado == EstadoPedido.Aberto
+                                     && p.UtilizadorId != currentUserId));
         }
 
         #endregion

@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Http;
 using CommuniCare.Controllers;
 using CommuniCare.DTOs;
 using CommuniCare.Models;
+using MockQueryable.Moq;
 
 namespace CommuniCareTests
 {
@@ -95,35 +96,47 @@ namespace CommuniCareTests
         [TestMethod]
         public async Task VerNotificacoes_DeveRetornarOk_SeNotificacoesExistirem()
         {
-            // Arrange
-            var utilizadorId = 1;
+            /*  Arrange  */
+            const int utilizadorId = 1;
 
-            var notificacoes = new List<Notificacao>
+            var dados = new[]
+            {
+        new Notificacao
         {
-            new Notificacao { NotificacaoId = 1, UtilizadorId = utilizadorId, Mensagem = "Notificação 1", Lida = 0, DataMensagem = DateTime.Now.AddMinutes(-10) },
-            new Notificacao { NotificacaoId = 2, UtilizadorId = utilizadorId, Mensagem = "Notificação 2", Lida = 0, DataMensagem = DateTime.Now.AddMinutes(-5) }
-        }.AsQueryable();
+            NotificacaoId = 1,
+            UtilizadorId  = utilizadorId,
+            Mensagem      = "Notificação 1",
+            Lida          = 0,
+            DataMensagem  = DateTime.Now.AddMinutes(-10)
+        },
+        new Notificacao
+        {
+            NotificacaoId = 2,
+            UtilizadorId  = utilizadorId,
+            Mensagem      = "Notificação 2",
+            Lida          = 0,
+            DataMensagem  = DateTime.Now.AddMinutes(-5)
+        }
+    };
 
-            var mockSet = new Mock<DbSet<Notificacao>>();
-            mockSet.As<IAsyncEnumerable<Notificacao>>()
-                   .Setup(m => m.GetAsyncEnumerator(It.IsAny<CancellationToken>()))
-                   .Returns(new TestAsyncEnumerator<Notificacao>(notificacoes.GetEnumerator()));
+           
+            var notificacoesDb = dados.AsQueryable().BuildMockDbSet();
 
-            mockSet.As<IQueryable<Notificacao>>().Setup(m => m.Provider).Returns(new TestAsyncQueryProvider<Notificacao>(notificacoes.Provider));
-            mockSet.As<IQueryable<Notificacao>>().Setup(m => m.Expression).Returns(notificacoes.Expression);
-            mockSet.As<IQueryable<Notificacao>>().Setup(m => m.ElementType).Returns(notificacoes.ElementType);
-            mockSet.As<IQueryable<Notificacao>>().Setup(m => m.GetEnumerator()).Returns(notificacoes.GetEnumerator());
+            
+            _mockContext.Setup(c => c.Notificacaos).Returns(notificacoesDb.Object);
 
-            _mockContext.Setup(c => c.Set<Notificacao>()).Returns(mockSet.Object);
-
-            // Act
+            /*  Act  */
             var result = await _controller.VerNotificacoes();
 
-            // Assert
+            /*  Assert  */
             Assert.IsInstanceOfType(result, typeof(OkObjectResult));
-            var okResult = result as OkObjectResult;
-            var notificacoesRetornadas = okResult.Value as List<Notificacao>;
-            Assert.AreEqual(2, notificacoesRetornadas.Count);
+            var ok = (OkObjectResult)result;
+            var lista = ok.Value as IEnumerable<Notificacao>;
+
+            Assert.IsNotNull(lista);
+            var notifs = lista.ToList();
+            Assert.AreEqual(2, notifs.Count);
+            Assert.IsTrue(notifs.All(n => n.UtilizadorId == utilizadorId));
         }
 
         [TestMethod]
@@ -147,30 +160,37 @@ namespace CommuniCareTests
         [TestMethod]
         public async Task VerNotificacoes_DeveRetornarNotFound_SeNaoHouverNotificacoes()
         {
-            // Arrange
-            var utilizadorId = 1;
+            /*  Arrange  */
+            const int userId = 5;
 
-            var notificacoes = new List<Notificacao>().AsQueryable();
+            
+            var notificacoesDb = new List<Notificacao>()
+                                 .AsQueryable()
+                                 .BuildMockDbSet();     
 
-            var mockSet = new Mock<DbSet<Notificacao>>();
-            mockSet.As<IAsyncEnumerable<Notificacao>>()
-                   .Setup(m => m.GetAsyncEnumerator(It.IsAny<CancellationToken>()))
-                   .Returns(new TestAsyncEnumerator<Notificacao>(notificacoes.GetEnumerator()));
+            _mockContext.Setup(c => c.Notificacaos).Returns(notificacoesDb.Object);
 
-            mockSet.As<IQueryable<Notificacao>>().Setup(m => m.Provider).Returns(new TestAsyncQueryProvider<Notificacao>(notificacoes.Provider));
-            mockSet.As<IQueryable<Notificacao>>().Setup(m => m.Expression).Returns(notificacoes.Expression);
-            mockSet.As<IQueryable<Notificacao>>().Setup(m => m.ElementType).Returns(notificacoes.ElementType);
-            mockSet.As<IQueryable<Notificacao>>().Setup(m => m.GetEnumerator()).Returns(notificacoes.GetEnumerator());
+            
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new ClaimsPrincipal(
+                             new ClaimsIdentity(
+                               new[] { new Claim(ClaimTypes.NameIdentifier, userId.ToString()) },
+                               "TestAuth"))
+                }
+            };
 
-            _mockContext.Setup(c => c.Set<Notificacao>()).Returns(mockSet.Object);
+            /*  Act  */
+            var resultado = await _controller.VerNotificacoes();
 
-            // Act
-            var result = await _controller.VerNotificacoes();
+            /*  Assert  */
+            Assert.IsInstanceOfType(resultado, typeof(NotFoundObjectResult));
+            var nf = (NotFoundObjectResult)resultado;
+            Assert.AreEqual("Não há notificações para mostrar.", nf.Value);
 
-            // Assert
-            Assert.IsInstanceOfType(result, typeof(NotFoundObjectResult));
-            var notFoundResult = result as NotFoundObjectResult;
-            Assert.AreEqual("Não há notificações para mostrar.", notFoundResult.Value);
+            
         }
         #endregion
     }

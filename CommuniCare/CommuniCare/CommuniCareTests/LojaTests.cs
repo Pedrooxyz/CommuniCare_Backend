@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Http;
 using CommuniCare.Controllers;
 using CommuniCare.DTOs;
 using CommuniCare.Models;
+using MockQueryable.Moq;
 
 namespace CommuniCareTests
 {
@@ -25,6 +26,7 @@ namespace CommuniCareTests
         private Mock<DbSet<Utilizador>> _mockUtilizadores;
         private Mock<DbSet<Loja>> _mockLojas;
         private LojasController _controller;
+        private Mock<CommuniCareContext> _ctx;
 
         [TestInitialize]
         public void Setup()
@@ -99,44 +101,74 @@ namespace CommuniCareTests
         [TestMethod]
         public async Task CriarLoja_DeveRetornarCreated_SeLojaCriadaComSucesso()
         {
-            // Arrange
-            var utilizador = new Utilizador { UtilizadorId = 1, TipoUtilizadorId = 2 };
-            _mockUtilizadores.Setup(m => m.FindAsync(1)).ReturnsAsync(utilizador);
+            /*  Arrange  */
+            const int adminId = 1;
 
+            
+            var admin = new Utilizador { UtilizadorId = adminId, TipoUtilizadorId = 2 };
+            var usersDbMock = new[] { admin }.AsQueryable().BuildMockDbSet();
+            usersDbMock
+                .Setup(d => d.FindAsync(It.IsAny<object[]>()))
+                .ReturnsAsync(admin);
+
+            
             var lojaAtiva = new Loja { LojaId = 1, NomeLoja = "Loja Ativa", Estado = EstadoLoja.Ativo };
-            var lojasData = new List<Loja> { lojaAtiva }.AsQueryable();
+            var lojasLista = new List<Loja> { lojaAtiva };
+            var lojasDbMock = lojasLista.AsQueryable().BuildMockDbSet();
 
-            var mockSet = new Mock<DbSet<Loja>>();
-            mockSet.As<IAsyncEnumerable<Loja>>()
-                   .Setup(m => m.GetAsyncEnumerator(It.IsAny<CancellationToken>()))
-                   .Returns(new TestAsyncEnumerator<Loja>(lojasData.GetEnumerator()));
+            
+            Loja novaLoja = null!;
+            lojasDbMock
+                .Setup(d => d.Add(It.IsAny<Loja>()))
+                .Callback<Loja>(l => { novaLoja = l; lojasLista.Add(l); });
 
-            mockSet.As<IQueryable<Loja>>().Setup(m => m.Provider).Returns(new TestAsyncQueryProvider<Loja>(lojasData.Provider));
-            mockSet.As<IQueryable<Loja>>().Setup(m => m.Expression).Returns(lojasData.Expression);
-            mockSet.As<IQueryable<Loja>>().Setup(m => m.ElementType).Returns(lojasData.ElementType);
-            mockSet.As<IQueryable<Loja>>().Setup(m => m.GetEnumerator()).Returns(lojasData.GetEnumerator);
+            
+            var ctx = new Mock<CommuniCareContext>();
+            ctx.Setup(c => c.Utilizadores).Returns(usersDbMock.Object);
+            ctx.Setup(c => c.Lojas).Returns(lojasDbMock.Object);
+            ctx.Setup(c => c.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
-            var listaInterna = lojasData.ToList();
-            mockSet.Setup(m => m.Add(It.IsAny<Loja>())).Callback<Loja>(l => listaInterna.Add(l));
+            
+            var controller = new LojasController(ctx.Object)
+            {
+                ControllerContext = new ControllerContext
+                {
+                    HttpContext = new DefaultHttpContext
+                    {
+                        User = new ClaimsPrincipal(
+                                 new ClaimsIdentity(
+                                   new[] { new Claim(ClaimTypes.NameIdentifier, adminId.ToString()) },
+                                   "TestAuth"))
+                    }
+                }
+            };
 
-            _mockContext.Setup(c => c.Set<Loja>()).Returns(mockSet.Object);
-            _mockContext.Setup(c => c.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
+            var dto = new LojaDto { NomeLoja = "Nova Loja", DescLoja = "Descrição" };
 
-            var lojaDto = new LojaDto { NomeLoja = "Nova Loja", DescLoja = "Descrição" };
+            /*  Act  */
+            var result = await controller.CriarLoja(dto);
 
-            // Act
-            var result = await _controller.CriarLoja(lojaDto);
-
-            // Assert
+            /*  Assert  */
             Assert.IsInstanceOfType(result, typeof(CreatedAtActionResult));
-            var createdResult = result as CreatedAtActionResult;
-            Assert.AreEqual("GetLoja", createdResult.ActionName);
-            var createdLoja = createdResult.Value as dynamic;
-            Assert.AreEqual("Nova Loja", createdLoja.nomeLoja);
-            Assert.AreEqual(EstadoLoja.Ativo.ToString(), createdLoja.estado);
+            var created = (CreatedAtActionResult)result;
 
-            mockSet.Verify(m => m.Add(It.IsAny<Loja>()), Times.Once());
-            _mockContext.Verify(c => c.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once());
+            
+            var payload = created.Value!;
+            var t = payload.GetType();
+            var nome = t.GetProperty("nomeLoja")!.GetValue(payload);
+            var estado = t.GetProperty("estado")!.GetValue(payload);
+
+            Assert.AreEqual("Nova Loja", nome);
+            Assert.AreEqual(EstadoLoja.Ativo.ToString(), estado);
+
+            
+            Assert.AreEqual(EstadoLoja.Inativo, lojaAtiva.Estado);
+            Assert.IsNotNull(novaLoja);
+            Assert.AreEqual(EstadoLoja.Ativo, novaLoja.Estado);
+
+            
+            lojasDbMock.Verify(d => d.Add(It.IsAny<Loja>()), Times.Once);
+            ctx.Verify(c => c.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
         }
 
 
@@ -197,43 +229,76 @@ namespace CommuniCareTests
         [TestMethod]
         public async Task AtivarLoja_DeveRetornarOk_SeLojaAtivadaComSucesso()
         {
-            // Arrange
-            var utilizador = new Utilizador { UtilizadorId = 1, TipoUtilizadorId = 2 };
-            _mockUtilizadores.Setup(m => m.FindAsync(1)).ReturnsAsync(utilizador);
+            /*  Arrange  */
+            const int adminId = 1;
+            const int lojaId1 = 1;
+            const int lojaId2 = 2;
 
-            var lojaParaAtivar = new Loja { LojaId = 1, NomeLoja = "Loja 1", Estado = EstadoLoja.Inativo };
-            var outraLoja = new Loja { LojaId = 2, NomeLoja = "Loja 2", Estado = EstadoLoja.Ativo };
+           
+            var admin = new Utilizador { UtilizadorId = adminId, TipoUtilizadorId = 2 };
 
-            var lojasData = new List<Loja> { lojaParaAtivar, outraLoja }.AsQueryable();
-            var mockLojasData = lojasData.ToList(); // precisa estar em lista para ser modificável
+            var utilizadoresDb = new[] { admin }
+                                 .AsQueryable()
+                                 .BuildMockDbSet();
 
-            _mockLojas.As<IQueryable<Loja>>().Setup(m => m.Provider).Returns(mockLojasData.AsQueryable().Provider);
-            _mockLojas.As<IQueryable<Loja>>().Setup(m => m.Expression).Returns(mockLojasData.AsQueryable().Expression);
-            _mockLojas.As<IQueryable<Loja>>().Setup(m => m.ElementType).Returns(mockLojasData.AsQueryable().ElementType);
-            _mockLojas.As<IQueryable<Loja>>().Setup(m => m.GetEnumerator()).Returns(mockLojasData.GetEnumerator());
-            _mockLojas.Setup(m => m.FindAsync(1)).ReturnsAsync(lojaParaAtivar);
+            utilizadoresDb
+                .Setup(d => d.FindAsync(It.IsAny<object[]>()))
+                .ReturnsAsync(admin);
 
-            _mockContext.Setup(c => c.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
+            _mockContext.Setup(c => c.Utilizadores).Returns(utilizadoresDb.Object);
 
-            // Act
-            var result = await _controller.AtivarLoja(1);
+            
+            var lojaParaAtivar = new Loja { LojaId = lojaId1, NomeLoja = "Loja 1", Estado = EstadoLoja.Inativo };
+            var outraLoja = new Loja { LojaId = lojaId2, NomeLoja = "Loja 2", Estado = EstadoLoja.Ativo };
 
-            // Assert
+            var lojasDb = new[] { lojaParaAtivar, outraLoja }
+                          .AsQueryable()
+                          .BuildMockDbSet();
+
+            lojasDb
+                .Setup(d => d.FindAsync(It.IsAny<object[]>()))
+                .ReturnsAsync(lojaParaAtivar);
+
+            _mockContext.Setup(c => c.Lojas).Returns(lojasDb.Object);
+
+            _mockContext.Setup(c => c.SaveChangesAsync(It.IsAny<CancellationToken>()))
+                        .ReturnsAsync(1);
+
+            
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new ClaimsPrincipal(
+                             new ClaimsIdentity(
+                               new[] { new Claim(ClaimTypes.NameIdentifier, adminId.ToString()) },
+                               "TestAuth"))
+                }
+            };
+
+            /*  Act  */
+            var result = await _controller.AtivarLoja(lojaId1);
+
+            /*  Assert  */
             Assert.IsInstanceOfType(result, typeof(OkObjectResult));
-            var okResult = result as OkObjectResult;
+            var ok = (OkObjectResult)result;
 
-            // Cast para objeto anônimo via reflexão
-            var value = okResult.Value;
-            var type = value.GetType();
-            var mensagem = type.GetProperty("mensagem")?.GetValue(value)?.ToString();
-            var lojaId = (int?)type.GetProperty("lojaId")?.GetValue(value);
-            var estado = type.GetProperty("estado")?.GetValue(value)?.ToString();
+            
+            var value = ok.Value;
+            var t = value.GetType();
+            var msg = t.GetProperty("mensagem")?.GetValue(value)?.ToString();
+            var id = (int?)t.GetProperty("lojaId")?.GetValue(value);
+            var estado = t.GetProperty("estado")?.GetValue(value)?.ToString();
 
-            Assert.AreEqual("Loja ativada com sucesso.", mensagem);
-            Assert.AreEqual(1, lojaId);
+            Assert.AreEqual("Loja ativada com sucesso.", msg);
+            Assert.AreEqual(lojaId1, id);
             Assert.AreEqual(EstadoLoja.Ativo.ToString(), estado);
 
-            _mockContext.Verify(c => c.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once());
+            
+            Assert.AreEqual(EstadoLoja.Ativo, lojaParaAtivar.Estado);
+            Assert.AreEqual(EstadoLoja.Inativo, outraLoja.Estado);
+
+            _mockContext.Verify(c => c.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
         }
 
 

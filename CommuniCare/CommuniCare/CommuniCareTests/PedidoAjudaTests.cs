@@ -589,59 +589,51 @@ namespace CommuniCareTests
         {
             // Arrange
             var pedidoId = 1;
+
             var pedido = new PedidoAjuda
             {
                 PedidoId = pedidoId,
                 Estado = EstadoPedido.EmProgresso,
                 UtilizadorId = 2,
                 Utilizador = new Utilizador { UtilizadorId = 2, NomeUtilizador = "User" },
-                Voluntariados = new List<Voluntariado>() // Mock dos voluntários, se necessário
+                Voluntariados = new List<Voluntariado>()   
             };
 
-            // Simulação do DbSet de PedidoAjuda
-            var mockDbSetPedidos = new Mock<DbSet<PedidoAjuda>>();
-            mockDbSetPedidos.Setup(m => m.FindAsync(It.IsAny<object[]>())).ReturnsAsync(pedido);
+            
+            var pedidosDbSet = new[] { pedido }
+                               .AsQueryable()
+                               .BuildMockDbSet();
 
-            // Para simular o comportamento de Include
-            mockDbSetPedidos.Setup(m => m.Include(It.IsAny<string>())).Returns(mockDbSetPedidos.Object);
+            
+            var adminsDbSet = new[]
+            {
+                new Utilizador { UtilizadorId = 3, TipoUtilizadorId = 2 }   // 2 == administrador
+            }
+            .AsQueryable()
+            .BuildMockDbSet();
 
-            // Simulação do DbSet de Utilizadores (para buscar admins)
-            var mockDbSetUtilizadores = new Mock<DbSet<Utilizador>>();
-            var admins = new List<Utilizador>
-    {
-        new Utilizador { UtilizadorId = 3, TipoUtilizadorId = 2 } // Administrador
-    }.AsQueryable();
+            _mockContext.Setup(c => c.PedidosAjuda).Returns(pedidosDbSet.Object);
+            _mockContext.Setup(c => c.Utilizadores).Returns(adminsDbSet.Object);
 
-            mockDbSetUtilizadores.As<IQueryable<Utilizador>>().Setup(m => m.Provider).Returns(admins.Provider);
-            mockDbSetUtilizadores.As<IQueryable<Utilizador>>().Setup(m => m.Expression).Returns(admins.Expression);
-            mockDbSetUtilizadores.As<IQueryable<Utilizador>>().Setup(m => m.ElementType).Returns(admins.ElementType);
-            mockDbSetUtilizadores.As<IQueryable<Utilizador>>().Setup(m => m.GetEnumerator()).Returns(admins.GetEnumerator());
+            
+            var user = new ClaimsPrincipal(
+                           new ClaimsIdentity(
+                               new[] { new Claim(ClaimTypes.NameIdentifier, "2") }));
 
-            _mockContext.Setup(c => c.PedidosAjuda).Returns(mockDbSetPedidos.Object);
-            _mockContext.Setup(c => c.Utilizadores).Returns(mockDbSetUtilizadores.Object);
-
-            // Mock do SaveChangesAsync
-            _mockContext.Setup(c => c.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
-
-            // Simulação do utilizador autenticado (ID 2)
-            var userClaims = new List<Claim>
-    {
-        new Claim(ClaimTypes.NameIdentifier, "2")  // Utilizador que fez a solicitação
-    };
-            var userIdentity = new ClaimsIdentity(userClaims);
-            var userPrincipal = new ClaimsPrincipal(userIdentity);
             _controller.ControllerContext = new ControllerContext
             {
-                HttpContext = new DefaultHttpContext { User = userPrincipal }
+                HttpContext = new DefaultHttpContext { User = user }
             };
 
-            // Act: Chamar o método ConcluirPedidoAjuda
+            //Act 
             var result = await _controller.ConcluirPedidoAjuda(pedidoId);
 
-            // Assert: Verificar que o resultado é Ok
+            //Assert 
             Assert.IsInstanceOfType(result, typeof(OkObjectResult));
-            var actionResult = (OkObjectResult)result;
-            Assert.AreEqual("O pedido foi marcado como concluído. Os administradores foram notificados para validar a conclusão.", actionResult.Value);
+            var ok = (OkObjectResult)result;
+            Assert.AreEqual(
+                "O pedido foi marcado como concluído. Os administradores foram notificados para validar a conclusão.",
+                ok.Value);
         }
 
         [TestMethod]
@@ -754,17 +746,19 @@ namespace CommuniCareTests
         }
 
 
-        [TestMethod]
+        
+       [TestMethod]
         public async Task ConcluirPedidoAjuda_PedidoNotInProgress_ReturnsBadRequest()
         {
-            // Arrange 
+            //  Arrange 
             var pedidoId = 1;
 
             var pedido = new PedidoAjuda
             {
                 PedidoId = pedidoId,
                 Estado = EstadoPedido.Concluido,   // Estado já está em "Concluído", não está "Em Progresso"
-                UtilizadorId = 2      
+                UtilizadorId = 2                         
+            };
 
             
             var pedidosDbSet = new[] { pedido }
@@ -774,7 +768,7 @@ namespace CommuniCareTests
             _mockContext.Setup(c => c.PedidosAjuda)
                         .Returns(pedidosDbSet.Object);
 
-            // Mock do utilizador autenticado
+            // Logged-in user is the requester (id = 2)
             var user = new ClaimsPrincipal(
                            new ClaimsIdentity(
                                new[] { new Claim(ClaimTypes.NameIdentifier, "2") }));
@@ -784,10 +778,10 @@ namespace CommuniCareTests
                 HttpContext = new DefaultHttpContext { User = user }
             };
 
-            // Act
+            //  Act 
             var result = await _controller.ConcluirPedidoAjuda(pedidoId);
 
-            // Assert
+            //  Assert 
             Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
             var bad = (BadRequestObjectResult)result;
             Assert.AreEqual("O pedido não está em progresso ou já foi concluído.", bad.Value);

@@ -28,6 +28,9 @@ namespace CommuniCareTests
         [TestInitialize]
         public void Setup()
         {
+
+            
+
             // Mock de DbSet para PedidosAjuda e Utilizadores
             _mockPedidosAjudaDbSet = new Mock<DbSet<PedidoAjuda>>();
             _mockUtilizadoresDbSet = new Mock<DbSet<Utilizador>>();
@@ -679,39 +682,34 @@ namespace CommuniCareTests
         [TestMethod]
         public async Task ConcluirPedidoAjuda_PedidoNotFound_ReturnsNotFound()
         {
-            // Arrange
+            
             var pedidoId = 1;
 
-            // Simulação do DbSet usando uma lista em vez de usar FirstOrDefaultAsync diretamente
-            var pedidos = new List<PedidoAjuda>().AsQueryable(); // Nenhum pedido na lista (pedido não encontrado)
+            
+            var pedidos = new List<PedidoAjuda>().AsQueryable().BuildMockDbSet();
+            _mockContext.Setup(c => c.PedidosAjuda).Returns(pedidos.Object);
 
-            var mockDbSetPedidos = new Mock<DbSet<PedidoAjuda>>();
-
-            // Configuração do mock para o DbSet
-            mockDbSetPedidos.As<IQueryable<PedidoAjuda>>().Setup(m => m.Provider).Returns(pedidos.Provider);
-            mockDbSetPedidos.As<IQueryable<PedidoAjuda>>().Setup(m => m.Expression).Returns(pedidos.Expression);
-            mockDbSetPedidos.As<IQueryable<PedidoAjuda>>().Setup(m => m.ElementType).Returns(pedidos.ElementType);
-            mockDbSetPedidos.As<IQueryable<PedidoAjuda>>().Setup(m => m.GetEnumerator()).Returns(pedidos.GetEnumerator());
-
-            // Mock do contexto para retornar o DbSet simulado
-            _mockContext.Setup(c => c.PedidosAjuda).Returns(mockDbSetPedidos.Object);
-
-            // Mock do utilizador autenticado
-            var userClaims = new List<Claim> { new Claim(ClaimTypes.NameIdentifier, "2") }; // Utilizador correto
-            var userIdentity = new ClaimsIdentity(userClaims);
-            var userPrincipal = new ClaimsPrincipal(userIdentity);
-            _controller.ControllerContext = new ControllerContext
+            
+            var userClaims = new List<Claim>
             {
-                HttpContext = new DefaultHttpContext { User = userPrincipal }
+                new Claim(ClaimTypes.NameIdentifier, "2")
             };
 
-            // Act
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new ClaimsPrincipal(new ClaimsIdentity(userClaims))
+                }
+            };
+
+            
             var result = await _controller.ConcluirPedidoAjuda(pedidoId);
 
-            // Assert
+            
             Assert.IsInstanceOfType(result, typeof(NotFoundObjectResult));
-            var actionResult = (NotFoundObjectResult)result;
-            Assert.AreEqual("Pedido de ajuda não encontrado.", actionResult.Value);
+            var notFound = (NotFoundObjectResult)result;
+            Assert.AreEqual("Pedido de ajuda não encontrado.", notFound.Value);
         }
 
 

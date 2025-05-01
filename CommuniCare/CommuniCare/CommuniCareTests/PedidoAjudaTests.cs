@@ -387,42 +387,69 @@ namespace CommuniCareTests
         [TestMethod]
         public async Task ValidarPedidoAjuda_Success_ReturnsOk()
         {
-            // Arrange
+            //  Arrange 
             var pedidoId = 1;
-            var admin = new Utilizador { UtilizadorId = 1, NomeUtilizador = "Admin", TipoUtilizadorId = 2 };
-            var outro = new Utilizador { UtilizadorId = 2, NomeUtilizador = "Outro", TipoUtilizadorId = 1 };
-            var pedido = new PedidoAjuda { PedidoId = pedidoId, Estado = EstadoPedido.Pendente, UtilizadorId = admin.UtilizadorId };
 
-            // Mock para Utilizadores como IQueryable (para .Where/.ToListAsync)
-            var utilizadores = new List<Utilizador> { admin, outro }.AsQueryable();
-            var mockUtilizadoresSet = new Mock<DbSet<Utilizador>>();
-            mockUtilizadoresSet.As<IQueryable<Utilizador>>().Setup(m => m.Provider).Returns(utilizadores.Provider);
-            mockUtilizadoresSet.As<IQueryable<Utilizador>>().Setup(m => m.Expression).Returns(utilizadores.Expression);
-            mockUtilizadoresSet.As<IQueryable<Utilizador>>().Setup(m => m.ElementType).Returns(utilizadores.ElementType);
-            mockUtilizadoresSet.As<IQueryable<Utilizador>>().Setup(m => m.GetEnumerator()).Returns(utilizadores.GetEnumerator());
-            mockUtilizadoresSet.Setup(m => m.FindAsync(1)).ReturnsAsync(admin);
+            var admin = new Utilizador
+            {
+                UtilizadorId = 1,
+                NomeUtilizador = "Admin",
+                TipoUtilizadorId = 2           // 2 == administrador
+            };
 
-            _mockContext.Setup(c => c.Utilizadores).Returns(mockUtilizadoresSet.Object);
+            var outro = new Utilizador
+            {
+                UtilizadorId = 2,
+                NomeUtilizador = "Outro",
+                TipoUtilizadorId = 1
+            };
 
-            // Mock para PedidosAjuda
-            var mockPedidosAjudaSet = new Mock<DbSet<PedidoAjuda>>();
-            mockPedidosAjudaSet.Setup(m => m.FindAsync(pedidoId)).ReturnsAsync(pedido);
-            _mockContext.Setup(c => c.PedidosAjuda).Returns(mockPedidosAjudaSet.Object);
+            var pedido = new PedidoAjuda
+            {
+                PedidoId = pedidoId,
+                Estado = EstadoPedido.Pendente,
+                UtilizadorId = admin.UtilizadorId
+            };
 
-            // Mock para Notificacoes (só para não falhar no Save)
-            var mockNotificacoesSet = new Mock<DbSet<Notificacao>>();
-            _mockContext.Setup(c => c.Notificacaos).Returns(mockNotificacoesSet.Object);
+            
+            var utilizadores = new[] { admin, outro }.AsQueryable();
+            var utilizadoresDbSet = utilizadores.BuildMockDbSet();
 
-            // Mock do SaveChanges
-            _mockContext.Setup(c => c.SaveChangesAsync(default)).ReturnsAsync(1);
+            utilizadoresDbSet.Setup(m => m.FindAsync(It.IsAny<object[]>()))
+                             .ReturnsAsync((object[] keys) =>
+                             {
+                                 var id = (int)keys[0];
+                                 return utilizadores.FirstOrDefault(u => u.UtilizadorId == id);
+                             });
 
-            // Mock do utilizador autenticado
-            var userClaims = new List<Claim> { new Claim(ClaimTypes.NameIdentifier, "1") };
-            var userIdentity = new ClaimsIdentity(userClaims);
-            var userPrincipal = new ClaimsPrincipal(userIdentity);
+            _mockContext.Setup(c => c.Utilizadores).Returns(utilizadoresDbSet.Object);
+
+            
+            var pedidoList = new[] { pedido }.AsQueryable();
+            var pedidosDbSet = pedidoList.BuildMockDbSet();
+
+            pedidosDbSet.Setup(m => m.FindAsync(It.IsAny<object[]>()))
+                        .ReturnsAsync((object[] keys) =>
+                        {
+                            var id = (int)keys[0];
+                            return pedidoList.FirstOrDefault(p => p.PedidoId == id);
+                        });
+
+            _mockContext.Setup(c => c.PedidosAjuda).Returns(pedidosDbSet.Object);
+
+            
+            var notificacoesDbSet = new List<Notificacao>().AsQueryable()
+                                                           .BuildMockDbSet();
+            _mockContext.Setup(c => c.Notificacaos).Returns(notificacoesDbSet.Object);
+
+            
+            var user = new ClaimsPrincipal(
+                           new ClaimsIdentity(
+                               new[] { new Claim(ClaimTypes.NameIdentifier, "1") }));
+
             _controller.ControllerContext = new ControllerContext
             {
-                HttpContext = new DefaultHttpContext { User = userPrincipal }
+                HttpContext = new DefaultHttpContext { User = user }
             };
 
             // Act
@@ -430,8 +457,10 @@ namespace CommuniCareTests
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(OkObjectResult));
-            var okResult = (OkObjectResult)result;
-            Assert.AreEqual("Pedido de ajuda validado com sucesso e colocado como 'Aberto'.", okResult.Value);
+            var ok = (OkObjectResult)result;
+            Assert.AreEqual(
+                "Pedido de ajuda validado com sucesso e colocado como 'Aberto'.",
+                ok.Value);
         }
 
 

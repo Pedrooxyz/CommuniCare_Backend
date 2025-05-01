@@ -49,8 +49,8 @@ namespace CommuniCareTests
         [TestMethod]
         public async Task CriarPedidoAjuda_ValidData_ReturnsOk()
         {
-            // Arrange
-            var pedidoData = new PedidoAjudaDTO
+            //  Arrange 
+            var dto = new PedidoAjudaDTO
             {
                 DescPedido = "Preciso de ajuda com o jardim.",
                 NHoras = 2,
@@ -59,56 +59,61 @@ namespace CommuniCareTests
                 FotografiaPA = "image.jpg"
             };
 
-            // Criando um utilizador para simular a requisição
-            var user = new Utilizador
-            {
-                UtilizadorId = 1,
-                TipoUtilizadorId = 1,
-                NomeUtilizador = "João"
-            };
+            
+            var requester = new Utilizador { UtilizadorId = 1, TipoUtilizadorId = 1, NomeUtilizador = "João" };
+            var admin = new Utilizador { UtilizadorId = 7, TipoUtilizadorId = 2 };
 
-            // Criando os claims para o utilizador autenticado
-            var userClaims = new List<Claim>
-{
-    new Claim(ClaimTypes.NameIdentifier, "1") // O ID aqui precisa ser o mesmo que o do 'user' mockado
-};
+            var utilizadoresDb = new[] { requester, admin }
+                                 .AsQueryable()
+                                 .BuildMockDbSet();
 
-            var userIdentity = new ClaimsIdentity(userClaims);
-            var userPrincipal = new ClaimsPrincipal(userIdentity);
+            
+            utilizadoresDb
+                .Setup(d => d.FindAsync(It.IsAny<object[]>()))
+                .ReturnsAsync(requester);
+
+            _mockContext.Setup(c => c.Utilizadores).Returns(utilizadoresDb.Object);
+
+            
+            var pedidosDb = new List<PedidoAjuda>().AsQueryable().BuildMockDbSet();
+            _mockContext.Setup(c => c.PedidosAjuda).Returns(pedidosDb.Object);
+
+            
+            var notificacoesDb = new Mock<DbSet<Notificacao>>();
+            _mockContext.Setup(c => c.Notificacaos).Returns(notificacoesDb.Object);
+
+            
+            _mockContext.Setup(c => c.SaveChangesAsync(It.IsAny<CancellationToken>()))
+                        .ReturnsAsync(1);
+
+            
             _controller.ControllerContext = new ControllerContext
             {
-                HttpContext = new DefaultHttpContext { User = userPrincipal }
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new ClaimsPrincipal(
+                             new ClaimsIdentity(
+                               new[] { new Claim(ClaimTypes.NameIdentifier, "1") }, "TestAuth"))
+                }
             };
 
-            // Criando o DbSet mockado com um IQueryable
-            var queryableUtilizadores = new List<Utilizador> { user }.AsQueryable();
-            var mockDbSet = new Mock<DbSet<Utilizador>>();
-
-            // Configurando o mock para simular a busca do utilizador
-            mockDbSet.As<IQueryable<Utilizador>>()
-                     .Setup(m => m.Provider)
-                     .Returns(queryableUtilizadores.Provider);
-            mockDbSet.As<IQueryable<Utilizador>>()
-                     .Setup(m => m.Expression)
-                     .Returns(queryableUtilizadores.Expression);
-            mockDbSet.As<IQueryable<Utilizador>>()
-                     .Setup(m => m.ElementType)
-                     .Returns(queryableUtilizadores.ElementType);
-            mockDbSet.As<IQueryable<Utilizador>>()
-                     .Setup(m => m.GetEnumerator())
-                     .Returns(queryableUtilizadores.GetEnumerator());
-
-            // Mockando o DbContext para retornar o DbSet mockado
-            _mockContext.Setup(m => m.Utilizadores).Returns(mockDbSet.Object);
-
-            // Act
-            var result = await _controller.CriarPedidoAjuda(pedidoData);
+            //  Act 
+            var result = await _controller.CriarPedidoAjuda(dto);
 
             // Assert
-            Assert.IsInstanceOfType(result, typeof(OkObjectResult)); // Espera-se que o resultado seja Ok
-            var actionResult = (OkObjectResult)result;
-            dynamic response = actionResult.Value;
-            Assert.AreEqual("Pedido de ajuda criado com sucesso. Notificações enviadas aos administradores.", response.Mensagem);
+            Assert.IsInstanceOfType(result, typeof(OkObjectResult));
+            var okResult = (OkObjectResult)result;
+
+            
+            var msg = okResult.Value
+                              .GetType()
+                              .GetProperty("Mensagem")?
+                              .GetValue(okResult.Value, null) as string;
+
+            Assert.AreEqual(
+                "Pedido de ajuda criado com sucesso. Notificações enviadas aos administradores.",
+                msg);
+
         }
 
 

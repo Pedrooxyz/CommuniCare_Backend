@@ -717,8 +717,9 @@ namespace CommuniCareTests
         [TestMethod]
         public async Task ConcluirPedidoAjuda_UserIsNotRequester_ReturnsForbid()
         {
-            // Arrange
+            
             var pedidoId = 1;
+
             var pedido = new PedidoAjuda
             {
                 PedidoId = pedidoId,
@@ -726,34 +727,30 @@ namespace CommuniCareTests
                 UtilizadorId = 3 // Utilizador diferente do que tenta concluir o pedido
             };
 
-            // Simulação do DbSet
-            var pedidos = new List<PedidoAjuda> { pedido }.AsQueryable(); // Transformar lista em IQueryable
+            
+            var pedidosDbSet = new[] { pedido }
+                               .AsQueryable()
+                               .BuildMockDbSet();
 
-            var mockDbSetPedidos = new Mock<DbSet<PedidoAjuda>>();
-
-            // Configuração do comportamento do DbSet para simular o IQueryable
-            mockDbSetPedidos.As<IQueryable<PedidoAjuda>>().Setup(m => m.Provider).Returns(pedidos.Provider);
-            mockDbSetPedidos.As<IQueryable<PedidoAjuda>>().Setup(m => m.Expression).Returns(pedidos.Expression);
-            mockDbSetPedidos.As<IQueryable<PedidoAjuda>>().Setup(m => m.ElementType).Returns(pedidos.ElementType);
-            mockDbSetPedidos.As<IQueryable<PedidoAjuda>>().Setup(m => m.GetEnumerator()).Returns(pedidos.GetEnumerator());
-
-            // Configuração do contexto para retornar o DbSet simulado
-            _mockContext.Setup(c => c.PedidosAjuda).Returns(mockDbSetPedidos.Object);
+            _mockContext.Setup(c => c.PedidosAjuda)
+                        .Returns(pedidosDbSet.Object);
 
             // Mock do utilizador autenticado (ID 2, que não é o requisitante)
-            var userClaims = new List<Claim> { new Claim(ClaimTypes.NameIdentifier, "2") }; // Utilizador 2 tenta concluir
-            var userIdentity = new ClaimsIdentity(userClaims);
-            var userPrincipal = new ClaimsPrincipal(userIdentity);
+            var user = new ClaimsPrincipal(
+                           new ClaimsIdentity(
+                               new[] { new Claim(ClaimTypes.NameIdentifier, "2") }));
+
             _controller.ControllerContext = new ControllerContext
             {
-                HttpContext = new DefaultHttpContext { User = userPrincipal }
+                HttpContext = new DefaultHttpContext { User = user }
             };
 
-            // Act
+            // Act 
             var result = await _controller.ConcluirPedidoAjuda(pedidoId);
 
             // Assert
-            Assert.IsInstanceOfType(result, typeof(ForbidResult)); // Verifica que o resultado é um ForbidResult
+            Assert.IsInstanceOfType(result, typeof(ForbidResult));
+
         }
 
 

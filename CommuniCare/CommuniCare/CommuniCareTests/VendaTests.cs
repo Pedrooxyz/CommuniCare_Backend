@@ -63,9 +63,85 @@ namespace CommuniCareTests
 
         #region Testes de Sucesso
 
+        #region Comprar
+
+        [TestMethod]
+        public async Task Comprar_ReturnsOk_WhenCompraBemSucedida()
+        {
+            // Arrange
+            var userId = 1;
+            var artigosIds = new List<int> { 10, 20 };
+            var pedido = new PedidoCompraDTO { ArtigosIds = artigosIds };
+
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+                new Claim(ClaimTypes.NameIdentifier, userId.ToString())
+            }, "mock"));
+
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext { User = user }
+            };
+
+            // Criar os objetos de venda, transação, artigos e data de compra fictícios
+            var venda = new Venda();
+            var transacao = new Transacao();
+            var artigos = new List<Artigo> { new Artigo(), new Artigo() }; // Mockar ou criar instâncias reais conforme necessário
+            var dataCompra = DateTime.Now;
+
+            // Mock de ProcessarCompraAsync retornando a tupla esperada
+            _mockTransacaoServico.Setup(s => s.ProcessarCompraAsync(userId, artigosIds))
+                                 .ReturnsAsync((venda, transacao, artigos, dataCompra));
+
+            // Act
+            var result = await _controller.Comprar(pedido);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(OkObjectResult));
+            var okResult = result as OkObjectResult;
+            dynamic resposta = okResult.Value;
+            Assert.IsTrue(resposta.Sucesso);
+        }
+
+        #endregion
+
         #endregion
 
         #region Testes de Erro
+
+        #region Comprar
+
+        [TestMethod]
+        public async Task Comprar_ReturnsBadRequest_WhenExceptionOccurs()
+        {
+            // Arrange
+            var userId = 1;
+            var artigosIds = new List<int> { 10, 20 };
+            var pedido = new PedidoCompraDTO { ArtigosIds = artigosIds };
+
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+            new Claim(ClaimTypes.NameIdentifier, userId.ToString())
+        }, "mock"));
+
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext { User = user }
+            };
+
+            _mockTransacaoServico.Setup(s => s.ProcessarCompraAsync(userId, artigosIds))
+                                 .Throws(new Exception("Erro ao processar compra"));
+
+            // Act
+            var result = await _controller.Comprar(pedido);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
+            var badRequestResult = result as BadRequestObjectResult;
+            dynamic resposta = badRequestResult.Value;
+            Assert.IsFalse(resposta.Sucesso);
+            Assert.AreEqual("Erro ao processar compra", resposta.Erro);
+        }
+
+        #endregion
 
         #endregion
 

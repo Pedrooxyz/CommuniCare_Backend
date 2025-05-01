@@ -104,6 +104,44 @@ namespace CommuniCareTests
 
         #endregion
 
+        #region ComprarEmail
+
+        [TestMethod]
+        public async Task ComprarEmail_ReturnsOk_WhenCompraBemSucedida()
+        {
+            // Arrange
+            var userId = 1;
+            var artigosIds = new List<int> { 10, 20 };
+            var pedido = new PedidoCompraDTO { ArtigosIds = artigosIds };
+
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+                new Claim(ClaimTypes.NameIdentifier, userId.ToString())
+            }, "mock"));
+
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext { User = user }
+            };
+
+            //_mockTransacaoServico.Setup(s => s.ProcessarCompraAsync(userId, artigosIds))
+            //                     .Returns(Task.CompletedTask);
+
+            var emailMock = new Mock<EmailService>();
+            emailMock.Setup(e => e.EnviarComprovativoCompra(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<byte[]>()))
+                     .Returns(Task.CompletedTask);
+
+            // Act
+            var result = await _controller.ComprarEmail(pedido);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(OkObjectResult));
+            var okResult = result as OkObjectResult;
+            dynamic resposta = okResult.Value;
+            Assert.IsTrue(resposta.Sucesso);
+        }
+
+        #endregion
+
         #endregion
 
         #region Testes de Erro
@@ -132,6 +170,41 @@ namespace CommuniCareTests
 
             // Act
             var result = await _controller.Comprar(pedido);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
+            var badRequestResult = result as BadRequestObjectResult;
+            dynamic resposta = badRequestResult.Value;
+            Assert.IsFalse(resposta.Sucesso);
+            Assert.AreEqual("Erro ao processar compra", resposta.Erro);
+        }
+
+        #endregion
+
+        #region CompraEmail
+
+        [TestMethod]
+        public async Task ComprarEmail_ReturnsBadRequest_WhenExceptionOccurs()
+        {
+            // Arrange
+            var userId = 1;
+            var artigosIds = new List<int> { 10, 20 };
+            var pedido = new PedidoCompraDTO { ArtigosIds = artigosIds };
+
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+                new Claim(ClaimTypes.NameIdentifier, userId.ToString())
+            }, "mock"));
+
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext { User = user }
+            };
+
+            _mockTransacaoServico.Setup(s => s.ProcessarCompraAsync(userId, artigosIds))
+                                 .Throws(new Exception("Erro ao processar compra"));
+
+            // Act
+            var result = await _controller.ComprarEmail(pedido);
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));

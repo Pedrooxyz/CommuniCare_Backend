@@ -757,28 +757,31 @@ namespace CommuniCareTests
         [TestMethod]
         public async Task ConcluirPedidoAjuda_PedidoNotInProgress_ReturnsBadRequest()
         {
-            // Arrange
+            // Arrange 
             var pedidoId = 1;
+
             var pedido = new PedidoAjuda
             {
                 PedidoId = pedidoId,
-                Estado = EstadoPedido.Concluido, // Estado já está em "Concluído", não está "Em Progresso"
-                UtilizadorId = 2
-            };
+                Estado = EstadoPedido.Concluido,   // Estado já está em "Concluído", não está "Em Progresso"
+                UtilizadorId = 2      
 
-            // Simulação do DbSet (pedido encontrado, mas com estado errado)
-            var mockDbSetPedidos = new Mock<DbSet<PedidoAjuda>>();
-            mockDbSetPedidos.Setup(m => m.FirstOrDefaultAsync(It.IsAny<Expression<Func<PedidoAjuda, bool>>>(), It.IsAny<CancellationToken>()))
-                            .ReturnsAsync(pedido); // Retorna o pedido com estado "Concluído"
-            _mockContext.Setup(c => c.PedidosAjuda).Returns(mockDbSetPedidos.Object);
+            
+            var pedidosDbSet = new[] { pedido }
+                               .AsQueryable()
+                               .BuildMockDbSet();
+
+            _mockContext.Setup(c => c.PedidosAjuda)
+                        .Returns(pedidosDbSet.Object);
 
             // Mock do utilizador autenticado
-            var userClaims = new List<Claim> { new Claim(ClaimTypes.NameIdentifier, "2") }; // Utilizador correto
-            var userIdentity = new ClaimsIdentity(userClaims);
-            var userPrincipal = new ClaimsPrincipal(userIdentity);
+            var user = new ClaimsPrincipal(
+                           new ClaimsIdentity(
+                               new[] { new Claim(ClaimTypes.NameIdentifier, "2") }));
+
             _controller.ControllerContext = new ControllerContext
             {
-                HttpContext = new DefaultHttpContext { User = userPrincipal }
+                HttpContext = new DefaultHttpContext { User = user }
             };
 
             // Act
@@ -786,8 +789,8 @@ namespace CommuniCareTests
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
-            var actionResult = (BadRequestObjectResult)result;
-            Assert.AreEqual("O pedido não está em progresso ou já foi concluído.", actionResult.Value);
+            var bad = (BadRequestObjectResult)result;
+            Assert.AreEqual("O pedido não está em progresso ou já foi concluído.", bad.Value);
         }
 
         #endregion

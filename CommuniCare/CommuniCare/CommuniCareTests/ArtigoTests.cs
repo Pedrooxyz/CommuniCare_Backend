@@ -45,5 +45,62 @@ namespace CommuniCareTests
             _controller = new ArtigosController(_mockContext.Object);
         }
 
+        #region Testes de Sucesso
+
+        #region GetArtigosDisponiveis
+
+        [TestMethod]
+        public async Task GetArtigosDisponiveis_ReturnsOk_WhenArtigosExist()
+        {
+            // Arrange
+            var artigosList = new List<Artigo>
+            {
+                new Artigo { ArtigoId = 1, NomeArtigo = "Artigo 1", Estado = EstadoArtigo.Disponivel },
+                new Artigo { ArtigoId = 2, NomeArtigo = "Artigo 2", Estado = EstadoArtigo.Disponivel }
+            };
+
+            var mockArtigosDbSet = artigosList.AsQueryable().BuildMockDbSet();
+            _mockContext.Setup(c => c.Artigos).Returns(mockArtigosDbSet.Object);
+
+            // Act
+            var result = await _controller.GetArtigosDisponiveis();
+
+            // Assert
+            Assert.IsInstanceOfType(result.Result, typeof(OkObjectResult));
+            var okResult = result.Result as OkObjectResult;
+            Assert.AreEqual(2, ((List<Artigo>)okResult.Value).Count);
+        }
+
+        #endregion
+
+        #endregion
+
+         #region Testes de Erro
+
+        #region GetArtigosDisponiveis
+
+        [TestMethod]
+        public async Task GetArtigosDisponiveis_ReturnsOk_WhenNoArtigosExist()
+        {
+            // Arrange
+            var artigosList = new List<Artigo>(); // Lista vazia
+
+            var mockArtigosDbSet = artigosList.AsQueryable().BuildMockDbSet();
+            _mockContext.Setup(c => c.Artigos).Returns(mockArtigosDbSet.Object);
+
+            // Act
+            var result = await _controller.GetArtigosDisponiveis();
+
+            // Assert
+            Assert.IsInstanceOfType(result.Result, typeof(OkObjectResult));
+            var okResult = result.Result as OkObjectResult;
+            Assert.IsNotNull(okResult);
+            Assert.AreEqual(0, ((List<Artigo>)okResult.Value).Count);
+        }
+
+        #endregion
+
+        #endregion
+
     }
 }

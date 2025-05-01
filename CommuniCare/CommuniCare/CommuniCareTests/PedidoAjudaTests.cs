@@ -869,37 +869,46 @@ namespace CommuniCareTests
         [TestMethod]
         public async Task ValidarConclusaoPedidoAjuda_PedidoNotFound_ReturnsNotFound()
         {
-            // Arrange
-            var pedidoId = 1;
-            var utilizadorId = 2;
+            //  Arrange 
+            const int pedidoId = 1;
+            const int utilizadorId = 2;
 
-            var user = new ClaimsPrincipal(new ClaimsIdentity(new[]
-            {
-        new Claim(ClaimTypes.NameIdentifier, utilizadorId.ToString())
-    }));
-
+           
+            var claims = new[] { new Claim(ClaimTypes.NameIdentifier, utilizadorId.ToString()) };
             _controller.ControllerContext = new ControllerContext
             {
-                HttpContext = new DefaultHttpContext { User = user }
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new ClaimsPrincipal(new ClaimsIdentity(claims, "TestAuth"))
+                }
             };
 
-            _mockContext.Setup(c => c.Utilizadores.FindAsync(utilizadorId))
-                .ReturnsAsync(new Utilizador { UtilizadorId = utilizadorId, TipoUtilizadorId = 2 }); // é admin
+            
+            var admin = new Utilizador { UtilizadorId = utilizadorId, TipoUtilizadorId = 2 };
 
-            var mockDbSetPedidos = new Mock<DbSet<PedidoAjuda>>();
-            mockDbSetPedidos.Setup(p => p.Include(It.IsAny<string>())).Returns(mockDbSetPedidos.Object);
-            mockDbSetPedidos.Setup(p => p.FirstOrDefaultAsync(It.IsAny<Expression<Func<PedidoAjuda, bool>>>(), default))
-                .ReturnsAsync((PedidoAjuda)null); // não encontrado
+            var utilizadores = new List<Utilizador> { admin }
+                               .AsQueryable()
+                               .BuildMockDbSet();
 
-            _mockContext.Setup(c => c.PedidosAjuda).Returns(mockDbSetPedidos.Object);
+            _mockContext.Setup(c => c.Utilizadores).Returns(utilizadores.Object);
+            utilizadores
+                .Setup(d => d.FindAsync(It.IsAny<object[]>()))
+                .ReturnsAsync(admin);
 
-            // Act
+            
+            var pedidos = new List<PedidoAjuda>()     // lista vazia
+                          .AsQueryable()
+                          .BuildMockDbSet();
+
+            _mockContext.Setup(c => c.PedidosAjuda).Returns(pedidos.Object);
+
+            //  Act
             var result = await _controller.ValidarConclusaoPedidoAjuda(pedidoId);
 
-            // Assert
+            //  Assert 
             Assert.IsInstanceOfType(result, typeof(NotFoundObjectResult));
-            var objectResult = (NotFoundObjectResult)result;
-            Assert.AreEqual("Pedido de ajuda não encontrado.", objectResult.Value);
+            var notFound = (NotFoundObjectResult)result;
+            Assert.AreEqual("Pedido de ajuda não encontrado.", notFound.Value);
         }
 
 
@@ -936,103 +945,123 @@ namespace CommuniCareTests
         [TestMethod]
         public async Task ValidarConclusaoPedidoAjuda_PedidoNotConcluded_ReturnsBadRequest()
         {
-            // Arrange
-            var pedidoId = 1;
-            var utilizadorId = 2;
+            //  Arrange 
+            const int pedidoId = 1;
+            const int utilizadorId = 2;
 
-            var user = new ClaimsPrincipal(new ClaimsIdentity(new[]
-            {
-        new Claim(ClaimTypes.NameIdentifier, utilizadorId.ToString())
-    }));
-
+            
+            var claims = new[] { new Claim(ClaimTypes.NameIdentifier, utilizadorId.ToString()) };
             _controller.ControllerContext = new ControllerContext
             {
-                HttpContext = new DefaultHttpContext { User = user }
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new ClaimsPrincipal(new ClaimsIdentity(claims, "TestAuth"))
+                }
             };
 
-            var utilizador = new Utilizador { UtilizadorId = utilizadorId, TipoUtilizadorId = 2 };
-            _mockContext.Setup(c => c.Utilizadores.FindAsync(utilizadorId)).ReturnsAsync(utilizador);
+            
+            var admin = new Utilizador { UtilizadorId = utilizadorId, TipoUtilizadorId = 2 };
 
+            var utilizadores = new List<Utilizador> { admin }
+                               .AsQueryable()
+                               .BuildMockDbSet();
+
+            _mockContext.Setup(c => c.Utilizadores).Returns(utilizadores.Object);
+            utilizadores
+                .Setup(d => d.FindAsync(It.IsAny<object[]>()))
+                .ReturnsAsync(admin);
+
+           
             var pedido = new PedidoAjuda
             {
                 PedidoId = pedidoId,
                 Estado = EstadoPedido.Pendente,
-                Utilizador = new Utilizador()
+                Utilizador = new Utilizador(),
+                Voluntariados = new List<Voluntariado>()       
             };
 
-            var mockDbSetPedidos = new Mock<DbSet<PedidoAjuda>>();
-            mockDbSetPedidos.Setup(p => p.Include(It.IsAny<string>())).Returns(mockDbSetPedidos.Object);
-            mockDbSetPedidos.Setup(p => p.FirstOrDefaultAsync(It.IsAny<Expression<Func<PedidoAjuda, bool>>>(), default))
-                .ReturnsAsync(pedido);
+            
+            var pedidos = new List<PedidoAjuda> { pedido }
+                          .AsQueryable()
+                          .BuildMockDbSet();
 
-            _mockContext.Setup(c => c.PedidosAjuda).Returns(mockDbSetPedidos.Object);
+            _mockContext.Setup(c => c.PedidosAjuda).Returns(pedidos.Object);
 
-            // Act
+            //  Act 
             var result = await _controller.ValidarConclusaoPedidoAjuda(pedidoId);
 
-            // Assert
+            //  Assert 
             Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
-            var objectResult = (BadRequestObjectResult)result;
-            Assert.AreEqual("O pedido não ainda não foi concluído.", objectResult.Value);
+            var bad = (BadRequestObjectResult)result;
+            Assert.AreEqual("O pedido não ainda não foi concluído.", bad.Value);
         }
 
         [TestMethod]
         public async Task ValidarConclusaoPedidoAjuda_RecetorIsNull_ReturnsBadRequest()
         {
-            // Arrange
-            var pedidoId = 1;
-            var utilizadorId = 2;
+            //  Arrange 
+            const int pedidoId = 1;
+            const int utilizadorId = 2;
 
-            var user = new ClaimsPrincipal(new ClaimsIdentity(new[]
-            {
-        new Claim(ClaimTypes.NameIdentifier, utilizadorId.ToString())
-    }));
-
+            
+            var claims = new[] { new Claim(ClaimTypes.NameIdentifier, utilizadorId.ToString()) };
             _controller.ControllerContext = new ControllerContext
             {
-                HttpContext = new DefaultHttpContext { User = user }
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new ClaimsPrincipal(new ClaimsIdentity(claims, "TestAuth"))
+                }
             };
 
-            var utilizador = new Utilizador { UtilizadorId = utilizadorId, TipoUtilizadorId = 2 };
-            _mockContext.Setup(c => c.Utilizadores.FindAsync(utilizadorId)).ReturnsAsync(utilizador);
+            
+            var admin = new Utilizador { UtilizadorId = utilizadorId, TipoUtilizadorId = 2 };
 
+            var utilizadores = new List<Utilizador> { admin }
+                               .AsQueryable()
+                               .BuildMockDbSet();
+
+            _mockContext.Setup(c => c.Utilizadores).Returns(utilizadores.Object);
+            utilizadores
+                .Setup(d => d.FindAsync(It.IsAny<object[]>()))
+                .ReturnsAsync(admin);
+
+            
             var pedido = new PedidoAjuda
             {
                 PedidoId = pedidoId,
                 Estado = EstadoPedido.Concluido,
-                Utilizador = null
+                Utilizador = null,                 
+                Voluntariados = new List<Voluntariado>()
             };
 
-            var mockDbSetPedidos = new Mock<DbSet<PedidoAjuda>>();
-            mockDbSetPedidos.Setup(p => p.Include(It.IsAny<string>())).Returns(mockDbSetPedidos.Object);
-            mockDbSetPedidos.Setup(p => p.FirstOrDefaultAsync(It.IsAny<Expression<Func<PedidoAjuda, bool>>>(), default))
-                .ReturnsAsync(pedido);
+            var pedidos = new List<PedidoAjuda> { pedido }
+                          .AsQueryable()
+                          .BuildMockDbSet();
 
-            _mockContext.Setup(c => c.PedidosAjuda).Returns(mockDbSetPedidos.Object);
+            _mockContext.Setup(c => c.PedidosAjuda).Returns(pedidos.Object);
 
-            // Act
+            //  Act 
             var result = await _controller.ValidarConclusaoPedidoAjuda(pedidoId);
 
-            // Assert
+            //  Assert 
             Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
-            var objectResult = (BadRequestObjectResult)result;
-            Assert.AreEqual("Não foi possível determinar o recetor do pedido.", objectResult.Value);
+            var bad = (BadRequestObjectResult)result;
+            Assert.AreEqual("Não foi possível determinar o recetor do pedido.", bad.Value);
         }
 
         [TestMethod]
         public async Task ValidarConclusaoPedidoAjuda_ValidRequest_ReturnsOk()
         {
-            // ---------- Arrange ----------
-            int pedidoId = 1;
-            int utilizadorId = 2;
-
-            // Receptor do CAREs
-            var recetor = new Utilizador { UtilizadorId = 3, NumCares = 10 };
-
-            // Administrador que faz a validação
-            var admin = new Utilizador { UtilizadorId = utilizadorId, TipoUtilizadorId = 2 };
+            //  Arrange 
+            const int pedidoId = 1;
+            const int adminId = 2;
 
             
+            var admin = new Utilizador { UtilizadorId = adminId, TipoUtilizadorId = 2 };
+
+            
+            var recetor = new Utilizador { UtilizadorId = 3, NumCares = 10 };
+
             var pedido = new PedidoAjuda
             {
                 PedidoId = pedidoId,
@@ -1041,46 +1070,56 @@ namespace CommuniCareTests
                 UtilizadorId = recetor.UtilizadorId,
                 RecompensaCares = 5,
                 Voluntariados = new List<Voluntariado>
-                {
-                    new Voluntariado { UtilizadorId = 99 }
-                }
+        {
+            new Voluntariado { UtilizadorId = 99 }
+        }
             };
 
             
-            var utilizadores = new[] { admin, recetor }.AsQueryable();
-            var utilizadoresDbSet = utilizadores.BuildMockDbSet();
+            var utilizadores = new[] { admin, recetor }
+                               .AsQueryable()
+                               .BuildMockDbSet();
+
+            utilizadores
+                .Setup(d => d.FindAsync(It.IsAny<object[]>()))
+                .ReturnsAsync((object[] keys) =>
+                {
+                    int id = (int)keys[0];
+                    return utilizadores.Object.First(u => u.UtilizadorId == id);
+                });
+
+            _mockContext.Setup(c => c.Utilizadores).Returns(utilizadores.Object);
 
             
-            utilizadoresDbSet.Setup(d => d.FindAsync(It.IsAny<object[]>()))
-                             .ReturnsAsync((object[] keys) =>
-                             {
-                                 int id = (int)keys[0];
-                                 return utilizadores.FirstOrDefault(u => u.UtilizadorId == id);
-                             });
-
-            _mockContext.Setup(c => c.Utilizadores).Returns(utilizadoresDbSet.Object);
-
-            
-            var pedidosDbSet = new[] { pedido }.AsQueryable().BuildMockDbSet();
-
-            pedidosDbSet.Setup(d => d.FirstOrDefaultAsync(It.IsAny<System.Linq.Expressions.Expression<System.Func<PedidoAjuda, bool>>>(),
-                                                          It.IsAny<System.Threading.CancellationToken>()))
-                        .ReturnsAsync((System.Linq.Expressions.Expression<System.Func<PedidoAjuda, bool>> predicate,
-                                       System.Threading.CancellationToken _) =>
-                        {
-                            return pedidosDbSet.Object.FirstOrDefault(predicate.Compile());
-                        });
+            var pedidosDbSet = new[] { pedido }
+                               .AsQueryable()
+                               .BuildMockDbSet();
 
             _mockContext.Setup(c => c.PedidosAjuda).Returns(pedidosDbSet.Object);
 
             
-            var user = new ClaimsPrincipal(
-                           new ClaimsIdentity(
-                               new[] { new Claim(ClaimTypes.NameIdentifier, utilizadorId.ToString()) }));
+            var transacoesDb = new Mock<DbSet<Transacao>>();
+            var transAjudaDb = new Mock<DbSet<TransacaoAjuda>>();
+            var notificacoesDb = new Mock<DbSet<Notificacao>>();
 
+            _mockContext.Setup(c => c.Transacoes).Returns(transacoesDb.Object);
+            _mockContext.Setup(c => c.TransacaoAjuda).Returns(transAjudaDb.Object);
+            _mockContext.Setup(c => c.Notificacaos).Returns(notificacoesDb.Object);
+
+            
+            _mockContext.Setup(c => c.SaveChangesAsync(It.IsAny<CancellationToken>()))
+                        .ReturnsAsync(1);
+
+            
             _controller.ControllerContext = new ControllerContext
             {
-                HttpContext = new DefaultHttpContext { User = user }
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new ClaimsPrincipal(
+                        new ClaimsIdentity(
+                            new[] { new Claim(ClaimTypes.NameIdentifier, adminId.ToString()) },
+                            "TestAuth"))
+                }
             };
 
             //  Act 
@@ -1089,13 +1128,19 @@ namespace CommuniCareTests
             //  Assert 
             Assert.IsInstanceOfType(result, typeof(OkObjectResult));
             var ok = (OkObjectResult)result;
-
             Assert.AreEqual(
                 "Pedido de ajuda concluído com sucesso. Recompensa atribuída, transação registada e notificação enviada.",
                 ok.Value);
 
             
             Assert.AreEqual(15, recetor.NumCares);
+
+            
+            transacoesDb.Verify(d => d.Add(It.IsAny<Transacao>()), Times.Once);
+            transAjudaDb.Verify(d => d.Add(It.IsAny<TransacaoAjuda>()), Times.Once);
+            notificacoesDb.Verify(d => d.Add(It.IsAny<Notificacao>()), Times.Once);
+            _mockContext.Verify(c => c.SaveChangesAsync(It.IsAny<CancellationToken>()),
+                                   Times.Once);
         }
 
 

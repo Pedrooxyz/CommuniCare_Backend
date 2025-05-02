@@ -1,4 +1,9 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿/// <summary>
+/// Namespace que contém os testes unitários da aplicação CommuniCare.
+/// Utiliza o framework MSTest e Moq para simular interações com a base de dados e testar o comportamento dos métodos do controlador PedidosAjudaController.
+/// </summary>
+
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,8 +20,14 @@ using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore.Query;
 using MockQueryable.Moq;
 
+
 namespace CommuniCareTests
 {
+    /// <summary>
+    /// Classe de testes unitários para o controlador PedidosAjudaController.
+    /// Contém testes para verificar o comportamento dos métodos do controlador ao interagir com os dados de pedidos de ajuda e utilizadores.
+    /// </summary>
+
     [TestClass]
     public class PedidoAjudaTests
     {
@@ -25,31 +36,39 @@ namespace CommuniCareTests
         private Mock<DbSet<Utilizador>> _mockUtilizadoresDbSet;
         private Mock<CommuniCareContext> _mockContext;
 
+        /// <summary>
+        /// Configura o ambiente para os testes, criando mocks dos DbSet e do contexto do banco de dados.
+        /// Este método é executado antes de cada teste para garantir que os objetos necessários estão preparados.
+        /// </summary>
+
         [TestInitialize]
         public void Setup()
         {
 
-            
-
-            // Mock de DbSet para PedidosAjuda e Utilizadores
             _mockPedidosAjudaDbSet = new Mock<DbSet<PedidoAjuda>>();
             _mockUtilizadoresDbSet = new Mock<DbSet<Utilizador>>();
             _mockContext = new Mock<CommuniCareContext>();
 
-            // Configurando o mock para retornar os DbSets
+
             _mockContext.Setup(m => m.PedidosAjuda).Returns(_mockPedidosAjudaDbSet.Object);
             _mockContext.Setup(m => m.Utilizadores).Returns(_mockUtilizadoresDbSet.Object);
 
-            // Inicializando o controller com o mock do contexto
+
             _controller = new PedidosAjudaController(_mockContext.Object);
         }
 
         #region CriarPedidoAjuda
 
+        /// <summary>
+        /// Testa o comportamento do método CriarPedidoAjuda quando os dados fornecidos são válidos.
+        /// Espera-se que o método retorne um sucesso (status 200) com a mensagem de confirmação de criação do pedido e envio de notificações aos administradores.
+        /// </summary>
+        /// <returns>Uma tarefa que representa a execução do teste unitário.</returns>
+
         [TestMethod]
         public async Task CriarPedidoAjuda_ValidData_ReturnsOk()
         {
-            //  Arrange 
+
             var dto = new PedidoAjudaDTO
             {
                 DescPedido = "Preciso de ajuda com o jardim.",
@@ -59,7 +78,7 @@ namespace CommuniCareTests
                 FotografiaPA = "image.jpg"
             };
 
-            
+
             var requester = new Utilizador { UtilizadorId = 1, TipoUtilizadorId = 1, NomeUtilizador = "João" };
             var admin = new Utilizador { UtilizadorId = 7, TipoUtilizadorId = 2 };
 
@@ -67,26 +86,26 @@ namespace CommuniCareTests
                                  .AsQueryable()
                                  .BuildMockDbSet();
 
-            
+
             utilizadoresDb
                 .Setup(d => d.FindAsync(It.IsAny<object[]>()))
                 .ReturnsAsync(requester);
 
             _mockContext.Setup(c => c.Utilizadores).Returns(utilizadoresDb.Object);
 
-            
+
             var pedidosDb = new List<PedidoAjuda>().AsQueryable().BuildMockDbSet();
             _mockContext.Setup(c => c.PedidosAjuda).Returns(pedidosDb.Object);
 
-            
+
             var notificacoesDb = new Mock<DbSet<Notificacao>>();
             _mockContext.Setup(c => c.Notificacaos).Returns(notificacoesDb.Object);
 
-            
+
             _mockContext.Setup(c => c.SaveChangesAsync(It.IsAny<CancellationToken>()))
                         .ReturnsAsync(1);
 
-            
+
             _controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext
@@ -97,14 +116,14 @@ namespace CommuniCareTests
                 }
             };
 
-            //  Act 
+
             var result = await _controller.CriarPedidoAjuda(dto);
 
-            // Assert
+
             Assert.IsInstanceOfType(result, typeof(OkObjectResult));
             var okResult = (OkObjectResult)result;
 
-            
+
             var msg = okResult.Value
                               .GetType()
                               .GetProperty("Mensagem")?
@@ -117,10 +136,16 @@ namespace CommuniCareTests
         }
 
 
+        /// <summary>
+        /// Testa o comportamento do método CriarPedidoAjuda quando os dados fornecidos são inválidos.
+        /// Espera-se que o método retorne um erro de BadRequest (status 400) com a mensagem "Dados inválidos".
+        /// </summary>
+        /// <returns>Uma tarefa que representa a execução do teste unitário.</returns>
+
         [TestMethod]
         public async Task CriarPedidoAjuda_InvalidData_ReturnsBadRequest()
         {
-            // Arrange
+
             var pedidoData = new PedidoAjudaDTO
             {
                 DescPedido = "",
@@ -130,7 +155,7 @@ namespace CommuniCareTests
                 FotografiaPA = ""
             };
 
-            // Criando os claims para o utilizador autenticado
+
             var userClaims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, "1")
@@ -143,10 +168,10 @@ namespace CommuniCareTests
                 HttpContext = new DefaultHttpContext { User = userPrincipal }
             };
 
-            // Act
+
             var result = await _controller.CriarPedidoAjuda(pedidoData);
 
-            // Assert
+
             Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
             var actionResult = (BadRequestObjectResult)result;
             Assert.AreEqual("Dados inválidos.", actionResult.Value);
@@ -154,51 +179,58 @@ namespace CommuniCareTests
 
         #endregion
 
+
         #region RejeitarPedido
+
+        /// <summary>
+        /// Testa o comportamento do método RejeitarPedidoAjuda quando o administrador valida um pedido de ajuda com sucesso.
+        /// Espera-se que o método retorne um status 200 OK com a mensagem "Pedido de ajuda rejeitado com sucesso."
+        /// </summary>
+        /// <returns>Uma tarefa que representa a execução do teste unitário.</returns>
 
         [TestMethod]
         public async Task RejeitarPedidoAjuda_ValidAdmin_ReturnsOk()
         {
-            //  Arrange 
+
             var pedidoId = 1;
 
-            
+
             var pedido = new PedidoAjuda
             {
                 PedidoId = pedidoId,
                 Estado = EstadoPedido.Pendente,
-                UtilizadorId = 3           
+                UtilizadorId = 3
             };
 
-            
+
             var pedidos = new List<PedidoAjuda> { pedido }
                           .AsQueryable()
                           .BuildMockDbSet();
             _mockContext.SetupGet(c => c.PedidosAjuda).Returns(pedidos.Object);
 
-            
+
             var admin = new Utilizador { UtilizadorId = 2, TipoUtilizadorId = 2 };
 
-            
+
             var utilizadores = new List<Utilizador> { admin }
                                .AsQueryable()
                                .BuildMockDbSet();
             _mockContext.SetupGet(c => c.Utilizadores).Returns(utilizadores.Object);
 
-            
+
             utilizadores
                 .Setup(d => d.FindAsync(It.IsAny<object[]>()))
                 .ReturnsAsync(admin);
 
-            
+
             var notificacoes = new Mock<DbSet<Notificacao>>();
             _mockContext.SetupGet(c => c.Notificacaos).Returns(notificacoes.Object);
 
-            
+
             _mockContext.Setup(c => c.SaveChangesAsync(It.IsAny<CancellationToken>()))
                         .ReturnsAsync(1);
 
-            
+
             var claims = new[] { new Claim(ClaimTypes.NameIdentifier, "2") };
             _controller.ControllerContext = new ControllerContext
             {
@@ -208,36 +240,41 @@ namespace CommuniCareTests
                 }
             };
 
-            
+
             var result = await _controller.RejeitarPedidoAjuda(pedidoId);
 
-            
+
             Assert.IsInstanceOfType(result, typeof(OkObjectResult));
             var ok = (OkObjectResult)result;
             Assert.AreEqual("Pedido de ajuda rejeitado com sucesso.", ok.Value);
 
-            
+
             Assert.AreEqual(EstadoPedido.Rejeitado, pedido.Estado);
         }
 
 
+        /// <summary>
+        /// Testa o comportamento do método RejeitarPedidoAjuda quando um utilizador não autorizado tenta rejeitar um pedido de ajuda.
+        /// Espera-se que o método retorne um erro de "não autorizado" (status 403) quando o utilizador não for um administrador.
+        /// </summary>
+        /// <returns>Uma tarefa que representa a execução do teste unitário.</returns>
 
         [TestMethod]
         public async Task RejeitarPedidoAjuda_Unauthorized_ReturnsUnauthorized()
         {
-            // Arrange
+
             var pedidoId = 1;
             var user = new Utilizador
             {
                 UtilizadorId = 1,
-                TipoUtilizadorId = 1, // Não administrador
+                TipoUtilizadorId = 1,
                 NomeUtilizador = "João"
             };
 
             var userClaims = new List<Claim>
-    {
-        new Claim(ClaimTypes.NameIdentifier, user.UtilizadorId.ToString())
-    };
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.UtilizadorId.ToString())
+            };
 
             var userIdentity = new ClaimsIdentity(userClaims);
             var userPrincipal = new ClaimsPrincipal(userIdentity);
@@ -246,17 +283,24 @@ namespace CommuniCareTests
                 HttpContext = new DefaultHttpContext { User = userPrincipal }
             };
 
-            // Act
+
             var result = await _controller.RejeitarPedidoAjuda(pedidoId);
 
-            // Assert
+
             Assert.IsInstanceOfType(result, typeof(ForbidResult));
         }
+
+
+        /// <summary>
+        /// Testa o comportamento do método RejeitarPedidoAjuda quando o pedido de ajuda não é encontrado na base de dados.
+        /// Espera-se que o método retorne um erro de "não encontrado" (status 404) se o pedido de ajuda não existir.
+        /// </summary>
+        /// <returns>Uma tarefa que representa a execução do teste unitário.</returns>
 
         [TestMethod]
         public async Task RejeitarPedidoAjuda_PedidoNaoEncontrado_ReturnsNotFound()
         {
-            //  Arrange 
+
             int pedidoIdInexistente = 999;
 
             var pedidos = new List<PedidoAjuda>()
@@ -269,15 +313,15 @@ namespace CommuniCareTests
                                .AsQueryable()
                                .BuildMockDbSet();
 
-            
+
             _mockContext.Setup(c => c.Utilizadores).Returns(utilizadores.Object);
-            
+
             utilizadores.Setup(d => d.FindAsync(It.IsAny<object[]>())).ReturnsAsync(admin);
 
             var userClaims = new List<Claim>
-    {
-        new Claim(ClaimTypes.NameIdentifier, "2")
-    };
+            {
+                new Claim(ClaimTypes.NameIdentifier, "2")
+            };
             _controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext
@@ -286,10 +330,10 @@ namespace CommuniCareTests
                 }
             };
 
-            // Act 
+
             var result = await _controller.RejeitarPedidoAjuda(pedidoIdInexistente);
 
-            //  Assert 
+
             Assert.IsInstanceOfType(result, typeof(NotFoundObjectResult));
             var notFound = (NotFoundObjectResult)result;
             Assert.AreEqual("Pedido de ajuda não encontrado.", notFound.Value);
@@ -298,13 +342,20 @@ namespace CommuniCareTests
 
         #endregion
 
+
         #region ValidarPedido
+
+        /// <summary>
+        /// Testa o comportamento do método ValidarPedidoAjuda quando o utilizador não está autenticado.
+        /// Espera-se que o método retorne um erro de "não autorizado" (401) se o utilizador não estiver autenticado.
+        /// </summary>
+        /// <returns>Uma tarefa que representa a execução do teste unitário.</returns>
 
         [TestMethod]
         public async Task ValidarPedidoAjuda_InvalidUser_ReturnsUnauthorized()
         {
-            // Arrange: Sem claims, simulando utilizador não autenticado
-            var userIdentity = new ClaimsIdentity(); // Vazio
+
+            var userIdentity = new ClaimsIdentity();
             var userPrincipal = new ClaimsPrincipal(userIdentity);
 
             _controller.ControllerContext = new ControllerContext
@@ -312,31 +363,37 @@ namespace CommuniCareTests
                 HttpContext = new DefaultHttpContext { User = userPrincipal }
             };
 
-            // Act
+
             var result = await _controller.ValidarPedidoAjuda(1);
 
-            // Assert
+
             Assert.IsInstanceOfType(result, typeof(UnauthorizedObjectResult));
             var actionResult = (UnauthorizedObjectResult)result;
             Assert.AreEqual("Utilizador não autenticado.", actionResult.Value);
         }
 
 
+        /// <summary>
+        /// Testa o comportamento do método ValidarPedidoAjuda quando o utilizador não é um administrador.
+        /// Espera-se que o método retorne um erro de "proibido" (403) se o utilizador não for um administrador.
+        /// </summary>
+        /// <returns>Uma tarefa que representa a execução do teste unitário.</returns>
+
         [TestMethod]
         public async Task ValidarPedidoAjuda_NotAdminUser_ReturnsForbid()
         {
-            // Arrange: Criar dados para o pedido
-            var pedidoId = 1;
-            var user = new Utilizador { UtilizadorId = 2, TipoUtilizadorId = 1 }; // Não é administrador
 
-            // Mock do comportamento do DbContext
+            var pedidoId = 1;
+            var user = new Utilizador { UtilizadorId = 2, TipoUtilizadorId = 1 };
+
+
             _mockUtilizadoresDbSet.Setup(m => m.FindAsync(2)).ReturnsAsync(user);
 
-            // Criando os claims para o utilizador não administrador
+
             var userClaims = new List<Claim>
-        {
-            new Claim(ClaimTypes.NameIdentifier, "2")
-        };
+            {
+                new Claim(ClaimTypes.NameIdentifier, "2")
+            };
             var userIdentity = new ClaimsIdentity(userClaims);
             var userPrincipal = new ClaimsPrincipal(userIdentity);
             _controller.ControllerContext = new ControllerContext
@@ -344,29 +401,36 @@ namespace CommuniCareTests
                 HttpContext = new DefaultHttpContext { User = userPrincipal }
             };
 
-            // Act: Chamar o método ValidarPedidoAjuda
+
             var result = await _controller.ValidarPedidoAjuda(pedidoId);
 
-            // Assert: Verificar que o resultado é Forbid
+
             Assert.IsInstanceOfType(result, typeof(ForbidResult));
         }
+
+
+        /// <summary>
+        /// Testa o comportamento do método ValidarPedidoAjuda quando o pedido de ajuda não é encontrado.
+        /// Espera-se que o método retorne um erro de "não encontrado" (404) se o pedido de ajuda não existir.
+        /// </summary>
+        /// <returns>Uma tarefa que representa a execução do teste unitário.</returns>
 
         [TestMethod]
         public async Task ValidarPedidoAjuda_PedidoNaoEncontrado_ReturnsNotFound()
         {
-            // Arrange: Criar dados para o pedido
-            var pedidoId = 999; // ID de pedido inexistente
-            var user = new Utilizador { UtilizadorId = 1, TipoUtilizadorId = 2 }; // Administrador
 
-            // Mock do comportamento do DbContext
+            var pedidoId = 999;
+            var user = new Utilizador { UtilizadorId = 1, TipoUtilizadorId = 2 };
+
+
             _mockUtilizadoresDbSet.Setup(m => m.FindAsync(1)).ReturnsAsync(user);
-            _mockPedidosAjudaDbSet.Setup(m => m.FindAsync(pedidoId)).ReturnsAsync((PedidoAjuda)null); // Pedido não encontrado
+            _mockPedidosAjudaDbSet.Setup(m => m.FindAsync(pedidoId)).ReturnsAsync((PedidoAjuda)null);
 
-            // Criando os claims para o utilizador administrador
+
             var userClaims = new List<Claim>
-        {
-            new Claim(ClaimTypes.NameIdentifier, "1")
-        };
+            {
+                new Claim(ClaimTypes.NameIdentifier, "1")
+            };
             var userIdentity = new ClaimsIdentity(userClaims);
             var userPrincipal = new ClaimsPrincipal(userIdentity);
             _controller.ControllerContext = new ControllerContext
@@ -374,32 +438,39 @@ namespace CommuniCareTests
                 HttpContext = new DefaultHttpContext { User = userPrincipal }
             };
 
-            // Act: Chamar o método ValidarPedidoAjuda
+
             var result = await _controller.ValidarPedidoAjuda(pedidoId);
 
-            // Assert: Verificar que o resultado é NotFound
+
             Assert.IsInstanceOfType(result, typeof(NotFoundObjectResult));
             var actionResult = (NotFoundObjectResult)result;
             Assert.AreEqual("Pedido de ajuda não encontrado.", actionResult.Value);
         }
 
+
+        /// <summary>
+        /// Testa o comportamento do método ValidarPedidoAjuda quando o pedido de ajuda já foi validado.
+        /// Espera-se que o método retorne um erro de "má solicitação" (400) se o pedido já foi validado ou está em andamento/concluído.
+        /// </summary>
+        /// <returns>Uma tarefa que representa a execução do teste unitário.</returns>
+
         [TestMethod]
         public async Task ValidarPedidoAjuda_PedidoJaValidado_ReturnsBadRequest()
         {
-            // Arrange: Criar dados para o pedido
-            var pedidoId = 1;
-            var user = new Utilizador { UtilizadorId = 1, TipoUtilizadorId = 2 }; // Administrador
-            var pedido = new PedidoAjuda { PedidoId = pedidoId, Estado = EstadoPedido.Aberto, UtilizadorId = 1 }; // Pedido já validado
 
-            // Mock do comportamento do DbContext
+            var pedidoId = 1;
+            var user = new Utilizador { UtilizadorId = 1, TipoUtilizadorId = 2 };
+            var pedido = new PedidoAjuda { PedidoId = pedidoId, Estado = EstadoPedido.Aberto, UtilizadorId = 1 };
+
+
             _mockUtilizadoresDbSet.Setup(m => m.FindAsync(1)).ReturnsAsync(user);
             _mockPedidosAjudaDbSet.Setup(m => m.FindAsync(pedidoId)).ReturnsAsync(pedido);
 
-            // Criando os claims para o utilizador administrador
+
             var userClaims = new List<Claim>
-        {
-            new Claim(ClaimTypes.NameIdentifier, "1")
-        };
+            {
+                new Claim(ClaimTypes.NameIdentifier, "1")
+            };
             var userIdentity = new ClaimsIdentity(userClaims);
             var userPrincipal = new ClaimsPrincipal(userIdentity);
             _controller.ControllerContext = new ControllerContext
@@ -407,26 +478,33 @@ namespace CommuniCareTests
                 HttpContext = new DefaultHttpContext { User = userPrincipal }
             };
 
-            // Act: Chamar o método ValidarPedidoAjuda
+
             var result = await _controller.ValidarPedidoAjuda(pedidoId);
 
-            // Assert: Verificar que o resultado é BadRequest
+
             Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
             var actionResult = (BadRequestObjectResult)result;
             Assert.AreEqual("Este pedido já foi validado ou está em progresso/concluído.", actionResult.Value);
         }
 
+
+        /// <summary>
+        /// Testa o comportamento do método ValidarPedidoAjuda quando o pedido é validado com sucesso.
+        /// Espera-se que o método retorne um status 200 OK com a mensagem "Pedido de ajuda validado com sucesso e colocado como 'Aberto'."
+        /// </summary>
+        /// <returns>Uma tarefa que representa a execução do teste unitário.</returns>
+
         [TestMethod]
         public async Task ValidarPedidoAjuda_Success_ReturnsOk()
         {
-            //  Arrange 
+
             var pedidoId = 1;
 
             var admin = new Utilizador
             {
                 UtilizadorId = 1,
                 NomeUtilizador = "Admin",
-                TipoUtilizadorId = 2           // 2 == administrador
+                TipoUtilizadorId = 2
             };
 
             var outro = new Utilizador
@@ -443,7 +521,7 @@ namespace CommuniCareTests
                 UtilizadorId = admin.UtilizadorId
             };
 
-            
+
             var utilizadores = new[] { admin, outro }.AsQueryable();
             var utilizadoresDbSet = utilizadores.BuildMockDbSet();
 
@@ -456,7 +534,7 @@ namespace CommuniCareTests
 
             _mockContext.Setup(c => c.Utilizadores).Returns(utilizadoresDbSet.Object);
 
-            
+
             var pedidoList = new[] { pedido }.AsQueryable();
             var pedidosDbSet = pedidoList.BuildMockDbSet();
 
@@ -469,12 +547,12 @@ namespace CommuniCareTests
 
             _mockContext.Setup(c => c.PedidosAjuda).Returns(pedidosDbSet.Object);
 
-            
+
             var notificacoesDbSet = new List<Notificacao>().AsQueryable()
                                                            .BuildMockDbSet();
             _mockContext.Setup(c => c.Notificacaos).Returns(notificacoesDbSet.Object);
 
-            
+
             var user = new ClaimsPrincipal(
                            new ClaimsIdentity(
                                new[] { new Claim(ClaimTypes.NameIdentifier, "1") }));
@@ -484,10 +562,10 @@ namespace CommuniCareTests
                 HttpContext = new DefaultHttpContext { User = user }
             };
 
-            // Act
+
             var result = await _controller.ValidarPedidoAjuda(pedidoId);
 
-            // Assert
+
             Assert.IsInstanceOfType(result, typeof(OkObjectResult));
             var ok = (OkObjectResult)result;
             Assert.AreEqual(
@@ -498,12 +576,20 @@ namespace CommuniCareTests
 
         #endregion
 
+
         #region Voluntariar
+
+
+        /// <summary>
+        /// Testa o comportamento do método Voluntariar quando o voluntariado é realizado com sucesso.
+        /// Espera-se que o método retorne uma resposta de sucesso (200 OK) com a mensagem de que o pedido de voluntariado foi registado com sucesso e aguarda aprovação do administrador.
+        /// </summary>
+        /// <returns>Uma tarefa que representa a execução do teste unitário.</returns>
 
         [TestMethod]
         public async Task Voluntariar_Success_ReturnsOk()
         {
-            // Arrange
+
             int pedidoId = 1;
             int utilizadorId = 3;
 
@@ -531,22 +617,29 @@ namespace CommuniCareTests
 
             var userClaims = new ClaimsPrincipal(new ClaimsIdentity(new[]
             {
-        new Claim(ClaimTypes.NameIdentifier, utilizadorId.ToString())
-    }, "mock"));
+                new Claim(ClaimTypes.NameIdentifier, utilizadorId.ToString())
+            }, "mock"));
 
             _controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext { User = userClaims }
             };
 
-            // Act
+
             var result = await _controller.Voluntariar(pedidoId);
 
-            // Assert
+
             Assert.IsInstanceOfType(result, typeof(OkObjectResult));
             var ok = result as OkObjectResult;
             Assert.AreEqual("Pedido de voluntariado registado com sucesso. Aguardando aprovação do administrador.", ok.Value);
         }
+
+
+        /// <summary>
+        /// Testa o comportamento do método Voluntariar quando o pedido está em progresso.
+        /// Espera-se que o método retorne um erro de "bad request" (400), com a mensagem de que o pedido não foi encontrado ou já foi fechado.
+        /// </summary>
+        /// <returns>Uma tarefa que representa a execução do teste unitário.</returns>
 
         [TestMethod]
         public async Task Voluntariar_PedidoEmProgresso_ReturnsBadRequest()
@@ -563,8 +656,8 @@ namespace CommuniCareTests
 
             var userClaims = new ClaimsPrincipal(new ClaimsIdentity(new[]
             {
-        new Claim(ClaimTypes.NameIdentifier, "3")
-    }, "mock"));
+                new Claim(ClaimTypes.NameIdentifier, "3")
+            }, "mock"));
 
             _controller.ControllerContext = new ControllerContext
             {
@@ -576,6 +669,13 @@ namespace CommuniCareTests
             Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
             Assert.AreEqual("Pedido não encontrado ou já fechado.", ((BadRequestObjectResult)result).Value);
         }
+
+
+        /// <summary>
+        /// Testa o comportamento do método Voluntariar quando o número máximo de voluntários já foi atingido.
+        /// Espera-se que o método retorne um erro de "bad request" (400), com a mensagem indicando que o número máximo de voluntários foi atingido para o pedido.
+        /// </summary>
+        /// <returns>Uma tarefa que representa a execução do teste unitário.</returns>
 
         [TestMethod]
         public async Task Voluntariar_NumeroMaximoAtingido_ReturnsBadRequest()
@@ -594,8 +694,8 @@ namespace CommuniCareTests
 
             var userClaims = new ClaimsPrincipal(new ClaimsIdentity(new[]
             {
-        new Claim(ClaimTypes.NameIdentifier, "3")
-    }, "mock"));
+                new Claim(ClaimTypes.NameIdentifier, "3")
+            }, "mock"));
 
             _controller.ControllerContext = new ControllerContext
             {
@@ -608,6 +708,12 @@ namespace CommuniCareTests
             Assert.AreEqual("Número máximo de voluntários já atingido para este pedido.", ((BadRequestObjectResult)result).Value);
         }
 
+
+        /// <summary>
+        /// Testa o comportamento do método Voluntariar quando o utilizador já se voluntariou para o pedido.
+        /// Espera-se que o método retorne um erro de "bad request" (400), com a mensagem indicando que o utilizador já se voluntariou para o pedido.
+        /// </summary>
+        /// <returns>Uma tarefa que representa a execução do teste unitário.</returns>
 
         [TestMethod]
         public async Task Voluntariar_JaVoluntariado_ReturnsBadRequest()
@@ -625,8 +731,8 @@ namespace CommuniCareTests
 
             var userClaims = new ClaimsPrincipal(new ClaimsIdentity(new[]
             {
-        new Claim(ClaimTypes.NameIdentifier, "3")
-    }, "mock"));
+                new Claim(ClaimTypes.NameIdentifier, "3")
+            }, "mock"));
 
             _controller.ControllerContext = new ControllerContext
             {
@@ -643,16 +749,23 @@ namespace CommuniCareTests
 
         #endregion
 
+
         #region ConcluirPedido
+
+        /// <summary>
+        /// Testa o comportamento do método ConcluirPedidoAjuda quando um utilizador válido conclui um pedido de ajuda.
+        /// Espera-se que o pedido seja marcado como concluído e que os administradores sejam notificados para validar a conclusão.
+        /// </summary>
+        /// <returns>Uma tarefa que representa a execução do teste unitário.</returns>
 
         [TestMethod]
         public async Task ConcluirPedidoAjuda_ValidUser_ReturnsOk()
         {
-            //  Arrange 
-            const int pedidoId = 1;
-            const int requesterId = 2;          
 
-            
+            const int pedidoId = 1;
+            const int requesterId = 2;
+
+
             var pedido = new PedidoAjuda
             {
                 PedidoId = pedidoId,
@@ -662,65 +775,73 @@ namespace CommuniCareTests
                 Voluntariados = new List<Voluntariado>()
             };
 
-            
+
             var pedidosDbSet = new[] { pedido }
                                .AsQueryable()
                                .BuildMockDbSet();
             _mockContext.Setup(c => c.PedidosAjuda).Returns(pedidosDbSet.Object);
 
-           
+
             var adminsDbSet = new[]
             {
-        new Utilizador { UtilizadorId = 3, TipoUtilizadorId = 2 }
-    }
+                new Utilizador { UtilizadorId = 3, TipoUtilizadorId = 2 }
+            }
             .AsQueryable()
             .BuildMockDbSet();
             _mockContext.Setup(c => c.Utilizadores).Returns(adminsDbSet.Object);
 
-            
+
             var notificacoesDbSet = new Mock<DbSet<Notificacao>>();
             _mockContext.Setup(c => c.Notificacaos).Returns(notificacoesDbSet.Object);
 
-            
+
             _mockContext.Setup(c => c.SaveChangesAsync(It.IsAny<CancellationToken>()))
                         .ReturnsAsync(1);
 
-            
+
             _controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext
                 {
                     User = new ClaimsPrincipal(
                         new ClaimsIdentity(
-                            new[] { new Claim(ClaimTypes.NameIdentifier, requesterId.ToString()) },
-                            "TestAuth"))
+                        new[] { new Claim(ClaimTypes.NameIdentifier, requesterId.ToString()) },
+                        "TestAuth"))
                 }
             };
 
-            //  Act 
+
             var result = await _controller.ConcluirPedidoAjuda(pedidoId);
 
-            //  Assert 
+
             Assert.IsInstanceOfType(result, typeof(OkObjectResult));
             var ok = (OkObjectResult)result;
             Assert.AreEqual(
                 "O pedido foi marcado como concluído. Os administradores foram notificados para validar a conclusão.",
                 ok.Value);
 
-            
+
             Assert.AreEqual(EstadoPedido.Concluido, pedido.Estado);
 
-           
+
             notificacoesDbSet.Verify(d => d.Add(It.IsAny<Notificacao>()), Times.Once);
 
-            
+
             _mockContext.Verify(c => c.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
         }
+
+
+        /// <summary>
+        /// Testa o comportamento do método ConcluirPedidoAjuda quando o utilizador não está autenticado.
+        /// Espera-se que o método retorne um erro de "não autorizado" (erro 401) se o utilizador não estiver autenticado.
+        /// </summary>
+        /// <returns>Uma tarefa que representa a execução do teste unitário.</returns>
+
 
         [TestMethod]
         public async Task ConcluirPedidoAjuda_UserNotAuthenticated_ReturnsUnauthorized()
         {
-            // Arrange
+
             var pedidoId = 1;
             var pedido = new PedidoAjuda
             {
@@ -729,13 +850,13 @@ namespace CommuniCareTests
                 UtilizadorId = 2
             };
 
-            // Simulação do DbSet de PedidoAjuda
+
             var mockDbSetPedidos = new Mock<DbSet<PedidoAjuda>>();
             mockDbSetPedidos.Setup(m => m.FindAsync(It.IsAny<object[]>())).ReturnsAsync(pedido);
             _mockContext.Setup(c => c.PedidosAjuda).Returns(mockDbSetPedidos.Object);
 
-            // Simulação de utilizador não autenticado (sem Claim)
-            var userClaims = new List<Claim>(); // Nenhum Claim
+
+            var userClaims = new List<Claim>();
             var userIdentity = new ClaimsIdentity(userClaims);
             var userPrincipal = new ClaimsPrincipal(userIdentity);
             _controller.ControllerContext = new ControllerContext
@@ -743,26 +864,33 @@ namespace CommuniCareTests
                 HttpContext = new DefaultHttpContext { User = userPrincipal }
             };
 
-            // Act: Chamar o método ConcluirPedidoAjuda
+
             var result = await _controller.ConcluirPedidoAjuda(pedidoId);
 
-            // Assert: Verificar que o resultado é Unauthorized
+
             Assert.IsInstanceOfType(result, typeof(UnauthorizedObjectResult));
             var actionResult = (UnauthorizedObjectResult)result;
             Assert.AreEqual("Utilizador não autenticado.", actionResult.Value);
         }
 
+
+        /// <summary>
+        /// Testa o comportamento do método ConcluirPedidoAjuda quando o pedido não é encontrado no banco de dados.
+        /// Espera-se que o método retorne um erro 404 quando o pedido de ajuda não existir.
+        /// </summary>
+        /// <returns>1 resultado - Uma tarefa que representa a execução do teste unitário.</returns>
+
         [TestMethod]
         public async Task ConcluirPedidoAjuda_PedidoNotFound_ReturnsNotFound()
         {
-            
+
             var pedidoId = 1;
 
-            
+
             var pedidos = new List<PedidoAjuda>().AsQueryable().BuildMockDbSet();
             _mockContext.Setup(c => c.PedidosAjuda).Returns(pedidos.Object);
 
-            
+
             var userClaims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, "2")
@@ -776,31 +904,36 @@ namespace CommuniCareTests
                 }
             };
 
-            
+
             var result = await _controller.ConcluirPedidoAjuda(pedidoId);
 
-            
+
             Assert.IsInstanceOfType(result, typeof(NotFoundObjectResult));
             var notFound = (NotFoundObjectResult)result;
             Assert.AreEqual("Pedido de ajuda não encontrado.", notFound.Value);
         }
 
 
+        /// <summary>
+        /// Testa o comportamento do método ConcluirPedidoAjuda quando o utilizador não é o requerente do pedido.
+        /// Espera-se que o método retorne um erro de "proibido" (erro 403) se o utilizador não for o requerente do pedido.
+        /// </summary>
+        /// <returns>Uma tarefa que representa a execução do teste unitário.</returns>
 
         [TestMethod]
         public async Task ConcluirPedidoAjuda_UserIsNotRequester_ReturnsForbid()
         {
-            
+
             var pedidoId = 1;
 
             var pedido = new PedidoAjuda
             {
                 PedidoId = pedidoId,
                 Estado = EstadoPedido.EmProgresso,
-                UtilizadorId = 3 // Utilizador diferente do que tenta concluir o pedido
+                UtilizadorId = 3
             };
 
-            
+
             var pedidosDbSet = new[] { pedido }
                                .AsQueryable()
                                .BuildMockDbSet();
@@ -808,7 +941,7 @@ namespace CommuniCareTests
             _mockContext.Setup(c => c.PedidosAjuda)
                         .Returns(pedidosDbSet.Object);
 
-            // Mock do utilizador autenticado (ID 2, que não é o requisitante)
+
             var user = new ClaimsPrincipal(
                            new ClaimsIdentity(
                                new[] { new Claim(ClaimTypes.NameIdentifier, "2") }));
@@ -818,30 +951,35 @@ namespace CommuniCareTests
                 HttpContext = new DefaultHttpContext { User = user }
             };
 
-            // Act 
+
             var result = await _controller.ConcluirPedidoAjuda(pedidoId);
 
-            // Assert
+
             Assert.IsInstanceOfType(result, typeof(ForbidResult));
 
         }
 
 
-        
-       [TestMethod]
+        /// <summary>
+        /// Testa o comportamento do método ConcluirPedidoAjuda quando o pedido não está em progresso.
+        /// Espera-se que o método retorne um erro de "requisição inválida" (erro 400) se o pedido já estiver concluído ou não estiver em progresso.
+        /// </summary>
+        /// <returns>Uma tarefa que representa a execução do teste unitário.</returns>
+
+        [TestMethod]
         public async Task ConcluirPedidoAjuda_PedidoNotInProgress_ReturnsBadRequest()
         {
-            //  Arrange 
+
             var pedidoId = 1;
 
             var pedido = new PedidoAjuda
             {
                 PedidoId = pedidoId,
-                Estado = EstadoPedido.Concluido,   // Estado já está em "Concluído", não está "Em Progresso"
-                UtilizadorId = 2                         
+                Estado = EstadoPedido.Concluido,
+                UtilizadorId = 2
             };
 
-            
+
             var pedidosDbSet = new[] { pedido }
                                .AsQueryable()
                                .BuildMockDbSet();
@@ -849,7 +987,7 @@ namespace CommuniCareTests
             _mockContext.Setup(c => c.PedidosAjuda)
                         .Returns(pedidosDbSet.Object);
 
-            // Logged-in user is the requester (id = 2)
+
             var user = new ClaimsPrincipal(
                            new ClaimsIdentity(
                                new[] { new Claim(ClaimTypes.NameIdentifier, "2") }));
@@ -859,10 +997,10 @@ namespace CommuniCareTests
                 HttpContext = new DefaultHttpContext { User = user }
             };
 
-            //  Act 
+
             var result = await _controller.ConcluirPedidoAjuda(pedidoId);
 
-            //  Assert 
+
             Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
             var bad = (BadRequestObjectResult)result;
             Assert.AreEqual("O pedido não está em progresso ou já foi concluído.", bad.Value);
@@ -870,35 +1008,49 @@ namespace CommuniCareTests
 
         #endregion
 
+
         #region ValidarConclusao
+
+        /// <summary>
+        /// Testa o comportamento do método ValidarConclusaoPedidoAjuda quando o utilizador não está autenticado.
+        /// Espera-se que o método devolva uma resposta 401 Unauthorized com a mensagem correspondente.
+        /// </summary>
+        /// <returns>Uma tarefa que representa a execução do teste unitário.</returns>
 
         [TestMethod]
         public async Task ValidarConclusaoPedidoAjuda_UserNotAuthenticated_ReturnsUnauthorized()
         {
-            // Arrange
+
             var pedidoId = 1;
             _controller.ControllerContext = new ControllerContext
             {
-                HttpContext = new DefaultHttpContext { User = new ClaimsPrincipal() } // sem claims
+                HttpContext = new DefaultHttpContext { User = new ClaimsPrincipal() }
             };
 
-            // Act
+
             var result = await _controller.ValidarConclusaoPedidoAjuda(pedidoId);
 
-            // Assert
+
             Assert.IsInstanceOfType(result, typeof(UnauthorizedObjectResult));
             var objectResult = (UnauthorizedObjectResult)result;
             Assert.AreEqual("Utilizador não autenticado.", objectResult.Value);
         }
 
+
+        /// <summary>
+        /// Testa o comportamento do método ValidarConclusaoPedidoAjuda quando o pedido de ajuda especifico não é encontrado.
+        /// Espera-se que o método devolva uma resposta 404 NotFound com a mensagem apropriada.
+        /// </summary>
+        /// <returns>Uma tarefa que representa a execução do teste unitário.</returns>
+
         [TestMethod]
         public async Task ValidarConclusaoPedidoAjuda_PedidoNotFound_ReturnsNotFound()
         {
-            //  Arrange 
+
             const int pedidoId = 1;
             const int utilizadorId = 2;
 
-           
+
             var claims = new[] { new Claim(ClaimTypes.NameIdentifier, utilizadorId.ToString()) };
             _controller.ControllerContext = new ControllerContext
             {
@@ -908,7 +1060,7 @@ namespace CommuniCareTests
                 }
             };
 
-            
+
             var admin = new Utilizador { UtilizadorId = utilizadorId, TipoUtilizadorId = 2 };
 
             var utilizadores = new List<Utilizador> { admin }
@@ -920,34 +1072,40 @@ namespace CommuniCareTests
                 .Setup(d => d.FindAsync(It.IsAny<object[]>()))
                 .ReturnsAsync(admin);
 
-            
-            var pedidos = new List<PedidoAjuda>()     // lista vazia
+
+            var pedidos = new List<PedidoAjuda>()
                           .AsQueryable()
                           .BuildMockDbSet();
 
             _mockContext.Setup(c => c.PedidosAjuda).Returns(pedidos.Object);
 
-            //  Act
+
             var result = await _controller.ValidarConclusaoPedidoAjuda(pedidoId);
 
-            //  Assert 
+
             Assert.IsInstanceOfType(result, typeof(NotFoundObjectResult));
             var notFound = (NotFoundObjectResult)result;
             Assert.AreEqual("Pedido de ajuda não encontrado.", notFound.Value);
         }
 
 
+        /// <summary>
+        /// Testa o comportamento do método ValidarConclusaoPedidoAjuda quando o utilizador autenticado não é um administrador.
+        /// Espera-se que o método devolva uma resposta 403 Forbid, impedindo o acesso à funcionalidade.
+        /// </summary>
+        /// <returns>Uma tarefa que representa a execução do teste unitário.</returns>
+
         [TestMethod]
         public async Task ValidarConclusaoPedidoAjuda_UserIsNotAdmin_ReturnsForbid()
         {
-            // Arrange
+
             var pedidoId = 1;
             var utilizadorId = 2;
 
             var user = new ClaimsPrincipal(new ClaimsIdentity(new[]
             {
-        new Claim(ClaimTypes.NameIdentifier, utilizadorId.ToString())
-    }, "mock"));
+                new Claim(ClaimTypes.NameIdentifier, utilizadorId.ToString())
+            }, "mock"));
 
             _controller.ControllerContext = new ControllerContext
             {
@@ -956,25 +1114,32 @@ namespace CommuniCareTests
 
             var mockDbSetUtilizadores = new Mock<DbSet<Utilizador>>();
             mockDbSetUtilizadores.Setup(m => m.FindAsync(utilizadorId))
-                .ReturnsAsync(new Utilizador { UtilizadorId = utilizadorId, TipoUtilizadorId = 1 }); // não admin
+                .ReturnsAsync(new Utilizador { UtilizadorId = utilizadorId, TipoUtilizadorId = 1 });
 
             _mockContext.Setup(c => c.Utilizadores).Returns(mockDbSetUtilizadores.Object);
 
-            // Act
+
             var result = await _controller.ValidarConclusaoPedidoAjuda(pedidoId);
 
-            // Assert
+
             Assert.IsInstanceOfType(result, typeof(ForbidResult));
         }
+
+
+        /// <summary>
+        /// Testa o comportamento do método ValidarConclusaoPedidoAjuda quando o pedido de ajuda não foi concluído.
+        /// Espera-se que o método devolva uma resposta 400 BadRequest com a mensagem correspondente.
+        /// </summary>
+        /// <returns>Uma tarefa que representa a execução do teste unitário.</returns>
 
         [TestMethod]
         public async Task ValidarConclusaoPedidoAjuda_PedidoNotConcluded_ReturnsBadRequest()
         {
-            //  Arrange 
+
             const int pedidoId = 1;
             const int utilizadorId = 2;
 
-            
+
             var claims = new[] { new Claim(ClaimTypes.NameIdentifier, utilizadorId.ToString()) };
             _controller.ControllerContext = new ControllerContext
             {
@@ -984,7 +1149,7 @@ namespace CommuniCareTests
                 }
             };
 
-            
+
             var admin = new Utilizador { UtilizadorId = utilizadorId, TipoUtilizadorId = 2 };
 
             var utilizadores = new List<Utilizador> { admin }
@@ -996,39 +1161,46 @@ namespace CommuniCareTests
                 .Setup(d => d.FindAsync(It.IsAny<object[]>()))
                 .ReturnsAsync(admin);
 
-           
+
             var pedido = new PedidoAjuda
             {
                 PedidoId = pedidoId,
                 Estado = EstadoPedido.Pendente,
                 Utilizador = new Utilizador(),
-                Voluntariados = new List<Voluntariado>()       
+                Voluntariados = new List<Voluntariado>()
             };
 
-            
+
             var pedidos = new List<PedidoAjuda> { pedido }
                           .AsQueryable()
                           .BuildMockDbSet();
 
             _mockContext.Setup(c => c.PedidosAjuda).Returns(pedidos.Object);
 
-            //  Act 
+
             var result = await _controller.ValidarConclusaoPedidoAjuda(pedidoId);
 
-            //  Assert 
+
             Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
             var bad = (BadRequestObjectResult)result;
             Assert.AreEqual("O pedido não ainda não foi concluído.", bad.Value);
         }
 
+
+        /// <summary>
+        /// Testa o comportamento do método ValidarConclusaoPedidoAjuda quando o recetor do pedido é nulo.
+        /// Espera-se que o método devolva uma resposta 400 BadRequest com a mensagem de erro correspondente.
+        /// </summary>
+        /// <returns>Uma tarefa que representa a execução do teste unitário.</returns>
+
         [TestMethod]
         public async Task ValidarConclusaoPedidoAjuda_RecetorIsNull_ReturnsBadRequest()
         {
-            //  Arrange 
+
             const int pedidoId = 1;
             const int utilizadorId = 2;
 
-            
+
             var claims = new[] { new Claim(ClaimTypes.NameIdentifier, utilizadorId.ToString()) };
             _controller.ControllerContext = new ControllerContext
             {
@@ -1038,7 +1210,7 @@ namespace CommuniCareTests
                 }
             };
 
-            
+
             var admin = new Utilizador { UtilizadorId = utilizadorId, TipoUtilizadorId = 2 };
 
             var utilizadores = new List<Utilizador> { admin }
@@ -1050,12 +1222,12 @@ namespace CommuniCareTests
                 .Setup(d => d.FindAsync(It.IsAny<object[]>()))
                 .ReturnsAsync(admin);
 
-            
+
             var pedido = new PedidoAjuda
             {
                 PedidoId = pedidoId,
                 Estado = EstadoPedido.Concluido,
-                Utilizador = null,                 
+                Utilizador = null,
                 Voluntariados = new List<Voluntariado>()
             };
 
@@ -1065,26 +1237,36 @@ namespace CommuniCareTests
 
             _mockContext.Setup(c => c.PedidosAjuda).Returns(pedidos.Object);
 
-            //  Act 
+
             var result = await _controller.ValidarConclusaoPedidoAjuda(pedidoId);
 
-            //  Assert 
+
             Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
             var bad = (BadRequestObjectResult)result;
             Assert.AreEqual("Não foi possível determinar o recetor do pedido.", bad.Value);
         }
 
+
+        /// <summary>
+        /// Testa o cenário completo e bem-sucedido em que um administrador valida a conclusão de um pedido de ajuda.
+        /// Garante que a recompensa é atribuída, a transação é registada e a notificação é enviada corretamente.
+        /// </summary>
+        /// <returns>
+        /// Resultado 200 (OK) com mensagem de sucesso. Verifica também alterações no número de cares do recetor
+        /// e chamadas aos métodos Add e SaveChangesAsync para persistência dos dados.
+        /// </returns>
+
         [TestMethod]
         public async Task ValidarConclusaoPedidoAjuda_ValidRequest_ReturnsOk()
         {
-            //  Arrange 
+
             const int pedidoId = 1;
             const int adminId = 2;
 
-            
+
             var admin = new Utilizador { UtilizadorId = adminId, TipoUtilizadorId = 2 };
 
-            
+
             var recetor = new Utilizador { UtilizadorId = 3, NumCares = 10 };
 
             var pedido = new PedidoAjuda
@@ -1095,12 +1277,12 @@ namespace CommuniCareTests
                 UtilizadorId = recetor.UtilizadorId,
                 RecompensaCares = 5,
                 Voluntariados = new List<Voluntariado>
-        {
-            new Voluntariado { UtilizadorId = 99 }
-        }
+                {
+                    new Voluntariado { UtilizadorId = 99 }
+                }
             };
 
-            
+
             var utilizadores = new[] { admin, recetor }
                                .AsQueryable()
                                .BuildMockDbSet();
@@ -1115,14 +1297,14 @@ namespace CommuniCareTests
 
             _mockContext.Setup(c => c.Utilizadores).Returns(utilizadores.Object);
 
-            
+
             var pedidosDbSet = new[] { pedido }
                                .AsQueryable()
                                .BuildMockDbSet();
 
             _mockContext.Setup(c => c.PedidosAjuda).Returns(pedidosDbSet.Object);
 
-            
+
             var transacoesDb = new Mock<DbSet<Transacao>>();
             var transAjudaDb = new Mock<DbSet<TransacaoAjuda>>();
             var notificacoesDb = new Mock<DbSet<Notificacao>>();
@@ -1131,11 +1313,11 @@ namespace CommuniCareTests
             _mockContext.Setup(c => c.TransacaoAjuda).Returns(transAjudaDb.Object);
             _mockContext.Setup(c => c.Notificacaos).Returns(notificacoesDb.Object);
 
-            
+
             _mockContext.Setup(c => c.SaveChangesAsync(It.IsAny<CancellationToken>()))
                         .ReturnsAsync(1);
 
-            
+
             _controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext
@@ -1147,20 +1329,20 @@ namespace CommuniCareTests
                 }
             };
 
-            //  Act 
+
             var result = await _controller.ValidarConclusaoPedidoAjuda(pedidoId);
 
-            //  Assert 
+
             Assert.IsInstanceOfType(result, typeof(OkObjectResult));
             var ok = (OkObjectResult)result;
             Assert.AreEqual(
                 "Pedido de ajuda concluído com sucesso. Recompensa atribuída, transação registada e notificação enviada.",
                 ok.Value);
 
-            
+
             Assert.AreEqual(15, recetor.NumCares);
 
-            
+
             transacoesDb.Verify(d => d.Add(It.IsAny<Transacao>()), Times.Once);
             transAjudaDb.Verify(d => d.Add(It.IsAny<TransacaoAjuda>()), Times.Once);
             notificacoesDb.Verify(d => d.Add(It.IsAny<Notificacao>()), Times.Once);
@@ -1172,13 +1354,19 @@ namespace CommuniCareTests
 
         #endregion
 
+
         #region GetPedidosAjudaDisponiveis
+
+        /// <summary>
+        /// Testa o comportamento do método GetPedidosAjudaDisponiveis quando o utilizador não está autenticado.
+        /// </summary>
+        /// <returns>Uma tarefa que representa a execução do teste unitário.</returns>
 
         [TestMethod]
         public async Task GetPedidosAjudaDisponiveis_UnauthenticatedUser_ReturnsUnauthorized()
         {
-            // Arrange: Sem claims, simulando utilizador não autenticado
-            var userIdentity = new ClaimsIdentity(); // Vazio
+
+            var userIdentity = new ClaimsIdentity();
             var userPrincipal = new ClaimsPrincipal(userIdentity);
 
             _controller.ControllerContext = new ControllerContext
@@ -1186,36 +1374,43 @@ namespace CommuniCareTests
                 HttpContext = new DefaultHttpContext { User = userPrincipal }
             };
 
-            // Act
+
             var result = await _controller.GetPedidosAjudaDisponiveis();
 
-            // Assert
-            Assert.IsInstanceOfType(result.Result, typeof(UnauthorizedObjectResult));  // Verifique se a resposta é Unauthorized
+
+            Assert.IsInstanceOfType(result.Result, typeof(UnauthorizedObjectResult));
             var actionResult = result.Result as UnauthorizedObjectResult;
             Assert.IsNotNull(actionResult);
             Assert.AreEqual("Utilizador não autenticado.", actionResult.Value);
         }
 
+
+        /// <summary>
+        /// Testa o comportamento do método GetPedidosAjudaDisponiveis quando o utilizador está autenticado
+        /// e existem pedidos de ajuda disponíveis (abertos) de outros utilizadores.
+        /// </summary>
+        /// <returns>Uma tarefa que representa a execução do teste unitário.</returns>
+
         [TestMethod]
         public async Task GetPedidosAjudaDisponiveis_Success_ReturnsPedidosDisponiveis()
         {
-            //  Arrange 
+
             const int currentUserId = 1;
 
             var pedidos = new List<PedidoAjuda>
-    {
-        new PedidoAjuda { PedidoId = 1, UtilizadorId = 2, Estado = EstadoPedido.Aberto },
-        new PedidoAjuda { PedidoId = 2, UtilizadorId = 3, Estado = EstadoPedido.Aberto },
-        
-        new PedidoAjuda { PedidoId = 3, UtilizadorId = currentUserId, Estado = EstadoPedido.Aberto },
-        new PedidoAjuda { PedidoId = 4, UtilizadorId = 9, Estado = EstadoPedido.Pendente }
-    };
+            {
+                new PedidoAjuda { PedidoId = 1, UtilizadorId = 2, Estado = EstadoPedido.Aberto },
+                new PedidoAjuda { PedidoId = 2, UtilizadorId = 3, Estado = EstadoPedido.Aberto },
 
-            
+                new PedidoAjuda { PedidoId = 3, UtilizadorId = currentUserId, Estado = EstadoPedido.Aberto },
+                new PedidoAjuda { PedidoId = 4, UtilizadorId = 9, Estado = EstadoPedido.Pendente }
+            };
+
+
             var pedidosDbSet = pedidos.AsQueryable().BuildMockDbSet();
             _mockContext.Setup(c => c.PedidosAjuda).Returns(pedidosDbSet.Object);
 
-            
+
             _controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext
@@ -1227,10 +1422,10 @@ namespace CommuniCareTests
                 }
             };
 
-            //  Act 
+
             var result = await _controller.GetPedidosAjudaDisponiveis();
 
-            //  Assert 
+
             Assert.IsInstanceOfType(result.Result, typeof(OkObjectResult));
             var ok = (OkObjectResult)result.Result;
 
@@ -1238,20 +1433,27 @@ namespace CommuniCareTests
             Assert.IsNotNull(returned);
 
             var list = returned.ToList();
-            Assert.AreEqual(2, list.Count);                 // só pedido 1 e 2
+            Assert.AreEqual(2, list.Count);
             Assert.IsTrue(list.All(p => p.Estado == EstadoPedido.Aberto
                                      && p.UtilizadorId != currentUserId));
         }
 
         #endregion
 
+
         #region GetMeusPedidosAjuda
+
+        /// <summary>
+        /// Testa o método GetMeusPedidosAjuda do controlador quando o utilizador não está autenticado.
+        /// Verifica se o resultado devolvido é do tipo UnauthorizedObjectResult e se a mensagem de erro está correta.
+        /// </summary>
+        /// <returns>Uma tarefa que representa a execução do teste unitário.</returns>
 
         [TestMethod]
         public async Task GetMeusPedidosAjuda_UnauthenticatedUser_ReturnsUnauthorized()
         {
-            // Arrange: Sem claims, simulando utilizador não autenticado
-            var userIdentity = new ClaimsIdentity(); // Vazio
+
+            var userIdentity = new ClaimsIdentity();
             var userPrincipal = new ClaimsPrincipal(userIdentity);
 
             _controller.ControllerContext = new ControllerContext
@@ -1259,34 +1461,41 @@ namespace CommuniCareTests
                 HttpContext = new DefaultHttpContext { User = userPrincipal }
             };
 
-            // Act
+
             var result = await _controller.GetMeusPedidosAjuda();
 
-            // Assert
-            Assert.IsInstanceOfType(result.Result, typeof(UnauthorizedObjectResult));  // Verifique se a resposta é Unauthorized
+
+            Assert.IsInstanceOfType(result.Result, typeof(UnauthorizedObjectResult));
             var actionResult = result.Result as UnauthorizedObjectResult;
             Assert.IsNotNull(actionResult);
             Assert.AreEqual("Utilizador não autenticado.", actionResult.Value);
         }
 
+
+        /// <summary>
+        /// Testa o comportamento do método GetMeusPedidosAjuda quando o utilizador está autenticado
+        /// e existem pedidos associados ao seu identificador.
+        /// </summary>
+        /// <returns>Uma tarefa que representa a execução do teste unitário.</returns>
+
         [TestMethod]
         public async Task GetMeusPedidosAjuda_Success_ReturnsMeusPedidos()
         {
-            //  Arrange 
+
             const int userId = 1;
 
             var pedidos = new List<PedidoAjuda>
-    {
-        new PedidoAjuda { PedidoId = 1, UtilizadorId = userId, Estado = EstadoPedido.Pendente },
-        new PedidoAjuda { PedidoId = 2, UtilizadorId = userId, Estado = EstadoPedido.Pendente },
-        new PedidoAjuda { PedidoId = 3, UtilizadorId = 99,   Estado = EstadoPedido.Pendente } // deve ser filtrado
-    };
+            {
+                new PedidoAjuda { PedidoId = 1, UtilizadorId = userId, Estado = EstadoPedido.Pendente },
+                new PedidoAjuda { PedidoId = 2, UtilizadorId = userId, Estado = EstadoPedido.Pendente },
+                new PedidoAjuda { PedidoId = 3, UtilizadorId = 99,   Estado = EstadoPedido.Pendente }
+            };
 
-            
+
             var pedidosDbSet = pedidos.AsQueryable().BuildMockDbSet();
             _mockContext.Setup(c => c.PedidosAjuda).Returns(pedidosDbSet.Object);
 
-            // utilizador autenticado
+
             _controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext
@@ -1298,27 +1507,23 @@ namespace CommuniCareTests
                 }
             };
 
-            //  Act 
+
             var result = await _controller.GetMeusPedidosAjuda();
 
-            //  Assert 
+
             Assert.IsInstanceOfType(result.Result, typeof(OkObjectResult));
             var ok = (OkObjectResult)result.Result;
 
             var returned = ok.Value as IEnumerable<PedidoAjuda>;
             Assert.IsNotNull(returned);
 
-            
+
             var list = returned.ToList();
             Assert.AreEqual(2, list.Count);
             Assert.IsTrue(list.All(p => p.UtilizadorId == userId));
         }
 
         #endregion
-
-
-
-
 
 
     }

@@ -1,4 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿/// <summary>
+/// Namespace que contém os testes unitários da aplicação CommuniCare.
+/// Utiliza o framework MSTest e Moq para simular interações com a base de dados e testar o comportamento dos métodos do controlador VendaController.
+/// </summary>
+/// 
+
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -16,9 +22,13 @@ using CommuniCare.DTOs;
 using CommuniCare.Models;
 using MockQueryable.Moq;
 
+
 namespace CommuniCareTests
 {
-
+    /// <summary>
+    /// Classe de testes para o controlador NotificacoesController.
+    /// Contém métodos de teste para verificar o comportamento das notificações, incluindo cenários de sucesso e falha.
+    /// </summary>
     [TestClass]
     public class NotificacoesControllerTests
     {
@@ -26,6 +36,11 @@ namespace CommuniCareTests
         private Mock<DbSet<Notificacao>> _mockNotificacoes;
         private NotificacoesController _controller;
 
+        /// <summary>
+        /// Método de inicialização que prepara o ambiente de testes.
+        /// Configura os mocks do contexto de dados e do DbSet de notificações.
+        /// Cria uma instância do controlador e configura o contexto do utilizador autenticado.
+        /// </summary>
         [TestInitialize]
         public void Setup()
         {
@@ -93,42 +108,48 @@ namespace CommuniCareTests
         }
 
         #region VerNotificacoes Tests
+
+        /// <summary>
+        /// Teste que verifica se o método VerNotificacoes retorna um resultado OK (200) quando existem notificações para o utilizador.
+        /// </summary>
+        /// <returns>Retorna um resultado OK com a lista de notificações.</returns>
+
         [TestMethod]
         public async Task VerNotificacoes_DeveRetornarOk_SeNotificacoesExistirem()
         {
-            /*  Arrange  */
+
             const int utilizadorId = 1;
 
             var dados = new[]
             {
-        new Notificacao
-        {
-            NotificacaoId = 1,
-            UtilizadorId  = utilizadorId,
-            Mensagem      = "Notificação 1",
-            Lida          = 0,
-            DataMensagem  = DateTime.Now.AddMinutes(-10)
-        },
-        new Notificacao
-        {
-            NotificacaoId = 2,
-            UtilizadorId  = utilizadorId,
-            Mensagem      = "Notificação 2",
-            Lida          = 0,
-            DataMensagem  = DateTime.Now.AddMinutes(-5)
-        }
-    };
+                new Notificacao
+                {
+                    NotificacaoId = 1,
+                    UtilizadorId  = utilizadorId,
+                    Mensagem      = "Notificação 1",
+                    Lida          = 0,
+                    DataMensagem  = DateTime.Now.AddMinutes(-10)
+                },
+                new Notificacao
+                {
+                    NotificacaoId = 2,
+                    UtilizadorId  = utilizadorId,
+                    Mensagem      = "Notificação 2",
+                    Lida          = 0,
+                    DataMensagem  = DateTime.Now.AddMinutes(-5)
+                }
+            };
 
-           
+
             var notificacoesDb = dados.AsQueryable().BuildMockDbSet();
 
-            
+
             _mockContext.Setup(c => c.Notificacaos).Returns(notificacoesDb.Object);
 
-            /*  Act  */
+
             var result = await _controller.VerNotificacoes();
 
-            /*  Assert  */
+
             Assert.IsInstanceOfType(result, typeof(OkObjectResult));
             var ok = (OkObjectResult)result;
             var lista = ok.Value as IEnumerable<Notificacao>;
@@ -139,38 +160,46 @@ namespace CommuniCareTests
             Assert.IsTrue(notifs.All(n => n.UtilizadorId == utilizadorId));
         }
 
+        /// <summary>
+        /// Teste que verifica se o método VerNotificacoes retorna um resultado Unauthorized (401) quando o utilizador não está autenticado.
+        /// </summary>
+        /// <returns>Retorna um resultado Unauthorized com a mensagem de erro apropriada.</returns>
         [TestMethod]
         public async Task VerNotificacoes_DeveRetornarUnauthorized_SeUsuarioNaoAutenticado()
         {
-            // Arrange
+
             _controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext { User = new ClaimsPrincipal() } // Sem claims
             };
 
-            // Act
+
             var result = await _controller.VerNotificacoes();
 
-            // Assert
+
             Assert.IsInstanceOfType(result, typeof(UnauthorizedObjectResult));
             var unauthorizedResult = result as UnauthorizedObjectResult;
             Assert.AreEqual("Utilizador não autenticado.", unauthorizedResult.Value);
         }
 
+        /// <summary>
+        /// Teste que verifica se o método VerNotificacoes retorna um resultado NotFound (404) quando não existem notificações para o utilizador.
+        /// </summary>
+        /// <returns>Retorna um resultado NotFound com a mensagem "Não há notificações para mostrar." quando não existem notificações.</returns>
         [TestMethod]
         public async Task VerNotificacoes_DeveRetornarNotFound_SeNaoHouverNotificacoes()
         {
-            /*  Arrange  */
+
             const int userId = 5;
 
-            
+
             var notificacoesDb = new List<Notificacao>()
                                  .AsQueryable()
-                                 .BuildMockDbSet();     
+                                 .BuildMockDbSet();
 
             _mockContext.Setup(c => c.Notificacaos).Returns(notificacoesDb.Object);
 
-            
+
             _controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext
@@ -182,15 +211,15 @@ namespace CommuniCareTests
                 }
             };
 
-            /*  Act  */
+
             var resultado = await _controller.VerNotificacoes();
 
-            /*  Assert  */
+
             Assert.IsInstanceOfType(resultado, typeof(NotFoundObjectResult));
             var nf = (NotFoundObjectResult)resultado;
             Assert.AreEqual("Não há notificações para mostrar.", nf.Value);
 
-            
+
         }
         #endregion
     }

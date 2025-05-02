@@ -1,3 +1,9 @@
+/// <summary>
+/// Namespace que contém os testes unitários da aplicação CommuniCare.
+/// Utiliza o framework MSTest e Moq para simular interações com a base de dados e testar o comportamento dos métodos do controlador VendaController.
+/// </summary>
+/// 
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +27,11 @@ using CommuniCare;
 
 namespace CommuniCareTests
 {
+    /// <summary>
+    /// Classe de testes unitários para o controlador VendaController.
+    /// Testa as funcionalidades do controlador relacionadas à compra e transações de vendas.
+    /// </summary>
+
     [TestClass]
     public class VendaTests
     {
@@ -33,37 +44,41 @@ namespace CommuniCareTests
         private Mock<EmailService> _mockEmailService;
         private Mock<TransacaoServico> _mockTransacaoServico;
 
+        /// <summary>
+        /// Configura o ambiente para os testes, inicializando os mocks e o controlador.
+        /// Este método é chamado antes de cada execução de teste para garantir um estado limpo para os testes.
+        /// </summary>
+
         [TestInitialize]
         public void Setup()
         {
-            // Mock dos DbSet para os modelos Venda, Transacao, Utilizador e Loja
+
             _mockVendasDbSet = new Mock<DbSet<Venda>>();
             _mockTransacoesDbSet = new Mock<DbSet<Transacao>>();
             _mockUtilizadoresDbSet = new Mock<DbSet<Utilizador>>();
             _mockLojasDbSet = new Mock<DbSet<Loja>>();
 
             _mockContext = new Mock<CommuniCareContext>();
-            
+
             _mockTransacaoServico = new Mock<TransacaoServico>(_mockContext.Object);
 
-            
 
-            // Mock do contexto de dados
+
             _mockContext = new Mock<CommuniCareContext>();
 
-            // Configurar o retorno dos DbSet para o contexto
+
             _mockContext.Setup(m => m.Venda).Returns(_mockVendasDbSet.Object);
             _mockContext.Setup(m => m.Transacoes).Returns(_mockTransacoesDbSet.Object);
             _mockContext.Setup(m => m.Utilizadores).Returns(_mockUtilizadoresDbSet.Object);
             _mockContext.Setup(m => m.Lojas).Returns(_mockLojasDbSet.Object);
 
-            // Mock do serviço de Email
+
             _mockEmailService = new Mock<EmailService>();
 
-            // Mock do serviço de Transações
+
             _mockTransacaoServico = new Mock<TransacaoServico>(_mockContext.Object);
 
-            // Criar a instância do controlador, passando o contexto mockado, o serviço de email e o serviço de transações
+
             _controller = new VendasController(_mockContext.Object, _mockEmailService.Object);
         }
 
@@ -71,10 +86,16 @@ namespace CommuniCareTests
 
         #region Comprar
 
+        /// <summary>
+        /// Testa o comportamento do método Comprar quando a compra é realizada com sucesso.
+        /// Espera-se que o método retorne um resultado Ok, indicando que a compra foi bem-sucedida, e que a resposta contenha a indicação de sucesso.
+        /// </summary>
+        /// <returns>Uma tarefa que representa a execução do teste unitário.</returns>
+
         /*[TestMethod]
         public async Task Comprar_ReturnsOk_WhenCompraBemSucedida()
         {
-            // Arrange
+            
             var userId = 1;
             var artigosIds = new List<int> { 10, 20 };
             var pedido = new PedidoCompraDTO { ArtigosIds = artigosIds };
@@ -88,20 +109,20 @@ namespace CommuniCareTests
                 HttpContext = new DefaultHttpContext { User = user }
             };
 
-            // Criar os objetos de venda, transação, artigos e data de compra fictícios
+            
             var venda = new Venda();
             var transacao = new Transacao();
-            var artigos = new List<Artigo> { new Artigo(), new Artigo() }; // Mockar ou criar instâncias reais conforme necessário
+            var artigos = new List<Artigo> { new Artigo(), new Artigo() }; 
             var dataCompra = DateTime.Now;
 
-            // Mock de ProcessarCompraAsync retornando a tupla esperada
+            
             _mockTransacaoServico.Setup(s => s.ProcessarCompraAsync(userId, artigosIds))
                                  .ReturnsAsync((venda, transacao, artigos, dataCompra));
 
-            // Act
+            
             var result = await _controller.Comprar(pedido);
 
-            // Assert
+            
             Assert.IsInstanceOfType(result, typeof(OkObjectResult));
             var okResult = result as OkObjectResult;
             dynamic resposta = okResult.Value;
@@ -112,10 +133,16 @@ namespace CommuniCareTests
 
         #region ComprarEmail
 
+        /// <summary>
+        /// Testa o comportamento do método ComprarEmail quando a compra é realizada com sucesso e o e-mail de comprovação é enviado corretamente.
+        /// Espera-se que o método retorne um resultado Ok, indicando que a compra foi bem-sucedida e que o e-mail de confirmação foi enviado.
+        /// </summary>
+        /// <returns>Uma tarefa que representa a execução do teste unitário.</returns>
+
         /*[TestMethod]
         public async Task ComprarEmail_ReturnsOk_WhenCompraBemSucedida()
         {
-            // Arrange
+            
             var userId = 1;
             var artigosIds = new List<int> { 10, 20 };
             var pedido = new PedidoCompraDTO { ArtigosIds = artigosIds };
@@ -136,10 +163,10 @@ namespace CommuniCareTests
             emailMock.Setup(e => e.EnviarComprovativoCompra(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<byte[]>()))
                      .Returns(Task.CompletedTask);
 
-            // Act
+            
             var result = await _controller.ComprarEmail(pedido);
 
-            // Assert
+            
             Assert.IsInstanceOfType(result, typeof(OkObjectResult));
             var okResult = result as OkObjectResult;
             dynamic resposta = okResult.Value;
@@ -154,42 +181,48 @@ namespace CommuniCareTests
 
         #region Comprar
 
-       /* [TestMethod]
-        public async Task Comprar_ReturnsBadRequest_WhenExceptionOccurs()
-        {
-            // Arrange
-            var userId = 1;
-            var artigosIds = new List<int> { 10, 20 };
-            var pedido = new PedidoCompraDTO { ArtigosIds = artigosIds };
+        /// <summary>
+        /// Testa o comportamento do método Comprar quando ocorre uma exceção durante o processamento da compra.
+        /// Espera-se que o método retorne um resultado BadRequest com uma mensagem de erro apropriada.
+        /// </summary>
+        /// <returns>Uma tarefa que representa a execução do teste unitário.</returns>
 
-            var user = new ClaimsPrincipal(new ClaimsIdentity(new[]
-            {
-                new Claim(ClaimTypes.NameIdentifier, userId.ToString())
-            }, "mock"));
+        /* [TestMethod]
+         public async Task Comprar_ReturnsBadRequest_WhenExceptionOccurs()
+         {
+             
+             var userId = 1;
+             var artigosIds = new List<int> { 10, 20 };
+             var pedido = new PedidoCompraDTO { ArtigosIds = artigosIds };
 
-            _controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = new DefaultHttpContext { User = user }
-            };
+             var user = new ClaimsPrincipal(new ClaimsIdentity(new[]
+             {
+                 new Claim(ClaimTypes.NameIdentifier, userId.ToString())
+             }, "mock"));
 
-            _mockTransacaoServico
-                .Setup(s => s.ProcessarCompraAsync(userId, artigosIds))
-                .Throws(new System.Exception("Erro ao processar compra"));
+             _controller.ControllerContext = new ControllerContext
+             {
+                 HttpContext = new DefaultHttpContext { User = user }
+             };
 
-            // Act
-            var result = await _controller.Comprar(pedido);
+             _mockTransacaoServico
+                 .Setup(s => s.ProcessarCompraAsync(userId, artigosIds))
+                 .Throws(new System.Exception("Erro ao processar compra"));
 
-            // Assert
-            Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
-            var badRequestResult = result as BadRequestObjectResult;
-            var response = badRequestResult.Value;
+             
+             var result = await _controller.Comprar(pedido);
 
-            var sucesso = response.GetType().GetProperty("Sucesso")?.GetValue(response);
-            var erro = response.GetType().GetProperty("Erro")?.GetValue(response)?.ToString();
+             
+             Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
+             var badRequestResult = result as BadRequestObjectResult;
+             var response = badRequestResult.Value;
 
-            Assert.AreEqual(false, sucesso);
-            Assert.AreEqual("Erro ao processar compra", erro);
-        }*/
+             var sucesso = response.GetType().GetProperty("Sucesso")?.GetValue(response);
+             var erro = response.GetType().GetProperty("Erro")?.GetValue(response)?.ToString();
+
+             Assert.AreEqual(false, sucesso);
+             Assert.AreEqual("Erro ao processar compra", erro);
+         }*/
 
 
 
@@ -198,10 +231,16 @@ namespace CommuniCareTests
 
         #region CompraEmail
 
+        /// <summary>
+        /// Testa o comportamento do método ComprarEmail quando ocorre uma exceção durante o processamento da compra.
+        /// Espera-se que o método retorne um resultado BadRequest com uma mensagem de erro apropriada.
+        /// </summary>
+        /// <returns>Uma tarefa que representa a execução do teste unitário.</returns>
+
         /*[TestMethod]
         public async Task ComprarEmail_ReturnsBadRequest_WhenExceptionOccurs()
         {
-            // Arrange
+            
             var userId = 1;
             var artigosIds = new List<int> { 10, 20 };
             var pedido = new PedidoCompraDTO { ArtigosIds = artigosIds };
@@ -220,10 +259,10 @@ namespace CommuniCareTests
                 .Setup(s => s.ProcessarCompraAsync(userId, artigosIds))
                 .ThrowsAsync(new Exception("Erro ao processar compra"));
 
-            // Act
+           
             var result = await _controller.ComprarEmail(pedido);
 
-            // Assert
+            
             Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
             var badRequestResult = result as BadRequestObjectResult;
             dynamic resposta = badRequestResult.Value;

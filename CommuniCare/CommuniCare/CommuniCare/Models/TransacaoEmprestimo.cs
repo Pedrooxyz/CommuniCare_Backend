@@ -1,19 +1,67 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CommuniCare.Models;
+namespace CommuniCare.Models{
 
-public partial class TransacaoEmprestimo
-{
-    public int? NHoras { get; set; }
+    public partial class TransacaoEmprestimo
+    {
 
-    public int? RecetorTran { get; set; }
+        #region Atributos
 
-    public int? PagaTran { get; set; }
+        int? nHoras;
 
-    public int TransacaoId { get; set; }
+        int? recetorTran;
 
-    public virtual ICollection<Emprestimo> Emprestimos { get; set; } = new List<Emprestimo>();
+        int? pagaTran;
 
-    public virtual Transacao Transacao { get; set; } = null!;
+        int transacaoId;
+
+        ICollection<Emprestimo> emprestimos = new List<Emprestimo>();
+        
+        Transacao transacao = null!;
+
+        #endregion
+
+        #region Propriedades
+
+        public int? NHoras
+        {
+            get { return nHoras; }
+            set { nHoras = value; }
+        }
+
+        public int? RecetorTran
+        {
+            get { return recetorTran; }
+            set { recetorTran = value; }
+        }
+
+        public int? PagaTran
+        {
+            get { return pagaTran; }
+            set { pagaTran = value; }
+        }
+
+        public int TransacaoId
+        {
+            get { return transacaoId; }
+            set { transacaoId = value; }
+        }
+
+        public virtual ICollection<Emprestimo> Emprestimos
+        {
+            get { return emprestimos; }
+            set { emprestimos = value; }
+        }
+
+        public virtual Transacao Transacao
+        {
+            get { return transacao; }
+            set { transacao = value; }
+        }
+
+        #endregion
+
+    }
+
 }

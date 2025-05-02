@@ -1,29 +1,109 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CommuniCare.Models;
-
-public partial class ItemEmprestimo
+namespace CommuniCare.Models
 {
-    public int ItemId { get; set; }
+    public partial class ItemEmprestimo
+    {
+        
+        #region Atributos
 
-    public string? NomeItem { get; set; }
+        int itemId;
 
-    public string? DescItem { get; set; }
+        string? nomeItem;
 
-    public byte? Disponivel { get; set; }
+        string? descItem;
 
-    public string? FotografiaItem { get; set; }
+        byte? disponivel;
 
-    public int? ComissaoCares { get; set; }
+        string? fotografiaItem;
 
-    public int idEmprestador { get; set; }
+        int? comissaoCares;
 
-    public virtual ICollection<Notificacao> Notificacaos { get; set; } = new List<Notificacao>();
+        int idEmprestador;
 
-    public virtual ICollection<Emprestimo> Emprestimos { get; set; } = new List<Emprestimo>();
+        ICollection<Notificacao> notificacaos = new List<Notificacao>();
+        
+        ICollection<Emprestimo> emprestimos = new List<Emprestimo>();
+        
+        ICollection<Utilizador> utilizadores = new List<Utilizador>();
+        
+        ICollection<ItemEmprestimoUtilizador> itemEmprestimoUtilizadores = new List<ItemEmprestimoUtilizador>();
 
-    public virtual ICollection<Utilizador> Utilizadores { get; set; } = new List<Utilizador>();
+        #endregion
 
-    public virtual ICollection<ItemEmprestimoUtilizador> ItemEmprestimoUtilizadores { get; set; }
+        #region Propriedades
+
+        public int ItemId
+        {
+            get { return itemId; }
+            set { itemId = value; }
+        }
+
+        public string? NomeItem
+        {
+            get { return nomeItem; }
+            set { nomeItem = value; }
+        }
+
+        public string? DescItem
+        {
+            get { return descItem; }
+            set { descItem = value; }
+        }
+
+        public byte? Disponivel
+        {
+            get { return disponivel; }
+            set { disponivel = value; }
+        }
+
+        public string? FotografiaItem
+        {
+            get { return fotografiaItem; }
+            set { fotografiaItem = value; }
+        }
+
+        public int? ComissaoCares
+        {
+            get { return comissaoCares; }
+            set { comissaoCares = value; }
+        }
+
+        public int IdEmprestador
+        {
+            get { return idEmprestador; }
+            set { idEmprestador = value; }
+        }
+
+        public virtual ICollection<Notificacao> Notificacaos
+        {
+            get { return notificacaos; }
+            set { notificacaos = value; }
+        }
+
+        public virtual ICollection<Emprestimo> Emprestimos
+        {
+            get { return emprestimos; }
+            set { emprestimos = value; }
+        }
+
+        public virtual ICollection<Utilizador> Utilizadores
+        {
+            get { return utilizadores; }
+            set { utilizadores = value; }
+        }
+
+        public virtual ICollection<ItemEmprestimoUtilizador> ItemEmprestimoUtilizadores
+        {
+            get { return itemEmprestimoUtilizadores; }
+            set { itemEmprestimoUtilizadores = value; }
+        }
+
+        #endregion
+
+        #region Construtores
+
+        #endregion
+    }
 }

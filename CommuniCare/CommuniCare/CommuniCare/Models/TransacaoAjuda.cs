@@ -1,15 +1,54 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CommuniCare.Models;
-
-public partial class TransacaoAjuda
+namespace CommuniCare.Models
 {
-    public int? RecetorTran { get; set; }
+    public partial class TransacaoAjuda
+    {
 
-    public int TransacaoId { get; set; }
+        #region Atributos
 
-    public virtual ICollection<PedidoAjuda> PedidoAjuda { get; set; } = new List<PedidoAjuda>();
+        int? recetorTran;
 
-    public virtual Transacao Transacao { get; set; } = null!;
+        int transacaoId;
+
+        ICollection<PedidoAjuda> pedidoAjuda = new List<PedidoAjuda>();
+        
+        Transacao transacao = null!;
+
+        #endregion
+
+        #region Propriedades
+
+        public int? RecetorTran
+        {
+            get { return recetorTran; }
+            set { recetorTran = value; }
+        }
+
+        public int TransacaoId
+        {
+            get { return transacaoId; }
+            set { transacaoId = value; }
+        }
+
+        public virtual ICollection<PedidoAjuda> PedidoAjuda
+        {
+            get { return pedidoAjuda; }
+            set { pedidoAjuda = value; }
+        }
+
+        public virtual Transacao Transacao
+        {
+            get { return transacao; }
+            set { transacao = value; }
+        }
+
+        #endregion
+
+        #region Construtores
+
+        #endregion
+   
+    }
 }

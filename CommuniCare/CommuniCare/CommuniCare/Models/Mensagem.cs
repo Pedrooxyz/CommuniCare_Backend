@@ -1,17 +1,62 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CommuniCare.Models;
-
-public partial class Mensagem
+namespace CommuniCare.Models
 {
-    public int MensagemId { get; set; }
+    public partial class Mensagem
+    {
 
-    public string? Conteudo { get; set; }
+        #region Atributos
 
-    public DateTime? DataEnvio { get; set; }
+        int mensagemId;
 
-    public int ChatId { get; set; }
+        string? conteudo;
 
-    public virtual Chat Chat { get; set; } = null!;
+        DateTime? dataEnvio;
+
+        int chatId;
+
+        Chat chat = null!;
+
+        #endregion
+
+        #region Propriedades
+
+        public int MensagemId
+        {
+            get { return mensagemId; }
+            set { mensagemId = value; }
+        }
+
+        public string? Conteudo
+        {
+            get { return conteudo; }
+            set { conteudo = value; }
+        }
+
+        public DateTime? DataEnvio
+        {
+            get { return dataEnvio; }
+            set { dataEnvio = value; }
+        }
+
+        public int ChatId
+        {
+            get { return chatId; }
+            set { chatId = value; }
+        }
+
+        public virtual Chat Chat
+        {
+            get { return chat; }
+            set { chat = value; }
+        }
+
+        #endregion
+
+        #region Construtores
+
+        #endregion
+    
+    }
 }

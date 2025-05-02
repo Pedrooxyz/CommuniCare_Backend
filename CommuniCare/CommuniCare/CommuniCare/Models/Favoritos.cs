@@ -1,17 +1,62 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CommuniCare.Models;
-
-public partial class Favoritos
+namespace CommuniCare.Models
 {
+    public partial class Favoritos
+    {
+        
+        #region Atributos
 
-    public int? UtilizadorId { get; set; }
-    public Utilizador Utilizador { get; set; } = null!;
+        int? utilizadorId;
 
-    public int ArtigoId { get; set; }
-    public Artigo Artigo { get; set; } = null!;
+        Utilizador utilizador = null!;
 
-    public DateTime AddedOn { get; set; } = DateTime.UtcNow;
+        int artigoId;
+
+        Artigo artigo = null!;
+
+        DateTime addedOn = DateTime.UtcNow;
+
+        #endregion
+
+        #region Propriedades
+
+        public int? UtilizadorId
+        {
+            get { return utilizadorId; }
+            set { utilizadorId = value; }
+        }
+
+        public Utilizador Utilizador
+        {
+            get { return utilizador; }
+            set { utilizador = value; }
+        }
+
+        public int ArtigoId
+        {
+            get { return artigoId; }
+            set { artigoId = value; }
+        }
+
+        public Artigo Artigo
+        {
+            get { return artigo; }
+            set { artigo = value; }
+        }
+
+        public DateTime AddedOn
+        {
+            get { return addedOn; }
+            set { addedOn = value; }
+        }
+
+        #endregion
+
+        #region Construtores
+
+        #endregion
+        
+    }
 }
-

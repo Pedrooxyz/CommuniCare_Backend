@@ -1,27 +1,102 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CommuniCare.Models;
-
-public partial class Notificacao
+namespace CommuniCare.Models
 {
-    public int NotificacaoId { get; set; }
+    public partial class Notificacao
+    {
 
-    public string? Mensagem { get; set; }
+        #region Atributos
 
-    public byte? Lida { get; set; }
+        int notificacaoId;
 
-    public DateTime? DataMensagem { get; set; }
+        string? mensagem;
 
-    public int? PedidoId { get; set; }
+        byte? lida;
 
-    public int? UtilizadorId { get; set; }
+        DateTime? dataMensagem;
 
-    public int? ItemId { get; set; }
+        int? pedidoId;
 
-    public virtual ItemEmprestimo Item { get; set; } = null!;
+        int? utilizadorId;
 
-    public virtual PedidoAjuda Pedido { get; set; } = null!;
+        int? itemId;
 
-    public virtual Utilizador Utilizador { get; set; } = null!;
+        ItemEmprestimo item = null!;
+
+        PedidoAjuda pedido = null!;
+
+        Utilizador utilizador = null!;
+
+        #endregion
+
+        #region Propriedades
+
+        public int NotificacaoId
+        {
+            get { return notificacaoId; }
+            set { notificacaoId = value; }
+        }
+
+        public string? Mensagem
+        {
+            get { return mensagem; }
+            set { mensagem = value; }
+        }
+
+        public byte? Lida
+        {
+            get { return lida; }
+            set { lida = value; }
+        }
+
+        public DateTime? DataMensagem
+        {
+            get { return dataMensagem; }
+            set { dataMensagem = value; }
+        }
+
+        public int? PedidoId
+        {
+            get { return pedidoId; }
+            set { pedidoId = value; }
+        }
+
+        public int? UtilizadorId
+        {
+            get { return utilizadorId; }
+            set { utilizadorId = value; }
+        }
+
+        public int? ItemId
+        {
+            get { return itemId; }
+            set { itemId = value; }
+        }
+
+        public virtual ItemEmprestimo Item
+        {
+            get { return item; }
+            set { item = value; }
+        }
+
+        public virtual PedidoAjuda Pedido
+        {
+            get { return pedido; }
+            set { pedido = value; }
+        }
+
+        public virtual Utilizador Utilizador
+        {
+            get { return utilizador; }
+            set { utilizador = value; }
+        }
+
+        #endregion
+
+        #region Construtores
+
+        #endregion
+        
+    }
 }

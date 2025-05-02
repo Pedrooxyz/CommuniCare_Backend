@@ -1,4 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿/// <summary>
+/// Namespace que contém os testes unitários da aplicação CommuniCare.
+/// Utiliza o framework MSTest e Moq para simular interações com a base de dados e testar o comportamento dos métodos do controlador LojasController.
+/// </summary>
+
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -16,9 +21,13 @@ using CommuniCare.DTOs;
 using CommuniCare.Models;
 using MockQueryable.Moq;
 
+
 namespace CommuniCareTests
 {
-
+    /// <summary>
+    /// Classe de teste unitário para o controlador LojasController.
+    /// Testa os métodos de criação, ativação e gerenciamento das lojas da aplicação CommuniCare.
+    /// </summary>
     [TestClass]
     public class LojasControllerTests
     {
@@ -28,6 +37,11 @@ namespace CommuniCareTests
         private LojasController _controller;
         private Mock<CommuniCareContext> _ctx;
 
+        /// <summary>
+        /// Configura os objetos necessários para os testes.
+        /// Cria mocks para o contexto, utilizadores e lojas.
+        /// Inicializa o controlador com o contexto simulado.
+        /// </summary>
         [TestInitialize]
         public void Setup()
         {
@@ -83,7 +97,7 @@ namespace CommuniCareTests
             public TestAsyncQueryProvider(IQueryProvider inner) => _inner = inner;
 
             public IQueryable CreateQuery(Expression expression)
-                => new TestAsyncEnumerable<TEntity>(expression); // agora funciona
+                => new TestAsyncEnumerable<TEntity>(expression);
 
             public IQueryable<TElement> CreateQuery<TElement>(Expression expression)
                 => new TestAsyncEnumerable<TElement>(expression);
@@ -98,37 +112,45 @@ namespace CommuniCareTests
 
 
         #region CriarLoja Tests
+
+        /// <summary>
+        /// Teste unitário para o método CriarLoja.
+        /// Verifica se uma nova loja é criada com sucesso e se a resposta retorna o status 201 (Created).
+        /// O teste simula a criação de uma nova loja no sistema e valida os valores retornados.
+        /// </summary>
+        /// <returns></returns>
+
         [TestMethod]
         public async Task CriarLoja_DeveRetornarCreated_SeLojaCriadaComSucesso()
         {
-            /*  Arrange  */
+
             const int adminId = 1;
 
-            
+
             var admin = new Utilizador { UtilizadorId = adminId, TipoUtilizadorId = 2 };
             var usersDbMock = new[] { admin }.AsQueryable().BuildMockDbSet();
             usersDbMock
                 .Setup(d => d.FindAsync(It.IsAny<object[]>()))
                 .ReturnsAsync(admin);
 
-            
+
             var lojaAtiva = new Loja { LojaId = 1, NomeLoja = "Loja Ativa", Estado = EstadoLoja.Ativo };
             var lojasLista = new List<Loja> { lojaAtiva };
             var lojasDbMock = lojasLista.AsQueryable().BuildMockDbSet();
 
-            
+
             Loja novaLoja = null!;
             lojasDbMock
                 .Setup(d => d.Add(It.IsAny<Loja>()))
                 .Callback<Loja>(l => { novaLoja = l; lojasLista.Add(l); });
 
-            
+
             var ctx = new Mock<CommuniCareContext>();
             ctx.Setup(c => c.Utilizadores).Returns(usersDbMock.Object);
             ctx.Setup(c => c.Lojas).Returns(lojasDbMock.Object);
             ctx.Setup(c => c.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
-            
+
             var controller = new LojasController(ctx.Object)
             {
                 ControllerContext = new ControllerContext
@@ -145,14 +167,14 @@ namespace CommuniCareTests
 
             var dto = new LojaDto { NomeLoja = "Nova Loja", DescLoja = "Descrição" };
 
-            /*  Act  */
+
             var result = await controller.CriarLoja(dto);
 
-            /*  Assert  */
+
             Assert.IsInstanceOfType(result, typeof(CreatedAtActionResult));
             var created = (CreatedAtActionResult)result;
 
-            
+
             var payload = created.Value!;
             var t = payload.GetType();
             var nome = t.GetProperty("nomeLoja")!.GetValue(payload);
@@ -161,22 +183,27 @@ namespace CommuniCareTests
             Assert.AreEqual("Nova Loja", nome);
             Assert.AreEqual(EstadoLoja.Ativo.ToString(), estado);
 
-            
+
             Assert.AreEqual(EstadoLoja.Inativo, lojaAtiva.Estado);
             Assert.IsNotNull(novaLoja);
             Assert.AreEqual(EstadoLoja.Ativo, novaLoja.Estado);
 
-            
+
             lojasDbMock.Verify(d => d.Add(It.IsAny<Loja>()), Times.Once);
             ctx.Verify(c => c.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
         }
 
 
-
+        /// <summary>
+        /// Teste unitário para o método CriarLoja.
+        /// Verifica se o método retorna Unauthorized (401) quando o usuário não está autenticado.
+        /// Este teste simula um cenário onde o controlador não tem um usuário autenticado.
+        /// </summary>
+        /// <returns>Uma tarefa que representa a execução do teste unitário.</returns>
         [TestMethod]
         public async Task CriarLoja_DeveRetornarUnauthorized_SeUsuarioNaoAutenticado()
         {
-            // Arrange
+
             _controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext { User = new ClaimsPrincipal() } // Sem claims
@@ -184,57 +211,76 @@ namespace CommuniCareTests
 
             var lojaDto = new LojaDto { NomeLoja = "Nova Loja", DescLoja = "Descrição" };
 
-            // Act
+
             var result = await _controller.CriarLoja(lojaDto);
 
-            // Assert
+
             Assert.IsInstanceOfType(result, typeof(UnauthorizedObjectResult));
             var unauthorizedResult = result as UnauthorizedObjectResult;
             Assert.AreEqual("Utilizador não autenticado.", unauthorizedResult.Value);
         }
 
+        /// <summary>
+        /// Teste unitário para o método CriarLoja.
+        /// Verifica se o método retorna Forbid (403) quando o usuário não é um administrador.
+        /// Este teste simula um cenário onde o usuário não possui permissões de administrador para criar uma loja.
+        /// </summary>
+        /// <returns>Uma tarefa que representa a execução do teste unitário</returns>
         [TestMethod]
         public async Task CriarLoja_DeveRetornarForbid_SeUsuarioNaoAdmin()
         {
-            // Arrange
-            var utilizador = new Utilizador { UtilizadorId = 1, TipoUtilizadorId = 1 }; // Não admin
+
+            var utilizador = new Utilizador { UtilizadorId = 1, TipoUtilizadorId = 1 };
             _mockUtilizadores.Setup(m => m.FindAsync(1)).ReturnsAsync(utilizador);
 
             var lojaDto = new LojaDto { NomeLoja = "Nova Loja", DescLoja = "Descrição" };
 
-            // Act
+
             var result = await _controller.CriarLoja(lojaDto);
 
-            // Assert
+
             Assert.IsInstanceOfType(result, typeof(ForbidResult));
         }
 
+        /// <summary>
+        /// Teste unitário para o método CriarLoja.
+        /// Verifica se o método retorna Forbid (403) quando o usuário não existe no sistema.
+        /// Este teste simula um cenário onde o usuário não está cadastrado no banco de dados.
+        /// </summary>
+        /// <returns>Uma tarefa que representa a execução do teste unitário</returns>
         [TestMethod]
         public async Task CriarLoja_DeveRetornarForbid_SeUsuarioNaoExiste()
         {
-            // Arrange
+
             _mockUtilizadores.Setup(m => m.FindAsync(1)).ReturnsAsync((Utilizador)null);
 
             var lojaDto = new LojaDto { NomeLoja = "Nova Loja", DescLoja = "Descrição" };
 
-            // Act
+
             var result = await _controller.CriarLoja(lojaDto);
 
-            // Assert
+
             Assert.IsInstanceOfType(result, typeof(ForbidResult));
         }
         #endregion
 
         #region AtivarLoja Tests
+
+        /// <summary>
+        /// Teste unitário para o método AtivarLoja.
+        /// Verifica se o método retorna Ok (200) e ativa a loja corretamente.
+        /// Este teste simula a ativação de uma loja e valida se a operação foi realizada com sucesso.
+        /// </summary>
+        /// <returns>Uma tarefa que representa a execução do teste unitário</returns>
         [TestMethod]
         public async Task AtivarLoja_DeveRetornarOk_SeLojaAtivadaComSucesso()
         {
-            /*  Arrange  */
+
             const int adminId = 1;
             const int lojaId1 = 1;
             const int lojaId2 = 2;
 
-           
+
             var admin = new Utilizador { UtilizadorId = adminId, TipoUtilizadorId = 2 };
 
             var utilizadoresDb = new[] { admin }
@@ -247,7 +293,7 @@ namespace CommuniCareTests
 
             _mockContext.Setup(c => c.Utilizadores).Returns(utilizadoresDb.Object);
 
-            
+
             var lojaParaAtivar = new Loja { LojaId = lojaId1, NomeLoja = "Loja 1", Estado = EstadoLoja.Inativo };
             var outraLoja = new Loja { LojaId = lojaId2, NomeLoja = "Loja 2", Estado = EstadoLoja.Ativo };
 
@@ -264,7 +310,7 @@ namespace CommuniCareTests
             _mockContext.Setup(c => c.SaveChangesAsync(It.IsAny<CancellationToken>()))
                         .ReturnsAsync(1);
 
-            
+
             _controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext
@@ -276,14 +322,14 @@ namespace CommuniCareTests
                 }
             };
 
-            /*  Act  */
+
             var result = await _controller.AtivarLoja(lojaId1);
 
-            /*  Assert  */
+
             Assert.IsInstanceOfType(result, typeof(OkObjectResult));
             var ok = (OkObjectResult)result;
 
-            
+
             var value = ok.Value;
             var t = value.GetType();
             var msg = t.GetProperty("mensagem")?.GetValue(value)?.ToString();
@@ -294,7 +340,7 @@ namespace CommuniCareTests
             Assert.AreEqual(lojaId1, id);
             Assert.AreEqual(EstadoLoja.Ativo.ToString(), estado);
 
-            
+
             Assert.AreEqual(EstadoLoja.Ativo, lojaParaAtivar.Estado);
             Assert.AreEqual(EstadoLoja.Inativo, outraLoja.Estado);
 
@@ -302,53 +348,71 @@ namespace CommuniCareTests
         }
 
 
-
+        /// <summary>
+        /// Teste unitário para o método AtivarLoja.
+        /// Verifica se o método retorna Unauthorized (401) quando o utilizador não está autenticado.
+        /// Este teste simula um cenário em que o utilizador não está autenticado ao tentar ativar uma loja e valida se o retorno é o esperado (Unauthorized).
+        /// </summary>
+        /// <returns>Uma tarefa que representa a execução do teste unitário</returns>
 
         [TestMethod]
         public async Task AtivarLoja_DeveRetornarUnauthorized_SeUsuarioNaoAutenticado()
         {
-            // Arrange
+
             _controller.ControllerContext = new ControllerContext
             {
-                HttpContext = new DefaultHttpContext { User = new ClaimsPrincipal() } // Sem claims
+                HttpContext = new DefaultHttpContext { User = new ClaimsPrincipal() }
             };
 
-            // Act
+
             var result = await _controller.AtivarLoja(1);
 
-            // Assert
+
             Assert.IsInstanceOfType(result, typeof(UnauthorizedObjectResult));
             var unauthorizedResult = result as UnauthorizedObjectResult;
             Assert.AreEqual("Utilizador não autenticado.", unauthorizedResult.Value);
         }
 
+        /// <summary>
+        /// Teste unitário para o método AtivarLoja.
+        /// Verifica se o método retorna Forbid (403) quando o utilizador não tem permissões de administrador.
+        /// Este teste simula um cenário onde o utilizador não é um administrador (TipoUtilizadorId diferente de 2) 
+        /// e valida se o método retorna o código de status adequado (Forbid) quando tenta ativar uma loja.
+        /// </summary>
+        /// <returns>Uma tarefa que representa a execução do teste unitário</returns>
         [TestMethod]
         public async Task AtivarLoja_DeveRetornarForbid_SeUsuarioNaoAdmin()
         {
-            // Arrange
-            var utilizador = new Utilizador { UtilizadorId = 1, TipoUtilizadorId = 1 }; // Não admin
+
+            var utilizador = new Utilizador { UtilizadorId = 1, TipoUtilizadorId = 1 };
             _mockUtilizadores.Setup(m => m.FindAsync(1)).ReturnsAsync(utilizador);
 
-            // Act
+
             var result = await _controller.AtivarLoja(1);
 
-            // Assert
+
             Assert.IsInstanceOfType(result, typeof(ForbidResult));
         }
 
+        /// <summary>
+        /// Teste unitário para o método AtivarLoja.
+        /// Verifica se o método retorna NotFound (404) quando a loja não existe no banco de dados.
+        /// Este teste simula um cenário onde uma loja não é encontrada e valida se o método retorna o código de status adequado (NotFound) com a mensagem de erro.
+        /// </summary>
+        /// <returns>Uma tarefa que representa a execução do teste unitário</returns>
         [TestMethod]
         public async Task AtivarLoja_DeveRetornarNotFound_SeLojaNaoExiste()
         {
-            // Arrange
+
             var utilizador = new Utilizador { UtilizadorId = 1, TipoUtilizadorId = 2 };
             _mockUtilizadores.Setup(m => m.FindAsync(1)).ReturnsAsync(utilizador);
 
             _mockLojas.Setup(m => m.FindAsync(1)).ReturnsAsync((Loja)null);
 
-            // Act
+
             var result = await _controller.AtivarLoja(1);
 
-            // Assert
+
             Assert.IsInstanceOfType(result, typeof(NotFoundObjectResult));
             var notFoundResult = result as NotFoundObjectResult;
             Assert.AreEqual("Loja não encontrada.", notFoundResult.Value);

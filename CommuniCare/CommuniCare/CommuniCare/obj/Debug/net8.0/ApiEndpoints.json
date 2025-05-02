@@ -21,69 +21,6 @@
   },
   {
     "ContainingType": "CommuniCare.Controllers.ArtigosController",
-    "Method": "GetArtigo",
-    "RelativePath": "api/Artigos/{id}",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "CommuniCare.Models.Artigo",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.ArtigosController",
-    "Method": "PutArtigo",
-    "RelativePath": "api/Artigos/{id}",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      },
-      {
-        "Name": "artigo",
-        "Type": "CommuniCare.Models.Artigo",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.ArtigosController",
-    "Method": "DeleteArtigo",
-    "RelativePath": "api/Artigos/{id}",
-    "HttpMethod": "DELETE",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.ArtigosController",
     "Method": "ReporStock",
     "RelativePath": "api/Artigos/{id}/repor-stock",
     "HttpMethod": "PUT",
@@ -526,7 +463,7 @@
     "ContainingType": "CommuniCare.Controllers.EmprestimosController",
     "Method": "PostEmprestimo",
     "RelativePath": "api/Emprestimos",
-    "HttpMethod": "POST",
+    "HttpMethod": "",
     "IsController": true,
     "Order": 0,
     "Parameters": [

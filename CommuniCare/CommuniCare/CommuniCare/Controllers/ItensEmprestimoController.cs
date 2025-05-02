@@ -23,14 +23,21 @@ namespace CommuniCare.Controllers
             _context = context;
         }
 
-        // GET: api/ItemEmprestimoes
+        /// <summary>
+        /// Obtém todos os itens de empréstimo.
+        /// </summary>
+        /// <returns>Uma lista de itens de empréstimo.</returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ItemEmprestimo>>> GetItemEmprestimos()
         {
             return await _context.ItensEmprestimo.ToListAsync();
         }
 
-        // GET: api/ItemEmprestimoes/5
+        /// <summary>
+        /// Obtém um item de empréstimo específico pelo ID.
+        /// </summary>
+        /// <param name="id">O identificador do item de empréstimo a ser retornado.</param>
+        /// <returns>O item de empréstimo correspondente ao ID ou NotFound se não encontrado.</returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<ItemEmprestimo>> GetItemEmprestimo(int id)
         {
@@ -44,8 +51,12 @@ namespace CommuniCare.Controllers
             return itemEmprestimo;
         }
 
-        // PUT: api/ItemEmprestimoes/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+
+        /// Atualiza os dados de um item de empréstimo existente.
+        /// </summary>
+        /// <param name="id">O identificador do item de empréstimo a ser atualizado.</param>
+        /// <param name="itemEmprestimo">Os novos dados do item de empréstimo.</param>
+        /// <returns>Resultado da operação: NoContent se bem-sucedido, BadRequest se IDs não corresponderem, NotFound se o item não existir.</returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> PutItemEmprestimo(int id, ItemEmprestimo itemEmprestimo)
         {
@@ -75,8 +86,11 @@ namespace CommuniCare.Controllers
             return NoContent();
         }
 
-        // POST: api/ItemEmprestimoes
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Adiciona um novo item de empréstimo.
+        /// </summary>
+        /// <param name="itemEmprestimo">Os dados do item de empréstimo a ser adicionado.</param>
+        /// <returns>O item de empréstimo adicionado.</returns>
         [HttpPost]
         public async Task<ActionResult<ItemEmprestimo>> PostItemEmprestimo(ItemEmprestimo itemEmprestimo)
         {
@@ -86,7 +100,11 @@ namespace CommuniCare.Controllers
             return CreatedAtAction("GetItemEmprestimo", new { id = itemEmprestimo.ItemId }, itemEmprestimo);
         }
 
-        // DELETE: api/ItemEmprestimoes/5
+        /// <summary>
+        /// Remove um item de empréstimo específico pelo ID.
+        /// </summary>
+        /// <param name="id">O identificador do item de empréstimo a ser removido.</param>
+        /// <returns>Resultado da operação: NoContent se bem-sucedido, NotFound se o item não existir.</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteItemEmprestimo(int id)
         {
@@ -102,11 +120,21 @@ namespace CommuniCare.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Verifica se um item de empréstimo existe no banco de dados.
+        /// </summary>
+        /// <param name="id">O identificador do item a ser verificado.</param>
+        /// <returns>True se o item existir, caso contrário False.</returns>
         private bool ItemEmprestimoExists(int id)
         {
             return _context.ItensEmprestimo.Any(e => e.ItemId == id);
         }
 
+        /// <summary>
+        /// Adiciona um novo item de empréstimo e notifica os administradores.
+        /// </summary>
+        /// <param name="itemData">Os dados do item de empréstimo a ser adicionado.</param>
+        /// <returns>Mensagem de sucesso ou falha na adição.</returns>
         [HttpPost("adicionar-item")]
         [Authorize]
         public async Task<IActionResult> AdicionarItemEmprestimo([FromBody] ItemEmprestimoDTO itemData)
@@ -134,7 +162,7 @@ namespace CommuniCare.Controllers
             {
                 NomeItem = itemData.NomeItem,
                 DescItem = itemData.DescItem,
-                Disponivel = 0, 
+                Disponivel = 0,
                 ComissaoCares = itemData.ComissaoCares,
                 FotografiaItem = itemData.FotografiaItem
             };
@@ -153,7 +181,7 @@ namespace CommuniCare.Controllers
             await _context.SaveChangesAsync();
 
             var admins = await _context.Utilizadores
-                .Where(u => u.TipoUtilizadorId == 2) 
+                .Where(u => u.TipoUtilizadorId == 2)
                 .ToListAsync();
 
             foreach (var admin in admins)
@@ -176,6 +204,11 @@ namespace CommuniCare.Controllers
         }
 
 
+        /// <summary>
+        /// Realiza o pedido de empréstimo de um item específico.
+        /// </summary>
+        /// <param name="itemId">O identificador do item a ser requisitado.</param>
+        /// <returns>Mensagem de sucesso ou falha no pedido de empréstimo.</returns>
         [HttpPost("adquirir-item/{itemId}")]
         [Authorize]
         public async Task<IActionResult> AdquirirItem(int itemId)
@@ -195,7 +228,7 @@ namespace CommuniCare.Controllers
             }
 
             var itemEmprestimo = await _context.ItensEmprestimo
-                .Include(i => i.Utilizadores)  // Verifica as relações
+                .Include(i => i.Utilizadores)
                 .FirstOrDefaultAsync(i => i.ItemId == itemId);
 
             if (itemEmprestimo == null)
@@ -203,7 +236,7 @@ namespace CommuniCare.Controllers
                 return NotFound("Item de empréstimo não encontrado.");
             }
 
-            // Verificar se o utilizador já tem uma relação de tipo 'Comprador' para o mesmo item
+
             var jaRequisitou = await _context.ItemEmprestimoUtilizadores
                 .AnyAsync(r => r.ItemId == itemId && r.UtilizadorId == utilizadorId && r.TipoRelacao == "Comprador");
 
@@ -212,7 +245,7 @@ namespace CommuniCare.Controllers
                 return BadRequest("Você já requisitou este item anteriormente.");
             }
 
-            // Verificar se o utilizador é o dono do item
+
             var jaEDono = await _context.ItemEmprestimoUtilizadores
                 .AnyAsync(r => r.ItemId == itemId && r.UtilizadorId == utilizadorId && r.TipoRelacao == "Dono");
 
@@ -279,6 +312,12 @@ namespace CommuniCare.Controllers
 
         #region Administrador
 
+        /// <summary>
+        /// Valida o item de empréstimo e torna-o disponível para empréstimo.
+        /// Apenas administradores podem realizar essa ação.
+        /// </summary>
+        /// <param name="itemId">ID do item a ser validado.</param>
+        /// <returns>Retorna um status indicando se a validação foi bem-sucedida ou se ocorreu um erro.</returns>
         [HttpPost("validar-item/{itemId}")]
         [Authorize]
         public async Task<IActionResult> ValidarItemEmprestimo(int itemId)
@@ -302,10 +341,9 @@ namespace CommuniCare.Controllers
             if (item.Disponivel == 1)
                 return BadRequest("Este item já está validado e disponível.");
 
-            // Tornar o item disponível
             item.Disponivel = 1;
 
-            // Buscar o dono do item
+
             var relacaoDono = await _context.ItemEmprestimoUtilizadores
                 .FirstOrDefaultAsync(r => r.ItemId == itemId && r.TipoRelacao == "Dono");
 
@@ -329,6 +367,12 @@ namespace CommuniCare.Controllers
             return Ok("Item de empréstimo validado e tornado disponível com sucesso.");
         }
 
+        /// <summary>
+        /// Rejeita o item de empréstimo, removendo-o da plataforma e notificando o dono do item.
+        /// Apenas administradores podem realizar essa ação.
+        /// </summary>
+        /// <param name="itemId">ID do item a ser rejeitado.</param>
+        /// <returns>Retorna um status indicando se a rejeição foi bem-sucedida ou se ocorreu um erro.</returns>
         [HttpDelete("rejeitar-item/{itemId}")]
         [Authorize]
         public async Task<IActionResult> RejeitarItemEmprestimo(int itemId)
@@ -349,21 +393,18 @@ namespace CommuniCare.Controllers
             if (item == null)
                 return NotFound("Item não encontrado.");
 
-            // Buscar o dono do item
             var relacaoDono = await _context.ItemEmprestimoUtilizadores
                 .FirstOrDefaultAsync(r => r.ItemId == itemId && r.TipoRelacao == "Dono");
 
-            // Alterar o ItemId para null nas notificações
             var notificacoes = await _context.Notificacaos
                 .Where(n => n.ItemId == itemId)
                 .ToListAsync();
 
             foreach (var notificacao in notificacoes)
             {
-                notificacao.ItemId = null;  // Tornar o ItemId null
+                notificacao.ItemId = null;
             }
 
-            // Criar notificação para o dono (se existir)
             if (relacaoDono != null)
             {
                 var notificacao = new Notificacao
@@ -378,11 +419,10 @@ namespace CommuniCare.Controllers
                 _context.Notificacaos.Add(notificacao);
             }
 
-            // Remover relação do dono (se existir)
+
             if (relacaoDono != null)
                 _context.ItemEmprestimoUtilizadores.Remove(relacaoDono);
 
-            // Remover o item
             _context.ItensEmprestimo.Remove(item);
 
             await _context.SaveChangesAsync();
@@ -394,6 +434,11 @@ namespace CommuniCare.Controllers
 
         #endregion
 
+        /// <summary>
+        /// Recupera os itens de empréstimo disponíveis para o utilizador.
+        /// Retorna apenas itens que não são de propriedade do utilizador.
+        /// </summary>
+        /// <returns>Lista de itens disponíveis para empréstimo.</returns>
         [Authorize]
         [HttpGet("disponiveis")]
         public async Task<ActionResult<IEnumerable<ItemEmprestimo>>> GetItensDisponiveis()
@@ -419,6 +464,10 @@ namespace CommuniCare.Controllers
             return Ok(itensDisponiveis);
         }
 
+        /// <summary>
+        /// Recupera os itens de empréstimo pertencentes ao utilizador.
+        /// </summary>
+        /// <returns>Lista de itens de empréstimo do utilizador.</returns>
         [Authorize]
         [HttpGet("meus-itens")]
         public async Task<ActionResult<IEnumerable<ItemEmprestimo>>> GetMeusItens()
@@ -444,7 +493,12 @@ namespace CommuniCare.Controllers
             return Ok(meusItens);
         }
 
-
+        /// <summary>
+        /// Remove permanentemente um item de empréstimo, tornando-o indisponível.
+        /// Apenas o "Dono" do item pode realizar essa ação.
+        /// </summary>
+        /// <param name="itemId">ID do item a ser removido.</param>
+        /// <returns>Retorna um status indicando se a remoção foi bem-sucedida ou se ocorreu um erro.</returns>
         [HttpDelete("indisponibilizar-permanente-item/{itemId}")]
         [Authorize]
         public async Task<IActionResult> EliminarItemEmprestimo(int itemId)
@@ -461,7 +515,6 @@ namespace CommuniCare.Controllers
                 return Unauthorized("ID de utilizador inválido.");
             }
 
-            // Buscar o item relacionado ao Emprestimo
             var itemEmprestimo = await _context.ItensEmprestimo
                 .FirstOrDefaultAsync(i => i.ItemId == itemId);
 
@@ -470,9 +523,8 @@ namespace CommuniCare.Controllers
                 return NotFound("Item de empréstimo não encontrado.");
             }
 
-            // Buscar o Emprestimo associado ao item
             var emprestimo = await _context.Emprestimos
-                .Where(e => e.Items.Any(i => i.ItemId == itemId))  // Verifica se o Emprestimo contém o item
+                .Where(e => e.Items.Any(i => i.ItemId == itemId))
                 .FirstOrDefaultAsync();
 
             if (emprestimo == null)
@@ -480,7 +532,6 @@ namespace CommuniCare.Controllers
                 return NotFound("Empréstimo relacionado não encontrado.");
             }
 
-            // Verificar a relação do utilizador com o item no empréstimo
             var itemEmprestimoUtilizador = await _context.ItemEmprestimoUtilizadores
                 .FirstOrDefaultAsync(ie => ie.ItemId == itemId && ie.UtilizadorId == utilizadorId);
 
@@ -489,23 +540,26 @@ namespace CommuniCare.Controllers
                 return NotFound("Item de empréstimo ou relação de utilizador não encontrado.");
             }
 
-            // Verificar se o utilizador é o "Dono" do item
             if (itemEmprestimoUtilizador.TipoRelacao != "Dono")
             {
                 return Unauthorized("Você não tem permissão para alterar este item.");
             }
 
-            // Tornar o item indisponível permanentemente
             itemEmprestimo.Disponivel = 0;
 
-            // Atualizar o item no banco de dados
             _context.ItensEmprestimo.Update(itemEmprestimo);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-
+        /// <summary>
+        /// Atualiza a descrição de um item de empréstimo.
+        /// Apenas o "Dono" do item pode realizar essa atualização.
+        /// </summary>
+        /// <param name="itemId">ID do item a ser atualizado.</param>
+        /// <param name="novaDescricao">Nova descrição do item.</param>
+        /// <returns>Retorna um status indicando se a atualização foi bem-sucedida ou se ocorreu um erro.</returns>
         [HttpPut("atualizar-descricao/{itemId}")]
         [Authorize]
         public async Task<IActionResult> AtualizarDescricaoItem(int itemId, [FromBody] string novaDescricao)
@@ -522,7 +576,6 @@ namespace CommuniCare.Controllers
                 return Unauthorized("ID de utilizador inválido.");
             }
 
-            // Buscar o item de empréstimo associado ao itemId
             var itemEmprestimo = await _context.ItensEmprestimo
                 .FirstOrDefaultAsync(i => i.ItemId == itemId);
 
@@ -531,9 +584,8 @@ namespace CommuniCare.Controllers
                 return NotFound("Item de empréstimo não encontrado.");
             }
 
-            // Buscar o Emprestimo associado ao item
             var emprestimo = await _context.Emprestimos
-                .Where(e => e.Items.Any(i => i.ItemId == itemId))  // Verifica se o Emprestimo contém o item
+                .Where(e => e.Items.Any(i => i.ItemId == itemId))
                 .FirstOrDefaultAsync();
 
             if (emprestimo == null)
@@ -541,7 +593,6 @@ namespace CommuniCare.Controllers
                 return NotFound("Empréstimo relacionado não encontrado.");
             }
 
-            // Verificar a relação do utilizador com o item dentro do empréstimo
             var itemEmprestimoUtilizador = await _context.ItemEmprestimoUtilizadores
                 .FirstOrDefaultAsync(ie => ie.ItemId == itemId && ie.UtilizadorId == utilizadorId);
 
@@ -550,13 +601,11 @@ namespace CommuniCare.Controllers
                 return NotFound("Item de empréstimo ou relação de utilizador não encontrado.");
             }
 
-            // Verificar se o utilizador é o "Dono" do item
             if (itemEmprestimoUtilizador.TipoRelacao != "Dono")
             {
                 return Unauthorized("Você não tem permissão para atualizar este item.");
             }
 
-            // Atualizar a descrição do item
             itemEmprestimo.DescItem = novaDescricao;
 
             _context.ItensEmprestimo.Update(itemEmprestimo);

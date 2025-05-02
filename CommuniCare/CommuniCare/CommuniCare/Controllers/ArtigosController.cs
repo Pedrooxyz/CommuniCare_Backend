@@ -19,62 +19,67 @@ namespace CommuniCare.Controllers
     {
         private readonly CommuniCareContext _context;
 
+
+        /// <summary>
+        /// Construtor do controlador de artigos.
+        /// </summary>
+        /// <param name="context">Contexto da base de dados CommuniCare utilizado para aceder aos artigos e outras entidades relacionadas.</param>
         public ArtigosController(CommuniCareContext context)
         {
             _context = context;
         }
 
-        // GET: api/Artigos
+        /// <summary>
+        /// Obtém a lista completa de todos os artigos existentes na base de dados, independentemente do seu estado.
+        /// </summary>
+        /// <returns>Uma lista de todos os artigos registados.</returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Artigo>>> GetArtigos()
         {
             return await _context.Artigos.ToListAsync();
         }
 
-        // GET: api/Artigos/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Artigo>> GetArtigo(int id)
-        {
-            var artigo = await _context.Artigos.FindAsync(id);
+        //[HttpGet("{id}")]
+        //public async Task<ActionResult<Artigo>> GetArtigo(int id)
+        //{
+        //    var artigo = await _context.Artigos.FindAsync(id);
 
-            if (artigo == null)
-            {
-                return NotFound();
-            }
+        //    if (artigo == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return artigo;
-        }
+        //    return artigo;
+        //}
 
-        // PUT: api/Artigos/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutArtigo(int id, Artigo artigo)
-        {
-            if (id != artigo.ArtigoId)
-            {
-                return BadRequest();
-            }
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> PutArtigo(int id, Artigo artigo)
+        //{
+        //    if (id != artigo.ArtigoId)
+        //    {
+        //        return BadRequest();
+        //    }
 
-            _context.Entry(artigo).State = EntityState.Modified;
+        //    _context.Entry(artigo).State = EntityState.Modified;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ArtigoExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+        //    try
+        //    {
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    catch (DbUpdateConcurrencyException)
+        //    {
+        //        if (!ArtigoExists(id))
+        //        {
+        //            return NotFound();
+        //        }
+        //        else
+        //        {
+        //            throw;
+        //        }
+        //    }
 
-            return NoContent();
-        }
+        //    return NoContent();
+        //}
 
         //// POST: api/Artigos
         //// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -97,27 +102,30 @@ namespace CommuniCare.Controllers
         //}
 
 
-        // DELETE: api/Artigos/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteArtigo(int id)
-        {
-            var artigo = await _context.Artigos.FindAsync(id);
-            if (artigo == null)
-            {
-                return NotFound();
-            }
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeleteArtigo(int id)
+        //{
+        //    var artigo = await _context.Artigos.FindAsync(id);
+        //    if (artigo == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            _context.Artigos.Remove(artigo);
-            await _context.SaveChangesAsync();
+        //    _context.Artigos.Remove(artigo);
+        //    await _context.SaveChangesAsync();
 
-            return NoContent();
-        }
+        //    return NoContent();
+        //}
 
         private bool ArtigoExists(int id)
         {
             return _context.Artigos.Any(e => e.ArtigoId == id);
         }
 
+        /// <summary>
+        /// Obtém a lista de artigos que estão disponíveis na loja.
+        /// </summary>
+        /// <returns>Uma lista de artigos com estado disponível.</returns>
         [HttpGet("disponiveis")]
         public async Task<ActionResult<IEnumerable<Artigo>>> GetArtigosDisponiveis()
         {
@@ -129,6 +137,11 @@ namespace CommuniCare.Controllers
         }
 
 
+        /// <summary>
+        /// Publica um novo artigo na loja ativa, associando-o ao utilizador autenticado.
+        /// </summary>
+        /// <param name="dto">Objeto que contém as informações do artigo a ser publicado.</param>
+        /// <returns>O artigo publicado com os seus dados ou um erro caso as regras de negócio não sejam cumpridas.</returns>
         [HttpPost("publicar")]
         public async Task<ActionResult<ArtigoRespostaDto>> PublicarArtigo(ArtigoDto dto)
         {
@@ -180,6 +193,12 @@ namespace CommuniCare.Controllers
             return CreatedAtAction(nameof(GetArtigosDisponiveis), new { id = artigo.ArtigoId }, respostaDto);
         }
 
+
+        /// <summary>
+        /// Indisponibiliza um artigo, tornando-o não disponível para compra. Apenas administradores podem realizar esta ação.
+        /// </summary>
+        /// <param name="id">ID do artigo a ser indisponibilizado.</param>
+        /// <returns>Confirmação de indisponibilização ou erro caso o artigo ou utilizador não sejam válidos.</returns>
         [Authorize]
         [HttpPut("indisponibilizar/{id}")]
         public async Task<IActionResult> IndisponibilizarArtigo(int id)
@@ -217,6 +236,13 @@ namespace CommuniCare.Controllers
             return Ok("Artigo indisponibilizado com sucesso.");
         }
 
+
+        /// <summary>
+        /// Reposta o stock de um artigo existente, atualizando a quantidade disponível.
+        /// </summary>
+        /// <param name="id">ID do artigo cujo stock será reposto.</param>
+        /// <param name="dto">Objeto que contém a quantidade a ser adicionada ao stock.</param>
+        /// <returns>O artigo atualizado com a nova quantidade de stock ou erro caso as regras não sejam cumpridas.</returns>
         [HttpPut("{id}/repor-stock")]
         public async Task<ActionResult<ArtigoRespostaDto>> ReporStock(int id, [FromBody] ReporStockDto dto)
         {

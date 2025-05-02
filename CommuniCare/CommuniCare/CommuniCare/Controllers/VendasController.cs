@@ -26,14 +26,21 @@ namespace CommuniCare.Controllers
             _transacaoServico = new TransacaoServico(_context);
         }
 
-        // GET: api/Vendas
+        /// <summary>
+        /// Obtém todas as vendas registradas no sistema.
+        /// </summary>
+        /// <returns>Retorna uma lista de vendas ou 404 Not Found se não houver vendas registradas.</returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Venda>>> GetVenda()
         {
             return await _context.Venda.ToListAsync();
         }
 
-        // GET: api/Vendas/5
+        /// <summary>
+        /// Obtém os detalhes de uma venda específica com base no ID.
+        /// </summary>
+        /// <param name="id">ID da venda.</param>
+        /// <returns>Retorna os detalhes da venda ou 404 Not Found se a venda não for encontrada.</returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<Venda>> GetVenda(int id)
         {
@@ -47,8 +54,12 @@ namespace CommuniCare.Controllers
             return venda;
         }
 
-        // PUT: api/Vendas/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Atualiza os dados de uma venda existente.
+        /// </summary>
+        /// <param name="id">ID da venda a ser atualizada.</param>
+        /// <param name="venda">Objeto contendo os novos dados da venda.</param>
+        /// <returns>Retorna 204 No Content se a venda for atualizada com sucesso, ou 400 Bad Request se houver inconsistências.</returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> PutVenda(int id, Venda venda)
         {
@@ -78,8 +89,11 @@ namespace CommuniCare.Controllers
             return NoContent();
         }
 
-        // POST: api/Vendas
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Cria uma nova venda no sistema.
+        /// </summary>
+        /// <param name="venda">Objeto contendo os dados da nova venda.</param>
+        /// <returns>Retorna 201 Created se a venda for criada com sucesso, ou 409 Conflict se já existir uma venda com o mesmo ID.</returns>
         [HttpPost]
         public async Task<ActionResult<Venda>> PostVenda(Venda venda)
         {
@@ -103,7 +117,11 @@ namespace CommuniCare.Controllers
             return CreatedAtAction("GetVenda", new { id = venda.TransacaoId }, venda);
         }
 
-        // DELETE: api/Vendas/5
+        /// <summary>
+        /// Exclui uma venda existente com base no ID.
+        /// </summary>
+        /// <param name="id">ID da venda a ser excluída.</param>
+        /// <returns>Retorna 204 No Content se a venda for excluída com sucesso, ou 404 Not Found se a venda não for encontrada.</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteVenda(int id)
         {
@@ -124,6 +142,12 @@ namespace CommuniCare.Controllers
             return _context.Venda.Any(e => e.TransacaoId == id);
         }
 
+
+        /// <summary>
+        /// Realiza a compra de artigos para o utilizador autenticado.
+        /// </summary>
+        /// <param name="request">Objeto contendo os IDs dos artigos a serem comprados.</param>
+        /// <returns>Retorna 200 OK se a compra for processada com sucesso, ou 400 Bad Request em caso de erro.</returns>
         [HttpPost("comprar")]
         [Authorize]
         public async Task<IActionResult> Comprar([FromBody] PedidoCompraDTO request)
@@ -141,6 +165,11 @@ namespace CommuniCare.Controllers
             }
         }
 
+        /// <summary>
+        /// Realiza a compra de artigos para o utilizador autenticado e envia o comprovativo por email.
+        /// </summary>
+        /// <param name="request">Objeto contendo os IDs dos artigos a serem comprados.</param>
+        /// <returns>Retorna 200 OK se a compra for processada com sucesso e o comprovativo enviado por e-mail, ou 400 Bad Request em caso de erro.</returns>
         [HttpPost("comprar-email")]
         [Authorize]
         public async Task<IActionResult> ComprarEmail([FromBody] PedidoCompraDTO request)
@@ -206,7 +235,11 @@ namespace CommuniCare.Controllers
             }
         }
 
-
+        /// <summary>
+        /// Realiza a compra de artigos para o utilizador autenticado e permite o download do comprovativo em PDF.
+        /// </summary>
+        /// <param name="request">Objeto contendo os IDs dos artigos a serem comprados.</param>
+        /// <returns>Retorna 200 OK com o comprovativo de compra em PDF ou 400 Bad Request em caso de erro.</returns>
         [HttpPost("comprar-download")]
         [Authorize]
         public async Task<IActionResult> ComprarDownload([FromBody] PedidoCompraDTO request)

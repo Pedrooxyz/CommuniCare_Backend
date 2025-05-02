@@ -31,14 +31,23 @@ namespace CommuniCare.Controllers
             _configuration = configuration;
         }
 
-        // GET: api/Utilizadors
+        /// <summary>
+        /// Obtém a lista de todos os utilizadores.
+        /// </summary>
+        /// <returns>Retorna uma lista de utilizadores ou 500 Internal Server Error em caso de falha.</returns>
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Utilizador>>> GetUtilizadors()
         {
             return await _context.Utilizadores.ToListAsync();
         }
 
-        // GET: api/Utilizadors/5
+        /// <summary>
+        /// Obtém os detalhes de um utilizador específico, baseado no seu ID.
+        /// </summary>
+        /// <param name="id">ID do utilizador a ser obtido.</param>
+        /// <returns>Retorna o utilizador correspondente ao ID ou 404 Not Found se o utilizador não existir.</returns>
+
         [HttpGet("{id}")]
         public async Task<ActionResult<Utilizador>> GetUtilizador(int id)
         {
@@ -52,8 +61,13 @@ namespace CommuniCare.Controllers
             return utilizador;
         }
 
-        // PUT: api/Utilizadors/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Atualiza os dados de um utilizador existente.
+        /// </summary>
+        /// <param name="id">ID do utilizador a ser atualizado.</param>
+        /// <param name="utilizador">Objeto contendo os dados atualizados do utilizador.</param>
+        /// <returns>Retorna 204 No Content se a atualização for bem-sucedida; retorna 400 Bad Request se os dados não coincidirem; 404 Not Found se o utilizador não existir ou 500 Internal Server Error em caso de falha.</returns>
+
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUtilizador(int id, Utilizador utilizador)
         {
@@ -83,8 +97,12 @@ namespace CommuniCare.Controllers
             return NoContent();
         }
 
-        // POST: api/Utilizadors
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Cria um novo utilizador.
+        /// </summary>
+        /// <param name="utilizador">Objeto contendo os dados do novo utilizador.</param>
+        /// <returns>Retorna um status 201 Created com o utilizador criado, incluindo o URI do novo recurso; retorna 500 Internal Server Error em caso de falha.</returns>
+
         [HttpPost]
         public async Task<ActionResult<Utilizador>> PostUtilizador(Utilizador utilizador)
         {
@@ -94,7 +112,12 @@ namespace CommuniCare.Controllers
             return CreatedAtAction("GetUtilizador", new { id = utilizador.UtilizadorId }, utilizador);
         }
 
-        // DELETE: api/Utilizadors/5
+        /// <summary>
+        /// Deleta um utilizador específico baseado no seu ID.
+        /// </summary>
+        /// <param name="id">ID do utilizador a ser deletado.</param>
+        /// <returns>Retorna 204 No Content se o utilizador for deletado com sucesso; retorna 404 Not Found se o utilizador não existir ou 500 Internal Server Error em caso de falha.</returns>
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUtilizador(int id)
         {
@@ -109,6 +132,12 @@ namespace CommuniCare.Controllers
 
             return NoContent();
         }
+
+        /// <summary>
+        /// Regista um novo utilizador com os dados fornecidos.
+        /// </summary>
+        /// <param name="dto">Objeto DTO contendo os dados necessários para o registro.</param>
+        /// <returns>Retorna um status 200 OK se a conta for criada com sucesso, aguardando aprovação de um administrador.</returns>
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] UtilizadorDTO dto)
@@ -171,7 +200,7 @@ namespace CommuniCare.Controllers
             _context.Contactos.Add(contactoEmail);
             await _context.SaveChangesAsync();
 
-            // Notificar todos os administradores ativos
+
             var admins = await _context.Utilizadores
                 .Where(u => u.TipoUtilizadorId == 2 && u.EstadoUtilizador == EstadoUtilizador.Ativo)
                 .ToListAsync();
@@ -198,6 +227,12 @@ namespace CommuniCare.Controllers
                 Message = "Conta criada com sucesso! Aguardando aprovação de um administrador.",
             });
         }
+
+        /// <summary>
+        /// Regista um novo administrador com os dados fornecidos.
+        /// </summary>
+        /// <param name="dto">Objeto DTO contendo os dados necessários para o registro de um administrador.</param>
+        /// <returns>Retorna um status 200 OK se a conta de administrador for criada com sucesso, aguardando aprovação de outro administrador.</returns>
 
         [HttpPost("register-admin")]
         public async Task<IActionResult> RegisterAdmin([FromBody] UtilizadorDTO dto)
@@ -242,7 +277,7 @@ namespace CommuniCare.Controllers
                 NomeUtilizador = dto.NomeUtilizador,
                 Password = BCrypt.Net.BCrypt.HashPassword(dto.Password),
                 NumCares = 0,
-                TipoUtilizadorId = 2, // Tipo 2 = Administrador
+                TipoUtilizadorId = 2,
                 MoradaId = moradaTemporaria.MoradaId,
                 EstadoUtilizador = EstadoUtilizador.Pendente
             };
@@ -253,14 +288,14 @@ namespace CommuniCare.Controllers
             var contactoEmail = new Contacto
             {
                 NumContacto = dto.Email,
-                TipoContactoId = 1, // Email
+                TipoContactoId = 1,
                 UtilizadorId = novoAdmin.UtilizadorId
             };
 
             _context.Contactos.Add(contactoEmail);
             await _context.SaveChangesAsync();
 
-            // Notificar outros administradores ativos (exceto o novo)
+
             var admins = await _context.Utilizadores
                 .Where(u => u.TipoUtilizadorId == 2 && u.EstadoUtilizador == EstadoUtilizador.Ativo)
                 .ToListAsync();
@@ -289,6 +324,10 @@ namespace CommuniCare.Controllers
             });
         }
 
+        /// <summary>
+        /// Obtém as informações do utilizador autenticado.
+        /// </summary>
+        /// <returns>Retorna as informações do utilizador autenticado ou 401 Unauthorized se o utilizador não for autenticado.</returns>
 
         [HttpGet("InfoUtilizador")]
         [Authorize]
@@ -324,6 +363,13 @@ namespace CommuniCare.Controllers
             return Ok(dto);
         }
 
+
+        /// <summary>
+        /// Atualiza a foto do utilizador.
+        /// </summary>
+        /// <param name="dto">Objeto DTO contendo a nova URL da foto do utilizador.</param>
+        /// <returns>Retorna 204 No Content se a foto for atualizada com sucesso; retorna 400 Bad Request se a URL da foto for inválida ou 401 Unauthorized se o utilizador não for autenticado.</returns>
+
         [HttpPut("EditarFoto")]
         [Authorize]
         public async Task<IActionResult> UpdateFotoUrl([FromBody] FotoUrlDto dto)
@@ -357,10 +403,15 @@ namespace CommuniCare.Controllers
 
         #region Administrador
 
+        /// <summary>
+        /// Aprova um utilizador, permitindo que aceda à plataforma.
+        /// </summary>
+        /// <param name="id">ID do utilizador a ser aprovado.</param>
+        /// <returns>Retorna 200 Ok com mensagem de sucesso ou 404 Not Found se o utilizador não for encontrado, ou 400 Bad Request se o utilizador já estiver ativo.</returns>
         [HttpPut("aprovar-utilizador/{id}")]
         public async Task<IActionResult> AprovarUtilizador(int id)
         {
-            // Buscar o utilizador
+
             var utilizador = await _context.Utilizadores.FindAsync(id);
 
             if (utilizador == null)
@@ -369,12 +420,11 @@ namespace CommuniCare.Controllers
             if (utilizador.EstadoUtilizador == EstadoUtilizador.Ativo)
                 return BadRequest("Este utilizador já está ativo.");
 
-            // Atualizar o estado
+
             utilizador.EstadoUtilizador = EstadoUtilizador.Ativo;
             _context.Utilizadores.Update(utilizador);
             await _context.SaveChangesAsync();
 
-            // Enviar notificação ao próprio utilizador aprovado
             var notificacao = new Notificacao
             {
                 UtilizadorId = utilizador.UtilizadorId,
@@ -394,6 +444,11 @@ namespace CommuniCare.Controllers
             });
         }
 
+        /// <summary>
+        /// Rejeita um utilizador, desativando a sua conta.
+        /// </summary>
+        /// <param name="id">ID do utilizador a ser rejeitado.</param>
+        /// <returns>Retorna 200 Ok com mensagem de sucesso ou 404 Not Found se o utilizador não for encontrado, ou 400 Bad Request se o utilizador já estiver inativo ou ativo.</returns>
         [HttpPut("rejeitar-utilizador/{id}")]
         public async Task<IActionResult> RejeitarUtilizador(int id)
         {
@@ -409,7 +464,6 @@ namespace CommuniCare.Controllers
             if (utilizador.EstadoUtilizador == EstadoUtilizador.Ativo)
                 return BadRequest("Não é possível rejeitar um utilizador que já está ativo.");
 
-            // Atualizar o estado para Rejeitado
             utilizador.EstadoUtilizador = EstadoUtilizador.Inativo;
             _context.Utilizadores.Update(utilizador);
             await _context.SaveChangesAsync();
@@ -422,7 +476,11 @@ namespace CommuniCare.Controllers
 
         #endregion
 
-
+        /// <summary>
+        /// Completa o registo de um utilizador, associando uma morada a ele.
+        /// </summary>
+        /// <param name="dto">Objeto DTO contendo os dados da morada.</param>
+        /// <returns>Retorna 200 Ok com mensagem de sucesso ou 400 Bad Request se o modelo for inválido, ou 404 Not Found se o utilizador não for encontrado.</returns>
         [HttpPost("completar-registo")]
         [Authorize]
         public async Task<IActionResult> CompletarRegisto([FromBody] MoradaDTO dto)
@@ -451,11 +509,10 @@ namespace CommuniCare.Controllers
 
             var moradaTemporaria = utilizador.Morada;
 
-            // Verificar se o código postal fornecido já existe
             var codigoPostal = await _context.Cps.FindAsync(dto.CPostal);
             if (codigoPostal == null)
             {
-                // Criar novo código postal com a localidade fornecida
+
                 codigoPostal = new Cp
                 {
                     CPostal = dto.CPostal,
@@ -466,7 +523,6 @@ namespace CommuniCare.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            // Atualiza a morada
             moradaTemporaria.Rua = dto.Rua;
             moradaTemporaria.NumPorta = dto.NumPorta;
             moradaTemporaria.CPostal = dto.CPostal;
@@ -474,20 +530,24 @@ namespace CommuniCare.Controllers
             _context.Morada.Update(moradaTemporaria);
             await _context.SaveChangesAsync();
 
-            // Opcional: manter referência correta no utilizador
             utilizador.MoradaId = moradaTemporaria.MoradaId;
             await _context.SaveChangesAsync();
 
             return Ok(new { Message = "Morada atualizada com sucesso! Registo completo." });
         }
 
+
+        /// <summary>
+        /// Realiza o login do utilizador, gerando um token JWT.
+        /// </summary>
+        /// <param name="dto">Objeto DTO contendo as credenciais do utilizador (email e password).</param>
+        /// <returns>Retorna 200 Ok com o token de autenticação ou 400 Bad Request se as credenciais forem inválidas, ou 401 Unauthorized se a autenticação falhar.</returns>
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDTO dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            // Procurar contacto com email
             var contacto = await _context.Contactos
                 .Include(c => c.Utilizador)
                 .FirstOrDefaultAsync(c => c.NumContacto == dto.Email && c.TipoContactoId == 1);
@@ -497,15 +557,13 @@ namespace CommuniCare.Controllers
 
             var utilizador = contacto.Utilizador;
 
-            // Verificar estado
+
             if (utilizador.EstadoUtilizador != EstadoUtilizador.Ativo)
                 return Unauthorized("A sua conta ainda não está ativa.");
 
-            // Verificar password
             if (!BCrypt.Net.BCrypt.Verify(dto.Password, utilizador.Password))
                 return Unauthorized("Email ou password inválidos.");
 
-            // Gerar token
             var token = GerarToken(utilizador.UtilizadorId, dto.Email, utilizador.TipoUtilizadorId);
 
             return Ok(new
@@ -515,6 +573,13 @@ namespace CommuniCare.Controllers
             });
         }
 
+        /// <summary>
+        /// Gera um token JWT para autenticação do utilizador.
+        /// </summary>
+        /// <param name="utilizadorId">ID do utilizador.</param>
+        /// <param name="email">Email do utilizador.</param>
+        /// <param name="tipoUtilizadorId">ID do tipo de utilizador.</param>
+        /// <returns>Retorna o token JWT gerado.</returns>
         private string GerarToken(int utilizadorId, string email, int tipoUtilizadorId)
         {
             var jwtSettings = _configuration.GetSection("JwtSettings").Get<JwtSettings>();
@@ -539,12 +604,22 @@ namespace CommuniCare.Controllers
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
+        /// <summary>
+        /// Verifica se o utilizador com o ID fornecido existe.
+        /// </summary>
+        /// <param name="id">ID do utilizador a ser verificado.</param>
+        /// <returns>Retorna true se o utilizador existir, false caso contrário.</returns>
         private bool UtilizadorExists(int id)
         {
             return _context.Utilizadores.Any(e => e.UtilizadorId == id);
         }
 
 
+        /// <summary>
+        /// Edita o perfil do utilizador autenticado.
+        /// </summary>
+        /// <param name="dto">Objeto DTO contendo as informações a serem atualizadas (nome, email, telemóvel, etc.).</param>
+        /// <returns>Retorna 200 Ok com mensagem de sucesso ou 404 Not Found se o utilizador não for encontrado.</returns>
         [HttpPut("editar-perfil")]
         [Authorize]
         public async Task<IActionResult> EditarPerfil([FromBody] EditarPerfilDTO dto)
@@ -561,7 +636,6 @@ namespace CommuniCare.Controllers
             if (!string.IsNullOrEmpty(dto.Nome))
                 utilizador.NomeUtilizador = dto.Nome;
 
-            // Atualiza contactos individualmente
             if (!string.IsNullOrEmpty(dto.Email))
             {
                 var contactoEmail = utilizador.Contactos.FirstOrDefault(c => c.TipoContactoId == 1);
@@ -576,7 +650,6 @@ namespace CommuniCare.Controllers
                     contactoTele.NumContacto = dto.Telemovel;
             }
 
-            // Atualiza morada se existir
             if (utilizador.Morada != null)
             {
                 if (!string.IsNullOrEmpty(dto.Rua)) utilizador.Morada.Rua = dto.Rua;
@@ -600,6 +673,10 @@ namespace CommuniCare.Controllers
             return Ok("Perfil atualizado com sucesso.");
         }
 
+        /// <summary>
+        /// Obtém o saldo de cares do utilizador autenticado.
+        /// </summary>
+        /// <returns>Retorna 200 Ok com o saldo de cares do utilizador ou 404 Not Found se o utilizador não for encontrado.</returns>
         [HttpGet("saldo")]
         [Authorize]
         public async Task<IActionResult> ObterSaldo()
@@ -614,6 +691,11 @@ namespace CommuniCare.Controllers
             return Ok(new { Saldo = utilizador.NumCares });
         }
 
+        /// <summary>
+        /// Apaga a conta do utilizador, tornando-a inativa e anonimizada.
+        /// </summary>
+        /// <param name="dto">Objeto DTO contendo a senha para confirmação.</param>
+        /// <returns>Retorna 200 Ok com mensagem de sucesso ou 400 Bad Request se a senha for incorreta.</returns>
         [HttpDelete("apagar-conta")]
         [Authorize]
         public async Task<IActionResult> ApagarConta([FromBody] ConfirmarPasswordDTO dto)
@@ -633,10 +715,8 @@ namespace CommuniCare.Controllers
             if (!BCrypt.Net.BCrypt.Verify(dto.Password, utilizador.Password))
                 return Unauthorized("Password incorreta.");
 
-            // Tornar o utilizador inativo
             utilizador.EstadoUtilizador = EstadoUtilizador.Inativo;
 
-            // Opcional: anonimizar dados pessoais
             utilizador.NomeUtilizador = "Utilizador Removido";
             utilizador.FotoUtil = null;
             utilizador.Password = null;
@@ -663,6 +743,11 @@ namespace CommuniCare.Controllers
 
         #region Reset Password
 
+        /// <summary>
+        /// Solicita o envio de um e-mail para recuperação de senha, com um link para redefinir a senha.
+        /// </summary>
+        /// <param name="dto">Objeto DTO contendo o e-mail do utilizador para enviar o link de recuperação.</param>
+        /// <returns>Retorna 200 Ok se o e-mail de recuperação for enviado com sucesso, ou 400 Bad Request se o e-mail não for fornecido, ou 404 Not Found se o utilizador não for encontrado.</returns>
         [HttpPost("recuperar-senha")]
         public async Task<IActionResult> RecuperarSenha([FromBody] RecuperarSenhaDTO dto)
         {
@@ -671,7 +756,7 @@ namespace CommuniCare.Controllers
                 return BadRequest("E-mail não fornecido.");
             }
 
-            // Verificar se o utilizador existe com o e-mail fornecido
+
             var utilizador = await _context.Utilizadores
                 .Include(u => u.Contactos)
                 .FirstOrDefaultAsync(u => u.Contactos.Any(c => c.NumContacto == dto.Email));
@@ -681,17 +766,22 @@ namespace CommuniCare.Controllers
                 return NotFound("Utilizador não encontrado.");
             }
 
-            // Gerar o token de recuperação
+
             var tokenRecuperacao = GerarTokenRecuperacaoSenha(utilizador.UtilizadorId);
             var resetLink = $"{Request.Scheme}://{Request.Host}/api/utilizadores/resetar-senha?token={tokenRecuperacao}";
 
-            // Enviar o e-mail de recuperação
+
             var emailService = new EmailService(_configuration);
             await emailService.SendPasswordResetEmail(dto.Email, resetLink);
 
             return Ok("E-mail de recuperação enviado.");
         }
 
+        /// <summary>
+        /// Gera um token JWT para a recuperação de senha do utilizador.
+        /// </summary>
+        /// <param name="utilizadorId">ID do utilizador para o qual o token será gerado.</param>
+        /// <returns>Retorna o token JWT gerado para recuperação de senha.</returns>
         private string GerarTokenRecuperacaoSenha(int utilizadorId)
         {
             var key = Encoding.UTF8.GetBytes(_configuration["JwtSettings:Secret"]);
@@ -708,7 +798,12 @@ namespace CommuniCare.Controllers
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-
+        /// <summary>
+        /// Redefine a senha do utilizador utilizando o token de recuperação e a nova senha fornecida.
+        /// </summary>
+        /// <param name="token">Token de recuperação de senha gerado previamente.</param>
+        /// <param name="dto">Objeto DTO contendo a nova senha do utilizador.</param>
+        /// <returns>Retorna 200 Ok se a senha for redefinida com sucesso, ou 400 Bad Request
         [HttpPost("resetar-senha")]
         public async Task<IActionResult> ResetarSenha([FromQuery] string token, [FromBody] NovaSenhaDTO dto)
         {
@@ -759,6 +854,11 @@ namespace CommuniCare.Controllers
 
         #region TESTE 
 
+        /// <summary>
+        /// Adiciona uma quantidade de cares ao utilizador especificado.
+        /// </summary>
+        /// <param name="dto">Objeto DTO contendo o ID do utilizador e a quantidade de cares a ser adicionada.</param>
+        /// <returns>Retorna 200 Ok com a mensagem de sucesso e o saldo de cares atualizado, ou 400 Bad Request se a quantidade de cares for inválida, ou 404 Not Found se o utilizador não for encontrado.</returns>
         [HttpPost("adicionar-cares")]
         public async Task<IActionResult> AdicionarCares([FromBody] AdicionarCaresDTO dto)
         {

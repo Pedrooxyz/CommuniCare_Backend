@@ -20,14 +20,23 @@ namespace CommuniCare.Controllers
             _context = context;
         }
 
-        // GET: api/TransacaoAjudas
+        /// <summary>
+        /// Obtém a lista de todas as transações de ajuda.
+        /// </summary>
+        /// <returns>Retorna uma lista de transações de ajuda ou 500 Internal Server Error em caso de falha.</returns>
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TransacaoAjuda>>> GetTransacaoAjuda()
         {
             return await _context.TransacaoAjuda.ToListAsync();
         }
 
-        // GET: api/TransacaoAjudas/5
+        /// <summary>
+        /// Obtém os detalhes de uma transação de ajuda específica, baseada no seu ID.
+        /// </summary>
+        /// <param name="id">ID da transação de ajuda a ser obtida.</param>
+        /// <returns>Retorna a transação de ajuda correspondente ao ID ou 404 Not Found se a transação de ajuda não existir.</returns>
+
         [HttpGet("{id}")]
         public async Task<ActionResult<TransacaoAjuda>> GetTransacaoAjuda(int id)
         {
@@ -41,8 +50,13 @@ namespace CommuniCare.Controllers
             return transacaoAjuda;
         }
 
-        // PUT: api/TransacaoAjudas/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Atualiza os dados de uma transação de ajuda existente.
+        /// </summary>
+        /// <param name="id">ID da transação de ajuda a ser atualizada.</param>
+        /// <param name="transacaoAjuda">Objeto contendo os dados atualizados da transação de ajuda.</param>
+        /// <returns>Retorna 204 No Content se a atualização for bem-sucedida; retorna 400 Bad Request se os dados não coincidirem; 404 Not Found se a transação de ajuda não existir ou 500 Internal Server Error em caso de falha.</returns>
+
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTransacaoAjuda(int id, TransacaoAjuda transacaoAjuda)
         {
@@ -72,8 +86,12 @@ namespace CommuniCare.Controllers
             return NoContent();
         }
 
-        // POST: api/TransacaoAjudas
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Cria uma nova transação de ajuda.
+        /// </summary>
+        /// <param name="transacaoAjuda">Objeto contendo os dados da nova transação de ajuda.</param>
+        /// <returns>Retorna um status 201 Created com a transação de ajuda criada, incluindo o URI do novo recurso; retorna 500 Internal Server Error em caso de falha.</returns>
+
         [HttpPost]
         public async Task<ActionResult<TransacaoAjuda>> PostTransacaoAjuda(TransacaoAjuda transacaoAjuda)
         {
@@ -97,7 +115,12 @@ namespace CommuniCare.Controllers
             return CreatedAtAction("GetTransacaoAjuda", new { id = transacaoAjuda.TransacaoId }, transacaoAjuda);
         }
 
-        // DELETE: api/TransacaoAjudas/5
+        /// <summary>
+        /// Verifica se existe uma transação de ajuda com o identificador especificado.
+        /// </summary>
+        /// <param name="id">ID da transação de ajuda a verificar.</param>
+        /// <returns>Retorna true se a transação de ajuda existir; retorna false caso contrário.</returns>
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTransacaoAjuda(int id)
         {

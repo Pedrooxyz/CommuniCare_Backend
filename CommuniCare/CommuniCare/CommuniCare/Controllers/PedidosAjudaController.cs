@@ -18,19 +18,30 @@ namespace CommuniCare.Controllers
     {
         private readonly CommuniCareContext _context;
 
+        /// <summary>
+        /// Construtor da classe <see cref="PedidosAjudaController"/>.
+        /// </summary>
+        /// <param name="context">O contexto de dados do aplicativo.</param>
         public PedidosAjudaController(CommuniCareContext context)
         {
             _context = context;
         }
 
-        // GET: api/PedidoAjudas
+        /// <summary>
+        /// Obtém todos os pedidos de ajuda.
+        /// </summary>
+        /// <returns>Uma lista de pedidos de ajuda.</returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PedidoAjuda>>> GetPedidoAjuda()
         {
             return await _context.PedidosAjuda.ToListAsync();
         }
 
-        // GET: api/PedidoAjudas/5
+        /// <summary>
+        /// Obtém um pedido de ajuda específico pelo ID.
+        /// </summary>
+        /// <param name="id">O ID do pedido de ajuda.</param>
+        /// <returns>O pedido de ajuda correspondente ao ID.</returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<PedidoAjuda>> GetPedidoAjuda(int id)
         {
@@ -44,8 +55,13 @@ namespace CommuniCare.Controllers
             return pedidoAjuda;
         }
 
-        // PUT: api/PedidoAjudas/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Atualiza um pedido de ajuda específico.
+        /// </summary>
+        /// <param name="id">O ID do pedido de ajuda a ser atualizado.</param>
+        /// <param name="pedidoAjuda">O novo pedido de ajuda.</param>
+        /// <returns>Status da operação.</returns>
+
         [HttpPut("{id}")]
         public async Task<IActionResult> PutPedidoAjuda(int id, PedidoAjuda pedidoAjuda)
         {
@@ -75,8 +91,11 @@ namespace CommuniCare.Controllers
             return NoContent();
         }
 
-        // POST: api/PedidoAjudas
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Cria um novo pedido de ajuda.
+        /// </summary>
+        /// <param name="pedidoAjuda">Os dados do novo pedido de ajuda.</param>
+        /// <returns>O pedido de ajuda criado.</returns>
         [HttpPost]
         public async Task<ActionResult<PedidoAjuda>> PostPedidoAjuda(PedidoAjuda pedidoAjuda)
         {
@@ -86,7 +105,11 @@ namespace CommuniCare.Controllers
             return CreatedAtAction("GetPedidoAjuda", new { id = pedidoAjuda.PedidoId }, pedidoAjuda);
         }
 
-        // DELETE: api/PedidoAjudas/5
+        /// <summary>
+        /// Remove um pedido de ajuda específico pelo ID.
+        /// </summary>
+        /// <param name="id">O ID do pedido de ajuda a ser removido.</param>
+        /// <returns>Status da operação.</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePedidoAjuda(int id)
         {
@@ -107,6 +130,11 @@ namespace CommuniCare.Controllers
             return _context.PedidosAjuda.Any(e => e.PedidoId == id);
         }
 
+        /// <summary>
+        /// Cria um novo pedido de ajuda.
+        /// </summary>
+        /// <param name="pedidoData">Os dados do pedido de ajuda a ser criado.</param>
+        /// <returns>Status da operação.</returns>
         [HttpPost("pedir")]
         [Authorize]
         public async Task<IActionResult> CriarPedidoAjuda([FromBody] PedidoAjudaDTO pedidoData)
@@ -170,6 +198,12 @@ namespace CommuniCare.Controllers
             });
         }
 
+
+        /// <summary>
+        /// Registra um voluntário para um pedido de ajuda.
+        /// </summary>
+        /// <param name="pedidoId">O ID do pedido de ajuda.</param>
+        /// <returns>Status da operação.</returns>
         [HttpPost("{pedidoId}/voluntariar")]
         [Authorize]
         public async Task<IActionResult> Voluntariar(int pedidoId)
@@ -191,13 +225,11 @@ namespace CommuniCare.Controllers
                 return BadRequest("Pedido não encontrado ou já fechado.");
             }
 
-            // Verificar se já atingiu o número máximo de voluntários
             if (pedido.NPessoas.HasValue && pedido.Voluntariados.Count >= pedido.NPessoas.Value)
             {
                 return BadRequest("Número máximo de voluntários já atingido para este pedido.");
             }
 
-            // Verificar se o utilizador já se voluntariou
             bool jaVoluntariado = pedido.Voluntariados.Any(v => v.UtilizadorId == utilizadorId);
             if (jaVoluntariado)
             {
@@ -213,7 +245,6 @@ namespace CommuniCare.Controllers
 
             _context.Voluntariados.Add(voluntariado);
 
-            // Enviar notificação aos administradores
             var admins = await _context.Utilizadores
                 .Where(u => u.TipoUtilizadorId == 2)
                 .ToListAsync();
@@ -242,7 +273,11 @@ namespace CommuniCare.Controllers
 
         #region Administrador
 
-
+        /// <summary>
+        /// Rejeita um pedido de ajuda.
+        /// </summary>
+        /// <param name="pedidoId">O ID do pedido de ajuda a ser rejeitado.</param>
+        /// <returns>Status da operação.</returns>
         [HttpPost("{pedidoId}/rejeitar-pedido")]
         [Authorize]
         public async Task<IActionResult> RejeitarPedidoAjuda(int pedidoId)
@@ -292,6 +327,12 @@ namespace CommuniCare.Controllers
 
             return Ok("Pedido de ajuda rejeitado com sucesso.");
         }
+
+        /// <summary>
+        /// Valida um pedido de ajuda, alterando seu estado para "Aberto" e notificando outros utilizadores.
+        /// </summary>
+        /// <param name="pedidoId">ID do pedido de ajuda a ser validado.</param>
+        /// <returns>Retorna um status 200 OK se o pedido for validado com sucesso; retorna 401 Unauthorized, 403 Forbidden, 404 Not Found ou 400 Bad Request em caso de erro.</returns>
 
         [HttpPost("{pedidoId}/validar-pedido")]
         [Authorize]
@@ -345,6 +386,12 @@ namespace CommuniCare.Controllers
 
             return Ok("Pedido de ajuda validado com sucesso e colocado como 'Aberto'.");
         }
+
+        /// <summary>
+        /// Marca um pedido de ajuda como "Concluído" e notifica os administradores para validação.
+        /// </summary>
+        /// <param name="pedidoId">ID do pedido de ajuda a ser concluído.</param>
+        /// <returns>Retorna um status 200 OK se o pedido for concluído com sucesso e os administradores forem notificados; retorna 401 Unauthorized, 403 Forbidden, 404 Not Found ou 400 Bad Request em caso de erro.</returns>
 
         [HttpPost("concluir/{pedidoId}")]
         [Authorize]
@@ -403,6 +450,11 @@ namespace CommuniCare.Controllers
             return Ok("O pedido foi marcado como concluído. Os administradores foram notificados para validar a conclusão.");
         }
 
+        /// <summary>
+        /// Valida a conclusão de um pedido de ajuda, atribuindo a recompensa ao utilizador e registrando a transação.
+        /// </summary>
+        /// <param name="pedidoId">ID do pedido de ajuda a ter sua conclusão validada.</param>
+        /// <returns>Retorna um status 200 OK se a conclusão for validada com sucesso e a recompensa for atribuída; retorna 401 Unauthorized, 403 Forbidden, 404 Not Found ou 400 Bad Request em caso de erro.</returns>
 
         [HttpPost("validar-conclusao/{pedidoId}")]
         [Authorize]
@@ -423,7 +475,7 @@ namespace CommuniCare.Controllers
             }
 
             var pedido = await _context.PedidosAjuda
-                .Include(p => p.Utilizador) 
+                .Include(p => p.Utilizador)
                 .Include(p => p.Voluntariados)
                 .FirstOrDefaultAsync(p => p.PedidoId == pedidoId);
 
@@ -486,11 +538,16 @@ namespace CommuniCare.Controllers
 
         #endregion
 
+        /// <summary>
+        /// Obtém todos os pedidos de ajuda disponíveis para o utilizador, exceto os pedidos criados pelo próprio utilizador.
+        /// </summary>
+        /// <returns>Retorna uma lista de pedidos de ajuda disponíveis ou 401 Unauthorized se o utilizador não estiver autenticado.</returns>
+
         [Authorize]
         [HttpGet("pedidos-disponiveis")]
         public async Task<ActionResult<IEnumerable<PedidoAjuda>>> GetPedidosAjudaDisponiveis()
         {
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier); 
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
 
             if (userIdClaim == null)
             {
@@ -506,12 +563,16 @@ namespace CommuniCare.Controllers
             return Ok(pedidosDisponiveis);
         }
 
+        /// <summary>
+        /// Obtém todos os pedidos de ajuda criados pelo utilizador autenticado.
+        /// </summary>
+        /// <returns>Retorna uma lista de pedidos de ajuda do utilizador ou 401 Unauthorized se o utilizador não estiver autenticado.</returns>
 
         [Authorize]
         [HttpGet("meus-pedidos")]
         public async Task<ActionResult<IEnumerable<PedidoAjuda>>> GetMeusPedidosAjuda()
         {
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier); 
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
 
             if (userIdClaim == null)
             {
@@ -526,9 +587,5 @@ namespace CommuniCare.Controllers
 
             return Ok(meusPedidos);
         }
-
-
-
-
     }
 }

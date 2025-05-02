@@ -20,14 +20,23 @@ namespace CommuniCare.Controllers
             _context = context;
         }
 
-        // GET: api/Transacoes
+        /// <summary>
+        /// Obtém a lista de todas as transações.
+        /// </summary>
+        /// <returns>Retorna uma lista de transações ou 500 Internal Server Error em caso de falha.</returns>
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Transacao>>> GetTransacaos()
         {
             return await _context.Transacoes.ToListAsync();
         }
 
-        // GET: api/Transacoes/5
+        /// <summary>
+        /// Obtém os detalhes de uma transação específica, baseada no seu ID.
+        /// </summary>
+        /// <param name="id">ID da transação a ser obtida.</param>
+        /// <returns>Retorna a transação correspondente ao ID ou 404 Not Found se a transação não existir.</returns>
+
         [HttpGet("{id}")]
         public async Task<ActionResult<Transacao>> GetTransacao(int id)
         {
@@ -41,8 +50,13 @@ namespace CommuniCare.Controllers
             return transacao;
         }
 
-        // PUT: api/Transacoes/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Atualiza os dados de uma transação existente.
+        /// </summary>
+        /// <param name="id">ID da transação a ser atualizada.</param>
+        /// <param name="transacao">Objeto contendo os dados atualizados da transação.</param>
+        /// <returns>Retorna 204 No Content se a atualização for bem-sucedida; retorna 400 Bad Request se os dados não coincidirem; 404 Not Found se a transação não existir ou 500 Internal Server Error em caso de falha.</returns>
+
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTransacao(int id, Transacao transacao)
         {
@@ -72,8 +86,12 @@ namespace CommuniCare.Controllers
             return NoContent();
         }
 
-        // POST: api/Transacoes
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Cria uma nova transação.
+        /// </summary>
+        /// <param name="transacao">Objeto contendo os dados da nova transação.</param>
+        /// <returns>Retorna um status 201 Created com a transação criada, incluindo o URI do novo recurso; retorna 500 Internal Server Error em caso de falha.</returns>
+
         [HttpPost]
         public async Task<ActionResult<Transacao>> PostTransacao(Transacao transacao)
         {
@@ -83,7 +101,12 @@ namespace CommuniCare.Controllers
             return CreatedAtAction("GetTransacao", new { id = transacao.TransacaoId }, transacao);
         }
 
-        // DELETE: api/Transacoes/5
+        /// <summary>
+        /// Deleta uma transação específica baseada no seu ID.
+        /// </summary>
+        /// <param name="id">ID da transação a ser deletada.</param>
+        /// <returns>Retorna 204 No Content se a transação for deletada com sucesso; retorna 404 Not Found se a transação não existir ou 500 Internal Server Error em caso de falha.</returns>
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTransacao(int id)
         {
@@ -99,11 +122,23 @@ namespace CommuniCare.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Verifica se existe uma transação com o identificador especificado.
+        /// </summary>
+        /// <param name="id">ID da transação a verificar.</param>
+        /// <returns>Retorna true se a transação existir; retorna false caso contrário.</returns>
+
         private bool TransacaoExists(int id)
         {
             return _context.Transacoes.Any(e => e.TransacaoId == id);
         }
 
+
+        /// <summary>
+        /// Obtém o histórico de transações de um utilizador específico, filtrando por transações de ajuda, empréstimo e venda.
+        /// </summary>
+        /// <param name="utilizadorId">ID do utilizador para o qual o histórico de transações será recuperado.</param>
+        /// <returns>Retorna uma lista do histórico de transações, com o tipo, data e número de carências transferidas. Em caso de falha, retorna 500 Internal Server Error.</returns>
 
         [HttpGet("Historico/{utilizadorId}")]
         public async Task<ActionResult<IEnumerable<object>>> GetHistoricoTransacoes(int utilizadorId)

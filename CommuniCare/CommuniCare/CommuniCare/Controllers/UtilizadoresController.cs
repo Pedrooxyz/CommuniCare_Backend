@@ -193,14 +193,102 @@ namespace CommuniCare.Controllers
 
             await _context.SaveChangesAsync();
 
-            var token = GerarToken(novoUtilizador.UtilizadorId, dto.Email, novoUtilizador.TipoUtilizadorId);
-
             return Ok(new
             {
                 Message = "Conta criada com sucesso! Aguardando aprovação de um administrador.",
-                Token = token
             });
         }
+
+        [HttpPost("register-admin")]
+        public async Task<IActionResult> RegisterAdmin([FromBody] UtilizadorDTO dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            bool emailExiste = await _context.Contactos
+                .AnyAsync(c => c.NumContacto == dto.Email);
+
+            if (emailExiste)
+            {
+                return BadRequest("Já existe uma conta com este email.");
+            }
+
+            var codigoPostalPadrao = await _context.Cps.FirstOrDefaultAsync(cp => cp.CPostal == "0000-000");
+            if (codigoPostalPadrao == null)
+            {
+                codigoPostalPadrao = new Cp
+                {
+                    CPostal = "0000-000",
+                    Localidade = "000000"
+                };
+                _context.Cps.Add(codigoPostalPadrao);
+                await _context.SaveChangesAsync();
+            }
+
+            var moradaTemporaria = new Morada
+            {
+                Rua = "A definir",
+                NumPorta = null,
+                CPostal = codigoPostalPadrao.CPostal
+            };
+
+            _context.Morada.Add(moradaTemporaria);
+            await _context.SaveChangesAsync();
+
+            var novoAdmin = new Utilizador
+            {
+                NomeUtilizador = dto.NomeUtilizador,
+                Password = BCrypt.Net.BCrypt.HashPassword(dto.Password),
+                NumCares = 0,
+                TipoUtilizadorId = 2, // Tipo 2 = Administrador
+                MoradaId = moradaTemporaria.MoradaId,
+                EstadoUtilizador = EstadoUtilizador.Pendente
+            };
+
+            _context.Utilizadores.Add(novoAdmin);
+            await _context.SaveChangesAsync();
+
+            var contactoEmail = new Contacto
+            {
+                NumContacto = dto.Email,
+                TipoContactoId = 1, // Email
+                UtilizadorId = novoAdmin.UtilizadorId
+            };
+
+            _context.Contactos.Add(contactoEmail);
+            await _context.SaveChangesAsync();
+
+            // Notificar outros administradores ativos (exceto o novo)
+            var admins = await _context.Utilizadores
+                .Where(u => u.TipoUtilizadorId == 2 && u.EstadoUtilizador == EstadoUtilizador.Ativo)
+                .ToListAsync();
+
+            foreach (var admin in admins)
+            {
+                var notificacao = new Notificacao
+                {
+                    UtilizadorId = admin.UtilizadorId,
+                    Mensagem = $"Novo administrador registado: {novoAdmin.NomeUtilizador}. Aguardando aprovação.",
+                    Lida = 0,
+                    DataMensagem = DateTime.Now,
+                    PedidoId = null,
+                    ItemId = null
+                };
+
+                _context.Notificacaos.Add(notificacao);
+            }
+
+            await _context.SaveChangesAsync();
+
+
+            return Ok(new
+            {
+                Message = "Conta de administrador criada com sucesso! Aguardando aprovação de outro administrador.",
+            });
+        }
+
 
         [HttpGet("InfoUtilizador")]
         [Authorize]
@@ -553,7 +641,6 @@ namespace CommuniCare.Controllers
             utilizador.FotoUtil = null;
             utilizador.Password = null;
 
-            // Tornar FKs null onde necessário
             var relacoes = await _context.ItemEmprestimoUtilizadores
                 .Where(r => r.UtilizadorId == utilizadorId)
                 .ToListAsync();
@@ -561,7 +648,6 @@ namespace CommuniCare.Controllers
             foreach (var r in relacoes)
                 r.UtilizadorId = null;
 
-            // Remover morada/contactos (opcional)
             if (utilizador.Contactos != null)
                 _context.Contactos.RemoveRange(utilizador.Contactos);
 

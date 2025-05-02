@@ -2555,6 +2555,22 @@
   },
   {
     "ContainingType": "CommuniCare.Controllers.UtilizadoresController",
+    "Method": "RegisterAdmin",
+    "RelativePath": "api/Utilizadores/register-admin",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "CommuniCare.DTOs.UtilizadorDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.UtilizadoresController",
     "Method": "RejeitarUtilizador",
     "RelativePath": "api/Utilizadores/rejeitar-utilizador/{id}",
     "HttpMethod": "PUT",

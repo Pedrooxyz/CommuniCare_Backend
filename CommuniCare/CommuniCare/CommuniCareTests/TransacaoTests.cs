@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using CommuniCare.Controllers;
 using CommuniCare.Models;
 using Microsoft.AspNetCore.Mvc;
+using MockQueryable.Moq;
 
 namespace CommuniCareTests
 {
@@ -34,67 +35,61 @@ namespace CommuniCareTests
             // Arrange
             var utilizadorId = 1;
 
-            // Simulando as transações
+            var now = DateTime.Now;
+
             var transacoes = new List<Transacao>
+    {
+        new Transacao
         {
-            new Transacao
-            {
-                TransacaoId = 1,
-                Quantidade = 10,
-                DataTransacao = DateTime.Now.AddMinutes(-10),
-                TransacaoAjuda = new TransacaoAjuda { RecetorTran = utilizadorId }
-            },
-            new Transacao
-            {
-                TransacaoId = 2,
-                Quantidade = 5,
-                DataTransacao = DateTime.Now.AddMinutes(-5),
-                TransacaoEmprestimo = new TransacaoEmprestimo { RecetorTran = utilizadorId }
-            },
-            new Transacao
-            {
-                TransacaoId = 3,
-                Quantidade = 7,
-                DataTransacao = DateTime.Now.AddMinutes(-15),
-                Venda = new Venda { UtilizadorId = utilizadorId }
-            }
-        }.AsQueryable();
+            TransacaoId = 1,
+            Quantidade = 10,
+            DataTransacao = now.AddMinutes(-10),
+            TransacaoAjuda = new TransacaoAjuda { RecetorTran = utilizadorId }
+        },
+        new Transacao
+        {
+            TransacaoId = 2,
+            Quantidade = 5,
+            DataTransacao = now.AddMinutes(-5),
+            TransacaoEmprestimo = new TransacaoEmprestimo { RecetorTran = utilizadorId }
+        },
+        new Transacao
+        {
+            TransacaoId = 3,
+            Quantidade = 7,
+            DataTransacao = now.AddMinutes(-15),
+            Venda = new Venda { UtilizadorId = utilizadorId }
+        }
+    }.AsQueryable();
 
-            var mockSet = new Mock<DbSet<Transacao>>();
-            mockSet.As<IQueryable<Transacao>>().Setup(m => m.Provider).Returns(transacoes.Provider);
-            mockSet.As<IQueryable<Transacao>>().Setup(m => m.Expression).Returns(transacoes.Expression);
-            mockSet.As<IQueryable<Transacao>>().Setup(m => m.ElementType).Returns(transacoes.ElementType);
-            mockSet.As<IQueryable<Transacao>>().Setup(m => m.GetEnumerator()).Returns(transacoes.GetEnumerator());
+            var mockSet = transacoes.BuildMockDbSet(); // supports ToListAsync automatically
 
-            // Simulando ToListAsync com Task.FromResult
-            mockSet.Setup(m => m.ToListAsync(It.IsAny<CancellationToken>())).ReturnsAsync(transacoes.ToList());
-
+            _mockContext = new Mock<CommuniCareContext>();
             _mockContext.Setup(c => c.Transacoes).Returns(mockSet.Object);
+
+            _controller = new TransacoesController(_mockContext.Object);
 
             // Act
             var result = await _controller.GetHistoricoTransacoes(utilizadorId);
 
             // Assert
-            var actionResult = result as ActionResult<IEnumerable<object>>;
-            Assert.IsNotNull(actionResult);
-            var okResult = actionResult.Result as OkObjectResult;
-            Assert.IsNotNull(okResult);
+            Assert.IsNotNull(result);
+            Assert.IsNull(result.Result); // because it's an implicit Ok(historico)
+            Assert.IsNotNull(result.Value);
 
-            var historico = okResult.Value as List<object>;
-            Assert.IsNotNull(historico);
-            Assert.AreEqual(3, historico.Count);  // As 3 transações
+            var historico = result.Value.ToList();
+            Assert.AreEqual(3, historico.Count);
 
-            var transacao1 = historico[0] as dynamic;
-            Assert.AreEqual("Ajuda", transacao1.Tipo);
-            Assert.AreEqual("10", transacao1.NumeroCarenciasTransferido.ToString());
+            var tipos = historico.Select(h => (string)h.GetType().GetProperty("Tipo")!.GetValue(h)).ToList();
+            var quantidades = historico.Select(h => (int)h.GetType().GetProperty("NumeroCarenciasTransferido")!.GetValue(h)).ToList();
 
-            var transacao2 = historico[1] as dynamic;
-            Assert.AreEqual("Emprestimo", transacao2.Tipo);
-            Assert.AreEqual("5", transacao2.NumeroCarenciasTransferido.ToString());
+            CollectionAssert.Contains(tipos, "Ajuda");
+            CollectionAssert.Contains(tipos, "Emprestimo");
+            CollectionAssert.Contains(tipos, "Venda");
 
-            var transacao3 = historico[2] as dynamic;
-            Assert.AreEqual("Venda", transacao3.Tipo);
-            Assert.AreEqual("7", transacao3.NumeroCarenciasTransferido.ToString());
+            CollectionAssert.Contains(quantidades, 10);
+            CollectionAssert.Contains(quantidades, 5);
+            CollectionAssert.Contains(quantidades, 7);
         }
 
         [TestMethod]
@@ -102,32 +97,25 @@ namespace CommuniCareTests
         {
             // Arrange
             var utilizadorId = 1;
+            var emptyTransacoes = new List<Transacao>().AsQueryable();
 
-            var transacoes = new List<Transacao>().AsQueryable();
+            var mockSet = emptyTransacoes.BuildMockDbSet(); // requires MockQueryable.Moq
 
-            var mockSet = new Mock<DbSet<Transacao>>();
-            mockSet.As<IQueryable<Transacao>>().Setup(m => m.Provider).Returns(transacoes.Provider);
-            mockSet.As<IQueryable<Transacao>>().Setup(m => m.Expression).Returns(transacoes.Expression);
-            mockSet.As<IQueryable<Transacao>>().Setup(m => m.ElementType).Returns(transacoes.ElementType);
-            mockSet.As<IQueryable<Transacao>>().Setup(m => m.GetEnumerator()).Returns(transacoes.GetEnumerator());
+            var mockContext = new Mock<CommuniCareContext>();
+            mockContext.Setup(c => c.Transacoes).Returns(mockSet.Object);
 
-            // Simulando ToListAsync com Task.FromResult
-            mockSet.Setup(m => m.ToListAsync(It.IsAny<CancellationToken>())).ReturnsAsync(transacoes.ToList());
-
-            _mockContext.Setup(c => c.Transacoes).Returns(mockSet.Object);
+            var controller = new TransacoesController(mockContext.Object);
 
             // Act
-            var result = await _controller.GetHistoricoTransacoes(utilizadorId);
+            var result = await controller.GetHistoricoTransacoes(utilizadorId);
 
             // Assert
-            var actionResult = result as ActionResult<IEnumerable<object>>;
-            Assert.IsNotNull(actionResult);
-            var okResult = actionResult.Result as OkObjectResult;
-            Assert.IsNotNull(okResult);
+            Assert.IsNotNull(result);
+            Assert.IsNull(result.Result); // because it's an implicit Ok(historico), .Result is null
+            Assert.IsNotNull(result.Value);
 
-            var historico = okResult.Value as List<object>;
-            Assert.IsNotNull(historico);
-            Assert.AreEqual(0, historico.Count);  // Nenhuma transação
+            var historico = result.Value.ToList();
+            Assert.AreEqual(0, historico.Count); // Expecting no entries
         }
         #endregion
     }

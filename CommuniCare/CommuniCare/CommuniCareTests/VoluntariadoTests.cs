@@ -70,60 +70,45 @@ namespace CommuniCareTests
                 Utilizador = new Utilizador { UtilizadorId = 10 }
             };
 
-            var data = new List<Voluntariado> { voluntariado }.AsQueryable();
-            var mockVoluntariadoDbSet = new Mock<DbSet<Voluntariado>>();
-            var asyncQueryProvider = new Mock<IAsyncQueryProvider>();
-            asyncQueryProvider
-                .Setup(p => p.ExecuteAsync<Voluntariado>(It.IsAny<Expression>(), It.IsAny<CancellationToken>()))
-                .Returns((Expression expression, CancellationToken _) =>
-                {
-                    var query = data.AsQueryable();
-                    var filteredData = query.Where(v => v.IdVoluntariado == 1 && v.Estado == EstadoVoluntariado.Pendente);
-                    return filteredData.FirstOrDefault();
-                });
-            asyncQueryProvider
-                .Setup(p => p.ExecuteAsync<IEnumerable<Voluntariado>>(It.IsAny<Expression>(), It.IsAny<CancellationToken>()))
-                .Returns((Expression expression, CancellationToken _) => data.Provider.Execute<IEnumerable<Voluntariado>>(expression));
+            var voluntariados = new List<Voluntariado> { voluntariado }.AsQueryable().BuildMockDbSet();
+            voluntariados.Setup(m => m.Remove(It.IsAny<Voluntariado>())).Callback<Voluntariado>(v => { }); // simulate removal
 
-            mockVoluntariadoDbSet.As<IQueryable<Voluntariado>>().Setup(m => m.Provider).Returns(asyncQueryProvider.Object);
-            mockVoluntariadoDbSet.As<IQueryable<Voluntariado>>().Setup(m => m.Expression).Returns(data.Expression);
-            mockVoluntariadoDbSet.As<IQueryable<Voluntariado>>().Setup(m => m.ElementType).Returns(data.ElementType);
-            mockVoluntariadoDbSet.As<IQueryable<Voluntariado>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
-            mockVoluntariadoDbSet.Setup(m => m.FindAsync(1)).ReturnsAsync(voluntariado);
-            mockVoluntariadoDbSet.Setup(m => m.Remove(It.IsAny<Voluntariado>())).Callback<Voluntariado>(v => data.ToList().Remove(v));
+            var admin = new Utilizador { UtilizadorId = 10, TipoUtilizadorId = 2 };
+            var mockUtilizadoresDbSet = new Mock<DbSet<Utilizador>>();
+            mockUtilizadoresDbSet.Setup(m => m.FindAsync(10)).ReturnsAsync(admin); // correct way to mock FindAsync
 
-            var utilizador = new Utilizador { UtilizadorId = 10, TipoUtilizadorId = 2 }; // Garantir que o tipo de utilizador está correto para autorização
-            var mockUtilizadoresDbSet = new List<Utilizador> { utilizador }.AsQueryable().BuildMockDbSet();
-
-            var mockNotificacaosDbSet = new Mock<DbSet<Notificacao>>();
-            var notificacaosData = new List<Notificacao>().AsQueryable();
-            mockNotificacaosDbSet.Setup(m => m.Add(It.IsAny<Notificacao>())).Callback<Notificacao>(n => notificacaosData.ToList().Add(n));
+            var notificacaos = new List<Notificacao>();
+            var notificacaosMock = new Mock<DbSet<Notificacao>>();
+            notificacaosMock.Setup(m => m.Add(It.IsAny<Notificacao>())).Callback<Notificacao>(n => notificacaos.Add(n));
 
             var mockContext = new Mock<CommuniCareContext>();
-            mockContext.Setup(c => c.Voluntariados).Returns(mockVoluntariadoDbSet.Object);
+            mockContext.Setup(c => c.Voluntariados).Returns(voluntariados.Object);
             mockContext.Setup(c => c.Utilizadores).Returns(mockUtilizadoresDbSet.Object);
-            mockContext.Setup(c => c.Notificacaos).Returns(mockNotificacaosDbSet.Object);
-            mockContext.Setup(c => c.Utilizadores.FindAsync(10)).ReturnsAsync(utilizador);
-            mockContext.Setup(c => c.Voluntariados.FindAsync(1)).ReturnsAsync(voluntariado);
+            mockContext.Setup(c => c.Notificacaos).Returns(notificacaosMock.Object);
             mockContext.Setup(c => c.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
             var controller = new VoluntariadosController(mockContext.Object);
-            var claims = new List<Claim> { new Claim(ClaimTypes.NameIdentifier, "10") };
-            var identity = new ClaimsIdentity(claims, "TestAuth");
             controller.ControllerContext = new ControllerContext
             {
-                HttpContext = new DefaultHttpContext { User = new ClaimsPrincipal(identity) }
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new ClaimsPrincipal(new ClaimsIdentity(new[]
+                    {
+                new Claim(ClaimTypes.NameIdentifier, "10")
+            }, "mock"))
+                }
             };
 
             // Act
             var result = await controller.RejeitarVoluntario(1);
 
             // Assert
-            Assert.IsInstanceOfType(result, typeof(OkObjectResult)); // Verifica se o resultado é OkObjectResult
+            Assert.IsInstanceOfType(result, typeof(OkObjectResult));
             var okResult = result as OkObjectResult;
             Assert.AreEqual("Voluntário rejeitado com sucesso.", okResult.Value);
 
             mockContext.Verify(c => c.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once());
+            notificacaosMock.Verify(m => m.Add(It.IsAny<Notificacao>()), Times.Once());
         }
 
 
@@ -255,148 +240,140 @@ namespace CommuniCareTests
 
         #region AceitarVoluntario
 
-        [TestMethod]
-        public async Task AceitarVoluntario_DeveRetornarOk_SeVoluntarioAceitoEPedidoEmProgresso()
-        {
-            // Arrange
-            var voluntariado = new Voluntariado
+        
+            [TestMethod]
+            public async Task AceitarVoluntario_DeveRetornarOk_SeVoluntarioAceitoEPedidoEmProgresso()
             {
-                IdVoluntariado = 1,
-                Estado = EstadoVoluntariado.Pendente,
-                PedidoId = 1,
-                UtilizadorId = 10,
-                Pedido = new PedidoAjuda
+                // Arrange
+                var pedido = new PedidoAjuda
                 {
                     PedidoId = 1,
                     UtilizadorId = 5,
                     NPessoas = 2,
                     Estado = EstadoPedido.Pendente,
                     Voluntariados = new List<Voluntariado>
-                {
-                    new Voluntariado { IdVoluntariado = 2, Estado = EstadoVoluntariado.Aceite } // 1 voluntário já aceito
-                }
-                },
-                Utilizador = new Utilizador { UtilizadorId = 10 }
-            };
-
-            var data = new List<Voluntariado> { voluntariado }.AsQueryable();
-            var mockVoluntariadoDbSet = new Mock<DbSet<Voluntariado>>();
-            var asyncQueryProvider = new Mock<IAsyncQueryProvider>();
-            asyncQueryProvider
-                .Setup(p => p.ExecuteAsync<Voluntariado>(It.IsAny<Expression>(), It.IsAny<CancellationToken>()))
-                .Returns((Expression expression, CancellationToken _) =>
-                {
-                    var query = data.AsQueryable();
-                    var filteredData = query.Where(v => v.IdVoluntariado == 1 && v.Estado == EstadoVoluntariado.Pendente);
-                    return filteredData.FirstOrDefault();
-                });
-            asyncQueryProvider
-                .Setup(p => p.ExecuteAsync<IEnumerable<Voluntariado>>(It.IsAny<Expression>(), It.IsAny<CancellationToken>()))
-                .Returns((Expression expression, CancellationToken _) => data.Provider.Execute<IEnumerable<Voluntariado>>(expression));
-
-            mockVoluntariadoDbSet.As<IQueryable<Voluntariado>>().Setup(m => m.Provider).Returns(asyncQueryProvider.Object);
-            mockVoluntariadoDbSet.As<IQueryable<Voluntariado>>().Setup(m => m.Expression).Returns(data.Expression);
-            mockVoluntariadoDbSet.As<IQueryable<Voluntariado>>().Setup(m => m.ElementType).Returns(data.ElementType);
-            mockVoluntariadoDbSet.As<IQueryable<Voluntariado>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
-            mockVoluntariadoDbSet.Setup(m => m.FindAsync(1)).ReturnsAsync(voluntariado);
-
-            var utilizador = new Utilizador { UtilizadorId = 10, TipoUtilizadorId = 2 };
-            var mockUtilizadoresDbSet = new List<Utilizador> { utilizador }.AsQueryable().BuildMockDbSet();
-
-            var mockNotificacaosDbSet = new Mock<DbSet<Notificacao>>();
-            var notificacaosData = new List<Notificacao>().AsQueryable();
-            mockNotificacaosDbSet.Setup(m => m.Add(It.IsAny<Notificacao>())).Callback<Notificacao>(n => notificacaosData.ToList().Add(n));
-
-            var mockContext = new Mock<CommuniCareContext>();
-            mockContext.Setup(c => c.Voluntariados).Returns(mockVoluntariadoDbSet.Object);
-            mockContext.Setup(c => c.Utilizadores).Returns(mockUtilizadoresDbSet.Object);
-            mockContext.Setup(c => c.Notificacaos).Returns(mockNotificacaosDbSet.Object);
-            mockContext.Setup(c => c.Utilizadores.FindAsync(10)).ReturnsAsync(utilizador);
-            mockContext.Setup(c => c.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
-
-            var controller = new VoluntariadosController(mockContext.Object);
-            var claims = new List<Claim> { new Claim(ClaimTypes.NameIdentifier, "10") };
-            var identity = new ClaimsIdentity(claims, "TestAuth");
-            controller.ControllerContext = new ControllerContext
             {
-                HttpContext = new DefaultHttpContext { User = new ClaimsPrincipal(identity) }
-            };
+                new Voluntariado { IdVoluntariado = 2, Estado = EstadoVoluntariado.Aceite }
+            }
+                };
 
-            // Act
-            var result = await controller.AceitarVoluntario(1);
+                var voluntariado = new Voluntariado
+                {
+                    IdVoluntariado = 1,
+                    Estado = EstadoVoluntariado.Pendente,
+                    PedidoId = 1,
+                    UtilizadorId = 10,
+                    Pedido = pedido,
+                    Utilizador = new Utilizador { UtilizadorId = 10 }
+                };
+                pedido.Voluntariados.Add(voluntariado);
 
-            // Assert
-            Assert.IsInstanceOfType(result, typeof(OkObjectResult));
-            var okResult = result as OkObjectResult;
-            Assert.AreEqual("Voluntário aceite com sucesso e pedido atualizado para 'Em Progresso'.", okResult.Value);
-            Assert.AreEqual(EstadoVoluntariado.Aceite, voluntariado.Estado);
-            Assert.AreEqual(EstadoPedido.EmProgresso, voluntariado.Pedido.Estado);
-            mockContext.Verify(c => c.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once());
-            mockNotificacaosDbSet.Verify(m => m.Add(It.IsAny<Notificacao>()), Times.Exactly(2));
-        }
+                
+                var voluntariados = new List<Voluntariado> { voluntariado }.AsQueryable().BuildMockDbSet();
 
-        [TestMethod]
+                
+                var adminUser = new Utilizador { UtilizadorId = 10, TipoUtilizadorId = 2 };
+                var mockUtilizadoresDbSet = new Mock<DbSet<Utilizador>>();
+                mockUtilizadoresDbSet.Setup(m => m.FindAsync(10)).ReturnsAsync(adminUser);
+
+                
+                var notificacaos = new List<Notificacao>();
+                var notificacaosMock = new Mock<DbSet<Notificacao>>();
+                notificacaosMock.Setup(m => m.Add(It.IsAny<Notificacao>()))
+                    .Callback<Notificacao>(n => notificacaos.Add(n));
+
+                
+                var mockContext = new Mock<CommuniCareContext>();
+                mockContext.Setup(c => c.Voluntariados).Returns(voluntariados.Object);
+                mockContext.Setup(c => c.Utilizadores).Returns(mockUtilizadoresDbSet.Object);
+                mockContext.Setup(c => c.Notificacaos).Returns(notificacaosMock.Object);
+                mockContext.Setup(c => c.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
+
+                // Controller setup with authenticated admin user
+                var controller = new VoluntariadosController(mockContext.Object);
+                controller.ControllerContext = new ControllerContext
+                {
+                    HttpContext = new DefaultHttpContext
+                    {
+                        User = new ClaimsPrincipal(new ClaimsIdentity(new[]
+                        {
+                    new Claim(ClaimTypes.NameIdentifier, "10")
+                }, "mock"))
+                    }
+                };
+
+                // Act
+                var result = await controller.AceitarVoluntario(1);
+
+                // Assert
+                Assert.IsInstanceOfType(result, typeof(OkObjectResult));
+                var okResult = result as OkObjectResult;
+                Assert.AreEqual("Voluntário aceite com sucesso e pedido atualizado para 'Em Progresso'.", okResult.Value);
+
+                Assert.AreEqual(EstadoVoluntariado.Aceite, voluntariado.Estado);
+                Assert.AreEqual(EstadoPedido.EmProgresso, voluntariado.Pedido.Estado);
+
+                mockContext.Verify(c => c.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+                notificacaosMock.Verify(m => m.Add(It.IsAny<Notificacao>()), Times.Exactly(2));
+                Assert.AreEqual(2, notificacaos.Count);
+            }
+
+            [TestMethod]
         public async Task AceitarVoluntario_DeveRetornarOk_SeVoluntarioAceitoSemAtualizarPedido()
         {
             // Arrange
+            var pedido = new PedidoAjuda
+            {
+                PedidoId = 1,
+                UtilizadorId = 5,
+                NPessoas = 2,
+                Estado = EstadoPedido.Pendente,
+                Voluntariados = new List<Voluntariado>() // Nenhum voluntário aceito
+            };
+
             var voluntariado = new Voluntariado
             {
                 IdVoluntariado = 1,
                 Estado = EstadoVoluntariado.Pendente,
                 PedidoId = 1,
                 UtilizadorId = 10,
-                Pedido = new PedidoAjuda
-                {
-                    PedidoId = 1,
-                    UtilizadorId = 5,
-                    NPessoas = 2,
-                    Estado = EstadoPedido.Pendente,
-                    Voluntariados = new List<Voluntariado>() // Nenhum voluntário aceito
-                },
+                Pedido = pedido,
                 Utilizador = new Utilizador { UtilizadorId = 10 }
             };
+            pedido.Voluntariados.Add(voluntariado);
 
-            var data = new List<Voluntariado> { voluntariado }.AsQueryable();
-            var mockVoluntariadoDbSet = new Mock<DbSet<Voluntariado>>();
-            var asyncQueryProvider = new Mock<IAsyncQueryProvider>();
-            asyncQueryProvider
-                .Setup(p => p.ExecuteAsync<Voluntariado>(It.IsAny<Expression>(), It.IsAny<CancellationToken>()))
-                .Returns((Expression expression, CancellationToken _) =>
-                {
-                    var query = data.AsQueryable();
-                    var filteredData = query.Where(v => v.IdVoluntariado == 1 && v.Estado == EstadoVoluntariado.Pendente);
-                    return filteredData.FirstOrDefault();
-                });
-            asyncQueryProvider
-                .Setup(p => p.ExecuteAsync<IEnumerable<Voluntariado>>(It.IsAny<Expression>(), It.IsAny<CancellationToken>()))
-                .Returns((Expression expression, CancellationToken _) => data.Provider.Execute<IEnumerable<Voluntariado>>(expression));
+            
+            var voluntariados = new List<Voluntariado> { voluntariado }.AsQueryable().BuildMockDbSet();
 
-            mockVoluntariadoDbSet.As<IQueryable<Voluntariado>>().Setup(m => m.Provider).Returns(asyncQueryProvider.Object);
-            mockVoluntariadoDbSet.As<IQueryable<Voluntariado>>().Setup(m => m.Expression).Returns(data.Expression);
-            mockVoluntariadoDbSet.As<IQueryable<Voluntariado>>().Setup(m => m.ElementType).Returns(data.ElementType);
-            mockVoluntariadoDbSet.As<IQueryable<Voluntariado>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
-            mockVoluntariadoDbSet.Setup(m => m.FindAsync(1)).ReturnsAsync(voluntariado);
+            
+            var adminUser = new Utilizador { UtilizadorId = 10, TipoUtilizadorId = 2 };
+            var mockUtilizadoresDbSet = new Mock<DbSet<Utilizador>>();
+            mockUtilizadoresDbSet.Setup(m => m.FindAsync(10)).ReturnsAsync(adminUser);
 
-            var utilizador = new Utilizador { UtilizadorId = 10, TipoUtilizadorId = 2 };
-            var mockUtilizadoresDbSet = new List<Utilizador> { utilizador }.AsQueryable().BuildMockDbSet();
-
+           
+            var notificacaos = new List<Notificacao>();
             var mockNotificacaosDbSet = new Mock<DbSet<Notificacao>>();
-            var notificacaosData = new List<Notificacao>().AsQueryable();
-            mockNotificacaosDbSet.Setup(m => m.Add(It.IsAny<Notificacao>())).Callback<Notificacao>(n => notificacaosData.ToList().Add(n));
+            mockNotificacaosDbSet.Setup(m => m.Add(It.IsAny<Notificacao>()))
+                .Callback<Notificacao>(n => notificacaos.Add(n));
 
+            
             var mockContext = new Mock<CommuniCareContext>();
-            mockContext.Setup(c => c.Voluntariados).Returns(mockVoluntariadoDbSet.Object);
+            mockContext.Setup(c => c.Voluntariados).Returns(voluntariados.Object);
             mockContext.Setup(c => c.Utilizadores).Returns(mockUtilizadoresDbSet.Object);
             mockContext.Setup(c => c.Notificacaos).Returns(mockNotificacaosDbSet.Object);
-            mockContext.Setup(c => c.Utilizadores.FindAsync(10)).ReturnsAsync(utilizador);
             mockContext.Setup(c => c.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
+            
             var controller = new VoluntariadosController(mockContext.Object);
-            var claims = new List<Claim> { new Claim(ClaimTypes.NameIdentifier, "10") };
-            var identity = new ClaimsIdentity(claims, "TestAuth");
             controller.ControllerContext = new ControllerContext
             {
-                HttpContext = new DefaultHttpContext { User = new ClaimsPrincipal(identity) }
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new ClaimsPrincipal(new ClaimsIdentity(new[]
+                    {
+                new Claim(ClaimTypes.NameIdentifier, "10")
+            }, "mock"))
+                }
             };
 
             // Act
@@ -439,7 +416,7 @@ namespace CommuniCareTests
             var voluntariado = new Voluntariado
             {
                 IdVoluntariado = 1,
-                Estado = EstadoVoluntariado.Aceite, // Não pendente
+                Estado = EstadoVoluntariado.Aceite, 
                 PedidoId = 1,
                 UtilizadorId = 10,
                 Pedido = new PedidoAjuda

@@ -32,107 +32,110 @@ namespace CommuniCare.Controllers
             return await _context.Voluntariados.ToListAsync();
         }
 
-        /// <summary>
-        /// Obtém os detalhes de um voluntariado específico com base no identificador fornecido.
-        /// </summary>
-        /// <param name="id">Identificador do voluntariado a ser recuperado.</param>
-        /// <returns>Detalhes do voluntariado, ou NotFound se o voluntariado não for encontrado.</returns>
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Voluntariado>> GetVoluntariado(int id)
-        {
-            var voluntariado = await _context.Voluntariados.FindAsync(id);
 
-            if (voluntariado == null)
-            {
-                return NotFound();
-            }
+        #region CONTROLLERS AUTOMÁTICOS
+        ///// <summary>
+        ///// Obtém os detalhes de um voluntariado específico com base no identificador fornecido.
+        ///// </summary>
+        ///// <param name="id">Identificador do voluntariado a ser recuperado.</param>
+        ///// <returns>Detalhes do voluntariado, ou NotFound se o voluntariado não for encontrado.</returns>
+        //[HttpGet("{id}")]
+        //public async Task<ActionResult<Voluntariado>> GetVoluntariado(int id)
+        //{
+        //    var voluntariado = await _context.Voluntariados.FindAsync(id);
 
-            return voluntariado;
-        }
+        //    if (voluntariado == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-        /// <summary>
-        /// Atualiza os dados de um voluntariado existente.
-        /// </summary>
-        /// <param name="id">Identificador do voluntariado a ser atualizado.</param>
-        /// <param name="voluntariado">Objeto contendo os novos dados do voluntariado.</param>
-        /// <returns>Resultado da atualização. Retorna NoContent se bem-sucedido, ou NotFound se o voluntariado não for encontrado.</returns>
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutVoluntariado(int id, Voluntariado voluntariado)
-        {
-            if (id != voluntariado.PedidoId)
-            {
-                return BadRequest();
-            }
+        //    return voluntariado;
+        //}
 
-            _context.Entry(voluntariado).State = EntityState.Modified;
+        ///// <summary>
+        ///// Atualiza os dados de um voluntariado existente.
+        ///// </summary>
+        ///// <param name="id">Identificador do voluntariado a ser atualizado.</param>
+        ///// <param name="voluntariado">Objeto contendo os novos dados do voluntariado.</param>
+        ///// <returns>Resultado da atualização. Retorna NoContent se bem-sucedido, ou NotFound se o voluntariado não for encontrado.</returns>
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> PutVoluntariado(int id, Voluntariado voluntariado)
+        //{
+        //    if (id != voluntariado.PedidoId)
+        //    {
+        //        return BadRequest();
+        //    }
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!VoluntariadoExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+        //    _context.Entry(voluntariado).State = EntityState.Modified;
 
-            return NoContent();
-        }
+        //    try
+        //    {
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    catch (DbUpdateConcurrencyException)
+        //    {
+        //        if (!VoluntariadoExists(id))
+        //        {
+        //            return NotFound();
+        //        }
+        //        else
+        //        {
+        //            throw;
+        //        }
+        //    }
 
-        /// <summary>
-        /// Cria um novo voluntariado no sistema.
-        /// </summary>
-        /// <param name="voluntariado">Objeto contendo os dados do voluntariado a ser adicionado.</param>
-        /// <returns>Voluntariado criado, ou Conflict se o voluntariado já existir.</returns>
-        [HttpPost]
-        public async Task<ActionResult<Voluntariado>> PostVoluntariado(Voluntariado voluntariado)
-        {
-            _context.Voluntariados.Add(voluntariado);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (VoluntariadoExists(voluntariado.PedidoId))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+        //    return NoContent();
+        //}
 
-            return CreatedAtAction("GetVoluntariado", new { id = voluntariado.PedidoId }, voluntariado);
-        }
+        ///// <summary>
+        ///// Cria um novo voluntariado no sistema.
+        ///// </summary>
+        ///// <param name="voluntariado">Objeto contendo os dados do voluntariado a ser adicionado.</param>
+        ///// <returns>Voluntariado criado, ou Conflict se o voluntariado já existir.</returns>
+        //[HttpPost]
+        //public async Task<ActionResult<Voluntariado>> PostVoluntariado(Voluntariado voluntariado)
+        //{
+        //    _context.Voluntariados.Add(voluntariado);
+        //    try
+        //    {
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    catch (DbUpdateException)
+        //    {
+        //        if (VoluntariadoExists(voluntariado.PedidoId))
+        //        {
+        //            return Conflict();
+        //        }
+        //        else
+        //        {
+        //            throw;
+        //        }
+        //    }
 
-        /// <summary>
-        /// Remove um voluntariado do sistema com base no identificador fornecido.
-        /// </summary>
-        /// <param name="id">Identificador do voluntariado a ser removido.</param>
-        /// <returns>Resultado da remoção. Retorna NoContent se bem-sucedido, ou NotFound se o voluntariado não for encontrado.</returns>
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteVoluntariado(int id)
-        {
-            var voluntariado = await _context.Voluntariados.FindAsync(id);
-            if (voluntariado == null)
-            {
-                return NotFound();
-            }
+        //    return CreatedAtAction("GetVoluntariado", new { id = voluntariado.PedidoId }, voluntariado);
+        //}
 
-            _context.Voluntariados.Remove(voluntariado);
-            await _context.SaveChangesAsync();
+        ///// <summary>
+        ///// Remove um voluntariado do sistema com base no identificador fornecido.
+        ///// </summary>
+        ///// <param name="id">Identificador do voluntariado a ser removido.</param>
+        ///// <returns>Resultado da remoção. Retorna NoContent se bem-sucedido, ou NotFound se o voluntariado não for encontrado.</returns>
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeleteVoluntariado(int id)
+        //{
+        //    var voluntariado = await _context.Voluntariados.FindAsync(id);
+        //    if (voluntariado == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return NoContent();
-        }
+        //    _context.Voluntariados.Remove(voluntariado);
+        //    await _context.SaveChangesAsync();
 
+        //    return NoContent();
+        //}
+
+        #endregion
         private bool VoluntariadoExists(int id)
         {
             return _context.Voluntariados.Any(e => e.PedidoId == id);
@@ -144,7 +147,7 @@ namespace CommuniCare.Controllers
         /// </summary>
         /// <param name="idVoluntariado">Identificador do voluntariado a ser rejeitado.</param>
         /// <returns>Resultado da rejeição. Retorna Ok se bem-sucedido, Unauthorized se não autenticado, ou Forbid se não for um administrador.</returns>
-        [HttpPost("rejeitar-voluntario/{idVoluntariado}")]
+        [HttpPost("RejeitarVoluntario-(admin)/{idVoluntariado}")]
         [Authorize]
         public async Task<IActionResult> RejeitarVoluntario(int idVoluntariado)
         {
@@ -196,7 +199,7 @@ namespace CommuniCare.Controllers
         /// </summary>
         /// <param name="idVoluntariado">Identificador do voluntariado a ser aceito.</param>
         /// <returns>Resultado da aceitação. Retorna Ok se bem-sucedido, Unauthorized se não autenticado, ou Forbid se não for um administrador.</returns>
-        [HttpPost("aceitar-voluntario/{idVoluntariado}")]
+        [HttpPost("AceitarVoluntario-(admin)/{idVoluntariado}")]
         [Authorize]
         public async Task<IActionResult> AceitarVoluntario(int idVoluntariado)
         {

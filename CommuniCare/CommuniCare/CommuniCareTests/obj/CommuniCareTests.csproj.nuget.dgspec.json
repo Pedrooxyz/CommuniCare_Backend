@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCareTests\\CommuniCareTests.csproj": {}
+    "C:\\Users\\João\\OneDrive - Instituto Politécnico do Cávado e do Ave\\Desktop\\ipca\\ano 2\\2º semestre\\PDS\\Segunda Fase\\Codigo\\CommuniCare\\CommuniCare\\CommuniCareTests\\CommuniCareTests.csproj": {}
   },
   "projects": {
-    "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCareTests\\CommuniCareTests.csproj": {
+    "C:\\Users\\João\\OneDrive - Instituto Politécnico do Cávado e do Ave\\Desktop\\ipca\\ano 2\\2º semestre\\PDS\\Segunda Fase\\Codigo\\CommuniCare\\CommuniCare\\CommuniCareTests\\CommuniCareTests.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCareTests\\CommuniCareTests.csproj",
+        "projectUniqueName": "C:\\Users\\João\\OneDrive - Instituto Politécnico do Cávado e do Ave\\Desktop\\ipca\\ano 2\\2º semestre\\PDS\\Segunda Fase\\Codigo\\CommuniCare\\CommuniCare\\CommuniCareTests\\CommuniCareTests.csproj",
         "projectName": "CommuniCareTests",
-        "projectPath": "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCareTests\\CommuniCareTests.csproj",
-        "packagesPath": "C:\\Users\\ferna\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCareTests\\obj\\",
+        "projectPath": "C:\\Users\\João\\OneDrive - Instituto Politécnico do Cávado e do Ave\\Desktop\\ipca\\ano 2\\2º semestre\\PDS\\Segunda Fase\\Codigo\\CommuniCare\\CommuniCare\\CommuniCareTests\\CommuniCareTests.csproj",
+        "packagesPath": "C:\\Users\\João\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\João\\OneDrive - Instituto Politécnico do Cávado e do Ave\\Desktop\\ipca\\ano 2\\2º semestre\\PDS\\Segunda Fase\\Codigo\\CommuniCare\\CommuniCare\\CommuniCareTests\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\ferna\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\João\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -32,8 +32,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\CommuniCare.csproj": {
-                "projectPath": "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\CommuniCare.csproj"
+              "C:\\Users\\João\\OneDrive - Instituto Politécnico do Cávado e do Ave\\Desktop\\ipca\\ano 2\\2º semestre\\PDS\\Segunda Fase\\Codigo\\CommuniCare\\CommuniCare\\CommuniCare\\CommuniCare.csproj": {
+                "projectPath": "C:\\Users\\João\\OneDrive - Instituto Politécnico do Cávado e do Ave\\Desktop\\ipca\\ano 2\\2º semestre\\PDS\\Segunda Fase\\Codigo\\CommuniCare\\CommuniCare\\CommuniCare\\CommuniCare.csproj"
               }
             }
           }
@@ -79,24 +79,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\CommuniCare.csproj": {
+    "C:\\Users\\João\\OneDrive - Instituto Politécnico do Cávado e do Ave\\Desktop\\ipca\\ano 2\\2º semestre\\PDS\\Segunda Fase\\Codigo\\CommuniCare\\CommuniCare\\CommuniCare\\CommuniCare.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\CommuniCare.csproj",
+        "projectUniqueName": "C:\\Users\\João\\OneDrive - Instituto Politécnico do Cávado e do Ave\\Desktop\\ipca\\ano 2\\2º semestre\\PDS\\Segunda Fase\\Codigo\\CommuniCare\\CommuniCare\\CommuniCare\\CommuniCare.csproj",
         "projectName": "CommuniCare",
-        "projectPath": "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\CommuniCare.csproj",
-        "packagesPath": "C:\\Users\\ferna\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\obj\\",
+        "projectPath": "C:\\Users\\João\\OneDrive - Instituto Politécnico do Cávado e do Ave\\Desktop\\ipca\\ano 2\\2º semestre\\PDS\\Segunda Fase\\Codigo\\CommuniCare\\CommuniCare\\CommuniCare\\CommuniCare.csproj",
+        "packagesPath": "C:\\Users\\João\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\João\\OneDrive - Instituto Politécnico do Cávado e do Ave\\Desktop\\ipca\\ano 2\\2º semestre\\PDS\\Segunda Fase\\Codigo\\CommuniCare\\CommuniCare\\CommuniCare\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\ferna\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\João\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -211,7 +211,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

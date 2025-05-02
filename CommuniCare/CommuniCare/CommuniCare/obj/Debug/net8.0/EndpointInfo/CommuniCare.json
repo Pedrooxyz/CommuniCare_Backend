@@ -43,7 +43,7 @@
         }
       }
     },
-    "/api/Artigos/disponiveis": {
+    "/api/Artigos/Disponiveis": {
       "get": {
         "tags": [
           "Artigos"
@@ -81,7 +81,7 @@
         }
       }
     },
-    "/api/Artigos/publicar": {
+    "/api/Artigos/Publicar-(admin)": {
       "post": {
         "tags": [
           "Artigos"
@@ -129,7 +129,7 @@
         }
       }
     },
-    "/api/Artigos/indisponibilizar/{id}": {
+    "/api/Artigos/Indisponibilizar-(admin)/{id}": {
       "put": {
         "tags": [
           "Artigos"
@@ -152,7 +152,7 @@
         }
       }
     },
-    "/api/Artigos/{id}/repor-stock": {
+    "/api/Artigos/{id}/Repor-stock-(admin)": {
       "put": {
         "tags": [
           "Artigos"
@@ -801,156 +801,9 @@
             }
           }
         }
-      },
-      "post": {
-        "tags": [
-          "Emprestimos"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Emprestimo"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Emprestimo"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/Emprestimo"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/Emprestimo"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Emprestimo"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Emprestimo"
-                }
-              }
-            }
-          }
-        }
       }
     },
-    "/api/Emprestimos/{id}": {
-      "get": {
-        "tags": [
-          "Emprestimos"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/Emprestimo"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Emprestimo"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Emprestimo"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Emprestimos"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Emprestimo"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Emprestimo"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/Emprestimo"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Emprestimos"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Emprestimos/devolucao-item/{emprestimoId}": {
+    "/api/Emprestimos/DevolucaoItem/{emprestimoId}": {
       "post": {
         "tags": [
           "Emprestimos"
@@ -973,7 +826,7 @@
         }
       }
     },
-    "/api/Emprestimos/validar-emprestimo/{emprestimoId}": {
+    "/api/Emprestimos/ValidarEmprestimo-(admin)/{emprestimoId}": {
       "post": {
         "tags": [
           "Emprestimos"
@@ -996,7 +849,7 @@
         }
       }
     },
-    "/api/Emprestimos/rejeitar-emprestimo/{emprestimoId}": {
+    "/api/Emprestimos/RejeitarEmprestimo-(admin)/{emprestimoId}": {
       "post": {
         "tags": [
           "Emprestimos"
@@ -1019,7 +872,7 @@
         }
       }
     },
-    "/api/Emprestimos/validar-devolucao/{emprestimoId}": {
+    "/api/Emprestimos/ValidarDevolucao-(admin)/{emprestimoId}": {
       "post": {
         "tags": [
           "Emprestimos"
@@ -1160,156 +1013,9 @@
             }
           }
         }
-      },
-      "post": {
-        "tags": [
-          "ItensEmprestimo"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ItemEmprestimo"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ItemEmprestimo"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/ItemEmprestimo"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ItemEmprestimo"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ItemEmprestimo"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ItemEmprestimo"
-                }
-              }
-            }
-          }
-        }
       }
     },
-    "/api/ItensEmprestimo/{id}": {
-      "get": {
-        "tags": [
-          "ItensEmprestimo"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ItemEmprestimo"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ItemEmprestimo"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ItemEmprestimo"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "ItensEmprestimo"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ItemEmprestimo"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ItemEmprestimo"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/ItemEmprestimo"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "ItensEmprestimo"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/ItensEmprestimo/adicionar-item": {
+    "/api/ItensEmprestimo/AdicionarItem": {
       "post": {
         "tags": [
           "ItensEmprestimo"
@@ -1340,7 +1046,7 @@
         }
       }
     },
-    "/api/ItensEmprestimo/adquirir-item/{itemId}": {
+    "/api/ItensEmprestimo/AdquirirItem/{itemId}": {
       "post": {
         "tags": [
           "ItensEmprestimo"
@@ -1363,7 +1069,7 @@
         }
       }
     },
-    "/api/ItensEmprestimo/validar-item/{itemId}": {
+    "/api/ItensEmprestimo/ValidarItem-(admin)/{itemId}": {
       "post": {
         "tags": [
           "ItensEmprestimo"
@@ -1386,7 +1092,7 @@
         }
       }
     },
-    "/api/ItensEmprestimo/rejeitar-item/{itemId}": {
+    "/api/ItensEmprestimo/RejeitarItem-(admin)/{itemId}": {
       "delete": {
         "tags": [
           "ItensEmprestimo"
@@ -1409,7 +1115,7 @@
         }
       }
     },
-    "/api/ItensEmprestimo/disponiveis": {
+    "/api/ItensEmprestimo/Disponiveis": {
       "get": {
         "tags": [
           "ItensEmprestimo"
@@ -1447,7 +1153,7 @@
         }
       }
     },
-    "/api/ItensEmprestimo/meus-itens": {
+    "/api/ItensEmprestimo/MeusItens": {
       "get": {
         "tags": [
           "ItensEmprestimo"
@@ -1485,7 +1191,7 @@
         }
       }
     },
-    "/api/ItensEmprestimo/indisponibilizar-permanente-item/{itemId}": {
+    "/api/ItensEmprestimo/IndisponibilizarPermanenteItem/{itemId}": {
       "delete": {
         "tags": [
           "ItensEmprestimo"
@@ -1508,7 +1214,7 @@
         }
       }
     },
-    "/api/ItensEmprestimo/atualizar-descricao/{itemId}": {
+    "/api/ItensEmprestimo/AtualizarDescricao/{itemId}": {
       "put": {
         "tags": [
           "ItensEmprestimo"
@@ -1586,156 +1292,9 @@
             }
           }
         }
-      },
-      "post": {
-        "tags": [
-          "Lojas"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Loja"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Loja"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/Loja"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/Loja"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Loja"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Loja"
-                }
-              }
-            }
-          }
-        }
       }
     },
-    "/api/Lojas/{id}": {
-      "get": {
-        "tags": [
-          "Lojas"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/Loja"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Loja"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Loja"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Lojas"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Loja"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Loja"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/Loja"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Lojas"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Lojas/criar-loja": {
+    "/api/Lojas/CriarLoja-(admin)": {
       "post": {
         "tags": [
           "Lojas"
@@ -1766,7 +1325,7 @@
         }
       }
     },
-    "/api/Lojas/ativar-loja/{id}": {
+    "/api/Lojas/AtivarLoja-(admin)/{id}": {
       "put": {
         "tags": [
           "Lojas"
@@ -2195,156 +1754,9 @@
             }
           }
         }
-      },
-      "post": {
-        "tags": [
-          "Notificacoes"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Notificacao"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Notificacao"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/Notificacao"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/Notificacao"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Notificacao"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Notificacao"
-                }
-              }
-            }
-          }
-        }
       }
     },
-    "/api/Notificacoes/{id}": {
-      "get": {
-        "tags": [
-          "Notificacoes"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/Notificacao"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Notificacao"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Notificacao"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Notificacoes"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Notificacao"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Notificacao"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/Notificacao"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Notificacoes"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Notificacoes/notificacoes": {
+    "/api/Notificacoes/Notificacoes": {
       "get": {
         "tags": [
           "Notificacoes"
@@ -2392,156 +1804,9 @@
             }
           }
         }
-      },
-      "post": {
-        "tags": [
-          "PedidosAjuda"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PedidoAjuda"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PedidoAjuda"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/PedidoAjuda"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/PedidoAjuda"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PedidoAjuda"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PedidoAjuda"
-                }
-              }
-            }
-          }
-        }
       }
     },
-    "/api/PedidosAjuda/{id}": {
-      "get": {
-        "tags": [
-          "PedidosAjuda"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/PedidoAjuda"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PedidoAjuda"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PedidoAjuda"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "PedidosAjuda"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PedidoAjuda"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PedidoAjuda"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/PedidoAjuda"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "PedidosAjuda"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/PedidosAjuda/pedir": {
+    "/api/PedidosAjuda/Pedir": {
       "post": {
         "tags": [
           "PedidosAjuda"
@@ -2572,7 +1837,7 @@
         }
       }
     },
-    "/api/PedidosAjuda/{pedidoId}/voluntariar": {
+    "/api/PedidosAjuda/{pedidoId}/Voluntariar": {
       "post": {
         "tags": [
           "PedidosAjuda"
@@ -2595,7 +1860,7 @@
         }
       }
     },
-    "/api/PedidosAjuda/{pedidoId}/rejeitar-pedido": {
+    "/api/PedidosAjuda/{pedidoId}/RejeitarPedido-(admin)": {
       "post": {
         "tags": [
           "PedidosAjuda"
@@ -2618,7 +1883,7 @@
         }
       }
     },
-    "/api/PedidosAjuda/{pedidoId}/validar-pedido": {
+    "/api/PedidosAjuda/{pedidoId}/ValidarPedido-(admin)": {
       "post": {
         "tags": [
           "PedidosAjuda"
@@ -2641,7 +1906,7 @@
         }
       }
     },
-    "/api/PedidosAjuda/concluir/{pedidoId}": {
+    "/api/PedidosAjuda/ConcluirPedido/{pedidoId}": {
       "post": {
         "tags": [
           "PedidosAjuda"
@@ -2664,7 +1929,7 @@
         }
       }
     },
-    "/api/PedidosAjuda/validar-conclusao/{pedidoId}": {
+    "/api/PedidosAjuda/ValidarConclusao-(admin)/{pedidoId}": {
       "post": {
         "tags": [
           "PedidosAjuda"
@@ -2687,7 +1952,7 @@
         }
       }
     },
-    "/api/PedidosAjuda/pedidos-disponiveis": {
+    "/api/PedidosAjuda/PedidosDisponiveis": {
       "get": {
         "tags": [
           "PedidosAjuda"
@@ -2725,7 +1990,7 @@
         }
       }
     },
-    "/api/PedidosAjuda/meus-pedidos": {
+    "/api/PedidosAjuda/MeusPedidos": {
       "get": {
         "tags": [
           "PedidosAjuda"
@@ -3169,153 +2434,6 @@
             }
           }
         }
-      },
-      "post": {
-        "tags": [
-          "Transacoes"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Transacao"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Transacao"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/Transacao"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/Transacao"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Transacao"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Transacao"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/Transacoes/{id}": {
-      "get": {
-        "tags": [
-          "Transacoes"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/Transacao"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Transacao"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Transacao"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Transacoes"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Transacao"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Transacao"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/Transacao"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Transacoes"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
       }
     },
     "/api/Transacoes/Historico/{utilizadorId}": {
@@ -3397,153 +2515,6 @@
             }
           }
         }
-      },
-      "post": {
-        "tags": [
-          "TransacoesAjuda"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/TransacaoAjuda"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/TransacaoAjuda"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/TransacaoAjuda"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/TransacaoAjuda"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TransacaoAjuda"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TransacaoAjuda"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/TransacoesAjuda/{id}": {
-      "get": {
-        "tags": [
-          "TransacoesAjuda"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/TransacaoAjuda"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TransacaoAjuda"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TransacaoAjuda"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "TransacoesAjuda"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/TransacaoAjuda"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/TransacaoAjuda"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/TransacaoAjuda"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "TransacoesAjuda"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
       }
     },
     "/api/TransacoesEmprestimo": {
@@ -3580,153 +2551,6 @@
                 }
               }
             }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "TransacoesEmprestimo"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/TransacaoEmprestimo"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/TransacaoEmprestimo"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/TransacaoEmprestimo"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/TransacaoEmprestimo"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TransacaoEmprestimo"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TransacaoEmprestimo"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/TransacoesEmprestimo/{id}": {
-      "get": {
-        "tags": [
-          "TransacoesEmprestimo"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/TransacaoEmprestimo"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TransacaoEmprestimo"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TransacaoEmprestimo"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "TransacoesEmprestimo"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/TransacaoEmprestimo"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/TransacaoEmprestimo"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/TransacaoEmprestimo"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "TransacoesEmprestimo"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
           }
         }
       }
@@ -3767,156 +2591,9 @@
             }
           }
         }
-      },
-      "post": {
-        "tags": [
-          "Utilizadores"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Utilizador"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Utilizador"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/Utilizador"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/Utilizador"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Utilizador"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Utilizador"
-                }
-              }
-            }
-          }
-        }
       }
     },
-    "/api/Utilizadores/{id}": {
-      "get": {
-        "tags": [
-          "Utilizadores"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/Utilizador"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Utilizador"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Utilizador"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Utilizadores"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Utilizador"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Utilizador"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/Utilizador"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Utilizadores"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Utilizadores/register": {
+    "/api/Utilizadores/RegisterUtilizador": {
       "post": {
         "tags": [
           "Utilizadores"
@@ -3947,7 +2624,7 @@
         }
       }
     },
-    "/api/Utilizadores/register-admin": {
+    "/api/Utilizadores/RegisterAdmin": {
       "post": {
         "tags": [
           "Utilizadores"
@@ -4058,7 +2735,7 @@
         }
       }
     },
-    "/api/Utilizadores/aprovar-utilizador/{id}": {
+    "/api/Utilizadores/AprovarUtilizador-(admin)/{id}": {
       "put": {
         "tags": [
           "Utilizadores"
@@ -4081,7 +2758,7 @@
         }
       }
     },
-    "/api/Utilizadores/rejeitar-utilizador/{id}": {
+    "/api/Utilizadores/RejeitarUtilizador-(admin)/{id}": {
       "put": {
         "tags": [
           "Utilizadores"
@@ -4104,7 +2781,7 @@
         }
       }
     },
-    "/api/Utilizadores/completar-registo": {
+    "/api/Utilizadores/CompletarRegisto": {
       "post": {
         "tags": [
           "Utilizadores"
@@ -4135,7 +2812,7 @@
         }
       }
     },
-    "/api/Utilizadores/login": {
+    "/api/Utilizadores/Login": {
       "post": {
         "tags": [
           "Utilizadores"
@@ -4166,7 +2843,7 @@
         }
       }
     },
-    "/api/Utilizadores/editar-perfil": {
+    "/api/Utilizadores/EditarPerfil": {
       "put": {
         "tags": [
           "Utilizadores"
@@ -4197,7 +2874,7 @@
         }
       }
     },
-    "/api/Utilizadores/saldo": {
+    "/api/Utilizadores/ObterSaldo": {
       "get": {
         "tags": [
           "Utilizadores"
@@ -4209,7 +2886,7 @@
         }
       }
     },
-    "/api/Utilizadores/apagar-conta": {
+    "/api/Utilizadores/ApagarConta": {
       "delete": {
         "tags": [
           "Utilizadores"
@@ -4240,7 +2917,7 @@
         }
       }
     },
-    "/api/Utilizadores/recuperar-senha": {
+    "/api/Utilizadores/RecuperarSenha": {
       "post": {
         "tags": [
           "Utilizadores"
@@ -4271,7 +2948,7 @@
         }
       }
     },
-    "/api/Utilizadores/resetar-senha": {
+    "/api/Utilizadores/ResetarSenha": {
       "post": {
         "tags": [
           "Utilizadores"
@@ -4311,7 +2988,7 @@
         }
       }
     },
-    "/api/Utilizadores/adicionar-cares": {
+    "/api/Utilizadores/AdicionarCares-(teste)": {
       "post": {
         "tags": [
           "Utilizadores"
@@ -4378,156 +3055,9 @@
             }
           }
         }
-      },
-      "post": {
-        "tags": [
-          "Vendas"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Venda"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Venda"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/Venda"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/Venda"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Venda"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Venda"
-                }
-              }
-            }
-          }
-        }
       }
     },
-    "/api/Vendas/{id}": {
-      "get": {
-        "tags": [
-          "Vendas"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/Venda"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Venda"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Venda"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Vendas"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Venda"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Venda"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/Venda"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Vendas"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Vendas/comprar": {
+    "/api/Vendas/ComprarEmail": {
       "post": {
         "tags": [
           "Vendas"
@@ -4558,38 +3088,7 @@
         }
       }
     },
-    "/api/Vendas/comprar-email": {
-      "post": {
-        "tags": [
-          "Vendas"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PedidoCompraDTO"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PedidoCompraDTO"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/PedidoCompraDTO"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Vendas/comprar-download": {
+    "/api/Vendas/ComprarDownload": {
       "post": {
         "tags": [
           "Vendas"
@@ -4656,156 +3155,9 @@
             }
           }
         }
-      },
-      "post": {
-        "tags": [
-          "Voluntariados"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Voluntariado"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Voluntariado"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/Voluntariado"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/Voluntariado"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Voluntariado"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Voluntariado"
-                }
-              }
-            }
-          }
-        }
       }
     },
-    "/api/Voluntariados/{id}": {
-      "get": {
-        "tags": [
-          "Voluntariados"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/Voluntariado"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Voluntariado"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Voluntariado"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Voluntariados"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Voluntariado"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Voluntariado"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/Voluntariado"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Voluntariados"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Voluntariados/rejeitar-voluntario/{idVoluntariado}": {
+    "/api/Voluntariados/RejeitarVoluntario-(admin)/{idVoluntariado}": {
       "post": {
         "tags": [
           "Voluntariados"
@@ -4828,7 +3180,7 @@
         }
       }
     },
-    "/api/Voluntariados/aceitar-voluntario/{idVoluntariado}": {
+    "/api/Voluntariados/AceitarVoluntario-(admin)/{idVoluntariado}": {
       "post": {
         "tags": [
           "Voluntariados"

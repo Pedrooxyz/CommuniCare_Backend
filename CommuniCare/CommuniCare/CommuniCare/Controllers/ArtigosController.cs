@@ -39,6 +39,8 @@ namespace CommuniCare.Controllers
             return await _context.Artigos.ToListAsync();
         }
 
+
+        #region CONTROLLERS AUTOMÁTICOS
         //[HttpGet("{id}")]
         //public async Task<ActionResult<Artigo>> GetArtigo(int id)
         //{
@@ -116,6 +118,8 @@ namespace CommuniCare.Controllers
 
         //    return NoContent();
         //}
+        #endregion
+
 
         private bool ArtigoExists(int id)
         {
@@ -126,7 +130,7 @@ namespace CommuniCare.Controllers
         /// Obtém a lista de artigos que estão disponíveis na loja.
         /// </summary>
         /// <returns>Uma lista de artigos com estado disponível.</returns>
-        [HttpGet("disponiveis")]
+        [HttpGet("Disponiveis")]
         public async Task<ActionResult<IEnumerable<Artigo>>> GetArtigosDisponiveis()
         {
             var artigosDisponiveis = await _context.Artigos
@@ -142,7 +146,7 @@ namespace CommuniCare.Controllers
         /// </summary>
         /// <param name="dto">Objeto que contém as informações do artigo a ser publicado.</param>
         /// <returns>O artigo publicado com os seus dados ou um erro caso as regras de negócio não sejam cumpridas.</returns>
-        [HttpPost("publicar")]
+        [HttpPost("Publicar-(admin)")]
         public async Task<ActionResult<ArtigoRespostaDto>> PublicarArtigo(ArtigoDto dto)
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
@@ -200,7 +204,7 @@ namespace CommuniCare.Controllers
         /// <param name="id">ID do artigo a ser indisponibilizado.</param>
         /// <returns>Confirmação de indisponibilização ou erro caso o artigo ou utilizador não sejam válidos.</returns>
         [Authorize]
-        [HttpPut("indisponibilizar/{id}")]
+        [HttpPut("Indisponibilizar-(admin)/{id}")]
         public async Task<IActionResult> IndisponibilizarArtigo(int id)
         {
             // Obter ID do utilizador autenticado
@@ -243,7 +247,7 @@ namespace CommuniCare.Controllers
         /// <param name="id">ID do artigo cujo stock será reposto.</param>
         /// <param name="dto">Objeto que contém a quantidade a ser adicionada ao stock.</param>
         /// <returns>O artigo atualizado com a nova quantidade de stock ou erro caso as regras não sejam cumpridas.</returns>
-        [HttpPut("{id}/repor-stock")]
+        [HttpPut("{id}/Repor-stock-(admin)")]
         public async Task<ActionResult<ArtigoRespostaDto>> ReporStock(int id, [FromBody] ReporStockDto dto)
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);

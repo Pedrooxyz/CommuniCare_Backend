@@ -33,92 +33,96 @@ namespace CommuniCare.Controllers
             return await _context.Emprestimos.ToListAsync();
         }
 
-        /// <summary>
-        /// Obtém os detalhes de um empréstimo específico.
-        /// </summary>
-        /// <param name="id">ID do empréstimo.</param>
-        /// <returns>Detalhes do empréstimo.</returns>
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Emprestimo>> GetEmprestimo(int id)
-        {
-            var emprestimo = await _context.Emprestimos.FindAsync(id);
 
-            if (emprestimo == null)
-            {
-                return NotFound();
-            }
+        #region CONTROLLERS AUTOMÁTICOS
+        ///// <summary>
+        ///// Obtém os detalhes de um empréstimo específico.
+        ///// </summary>
+        ///// <param name="id">ID do empréstimo.</param>
+        ///// <returns>Detalhes do empréstimo.</returns>
+        //[HttpGet("{id}")]
+        //public async Task<ActionResult<Emprestimo>> GetEmprestimo(int id)
+        //{
+        //    var emprestimo = await _context.Emprestimos.FindAsync(id);
 
-            return emprestimo;
-        }
+        //    if (emprestimo == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-        /// <summary>
-        /// Atualiza os dados de um empréstimo existente.
-        /// </summary>
-        /// <param name="id">ID do empréstimo a atualizar.</param>
-        /// <param name="emprestimo">Objeto empréstimo com os novos dados.</param>
-        /// <returns>Resposta de sucesso ou erro.</returns>
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutEmprestimo(int id, Emprestimo emprestimo)
-        {
-            if (id != emprestimo.EmprestimoId)
-            {
-                return BadRequest();
-            }
+        //    return emprestimo;
+        //}
 
-            _context.Entry(emprestimo).State = EntityState.Modified;
+        ///// <summary>
+        ///// Atualiza os dados de um empréstimo existente.
+        ///// </summary>
+        ///// <param name="id">ID do empréstimo a atualizar.</param>
+        ///// <param name="emprestimo">Objeto empréstimo com os novos dados.</param>
+        ///// <returns>Resposta de sucesso ou erro.</returns>
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> PutEmprestimo(int id, Emprestimo emprestimo)
+        //{
+        //    if (id != emprestimo.EmprestimoId)
+        //    {
+        //        return BadRequest();
+        //    }
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!EmprestimoExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+        //    _context.Entry(emprestimo).State = EntityState.Modified;
 
-            return NoContent();
-        }
+        //    try
+        //    {
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    catch (DbUpdateConcurrencyException)
+        //    {
+        //        if (!EmprestimoExists(id))
+        //        {
+        //            return NotFound();
+        //        }
+        //        else
+        //        {
+        //            throw;
+        //        }
+        //    }
 
-        /// <summary>
-        /// Regista um novo empréstimo.
-        /// </summary>
-        /// <param name="emprestimo">Objeto empréstimo a ser criado.</param>
-        /// <returns>Empréstimo criado com detalhes.</returns>
-        [HttpPost]
-        public async Task<ActionResult<Emprestimo>> PostEmprestimo(Emprestimo emprestimo)
-        {
-            _context.Emprestimos.Add(emprestimo);
-            await _context.SaveChangesAsync();
+        //    return NoContent();
+        //}
 
-            return CreatedAtAction("GetEmprestimo", new { id = emprestimo.EmprestimoId }, emprestimo);
-        }
+        ///// <summary>
+        ///// Regista um novo empréstimo.
+        ///// </summary>
+        ///// <param name="emprestimo">Objeto empréstimo a ser criado.</param>
+        ///// <returns>Empréstimo criado com detalhes.</returns>
+        //[HttpPost]
+        //public async Task<ActionResult<Emprestimo>> PostEmprestimo(Emprestimo emprestimo)
+        //{
+        //    _context.Emprestimos.Add(emprestimo);
+        //    await _context.SaveChangesAsync();
 
-        /// <summary>
-        /// Elimina um empréstimo existente.
-        /// </summary>
-        /// <param name="id">ID do empréstimo a eliminar.</param>
-        /// <returns>Resposta de sucesso ou erro.</returns>
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteEmprestimo(int id)
-        {
-            var emprestimo = await _context.Emprestimos.FindAsync(id);
-            if (emprestimo == null)
-            {
-                return NotFound();
-            }
+        //    return CreatedAtAction("GetEmprestimo", new { id = emprestimo.EmprestimoId }, emprestimo);
+        //}
 
-            _context.Emprestimos.Remove(emprestimo);
-            await _context.SaveChangesAsync();
+        ///// <summary>
+        ///// Elimina um empréstimo existente.
+        ///// </summary>
+        ///// <param name="id">ID do empréstimo a eliminar.</param>
+        ///// <returns>Resposta de sucesso ou erro.</returns>
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeleteEmprestimo(int id)
+        //{
+        //    var emprestimo = await _context.Emprestimos.FindAsync(id);
+        //    if (emprestimo == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return NoContent();
-        }
+        //    _context.Emprestimos.Remove(emprestimo);
+        //    await _context.SaveChangesAsync();
+
+        //    return NoContent();
+        //}
+        #endregion
+
 
         private bool EmprestimoExists(int id)
         {
@@ -130,7 +134,7 @@ namespace CommuniCare.Controllers
         /// </summary>
         /// <param name="emprestimoId">ID do empréstimo a concluir.</param>
         /// <returns>Confirmação de devolução registada e notificação enviada aos administradores.</returns>
-        [HttpPost("devolucao-item/{emprestimoId}")]
+        [HttpPost("DevolucaoItem/{emprestimoId}")]
         [Authorize]
         public async Task<IActionResult> ConcluirEmprestimo(int emprestimoId)
         {
@@ -187,7 +191,7 @@ namespace CommuniCare.Controllers
         /// </summary>
         /// <param name="emprestimoId">ID do empréstimo a validar.</param>
         /// <returns>Confirmação de validação e notificações enviadas ao comprador e dono do item.</returns>
-        [HttpPost("validar-emprestimo/{emprestimoId}")]
+        [HttpPost("ValidarEmprestimo-(admin)/{emprestimoId}")]
         [Authorize]
         public async Task<IActionResult> ValidarEmprestimo(int emprestimoId)
         {
@@ -257,7 +261,7 @@ namespace CommuniCare.Controllers
         /// </summary>
         /// <param name="emprestimoId">ID do empréstimo a rejeitar.</param>
         /// <returns>Confirmação de rejeição, remoção das relações e notificação ao comprador.</returns>
-        [HttpPost("rejeitar-emprestimo/{emprestimoId}")]
+        [HttpPost("RejeitarEmprestimo-(admin)/{emprestimoId}")]
         [Authorize]
         public async Task<IActionResult> RejeitarEmprestimo(int emprestimoId)
         {
@@ -328,7 +332,7 @@ namespace CommuniCare.Controllers
         /// </summary>
         /// <param name="emprestimoId">ID do empréstimo cuja devolução será validada.</param>
         /// <returns>Confirmação de devolução validada, transações registadas e notificações enviadas.</returns>
-        [HttpPost("validar-devolucao/{emprestimoId}")]
+        [HttpPost("ValidarDevolucao-(admin)/{emprestimoId}")]
         [Authorize]
         public async Task<IActionResult> ValidarDevolucaoEmprestimo(int emprestimoId)
         {

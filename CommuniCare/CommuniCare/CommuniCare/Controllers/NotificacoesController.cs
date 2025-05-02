@@ -22,6 +22,7 @@ namespace CommuniCare.Controllers
             _context = context;
         }
 
+
         /// <summary>
         /// Obtém a lista de todas as notificações no sistema.
         /// </summary>
@@ -32,92 +33,95 @@ namespace CommuniCare.Controllers
             return await _context.Notificacaos.ToListAsync();
         }
 
-        /// <summary>
-        /// Obtém os detalhes de uma notificação específica com base no identificador.
-        /// </summary>
-        /// <param name="id">Identificador único da notificação.</param>
-        /// <returns>Um objeto <see cref="Notificacao"/> com os dados da notificação especificada, ou NotFound se a notificação não existir.</returns>
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Notificacao>> GetNotificacao(int id)
-        {
-            var notificacao = await _context.Notificacaos.FindAsync(id);
+        #region CONTROLLERS AUTOMÁTICOS
+        ///// <summary>
+        ///// Obtém os detalhes de uma notificação específica com base no identificador.
+        ///// </summary>
+        ///// <param name="id">Identificador único da notificação.</param>
+        ///// <returns>Um objeto <see cref="Notificacao"/> com os dados da notificação especificada, ou NotFound se a notificação não existir.</returns>
+        //[HttpGet("{id}")]
+        //public async Task<ActionResult<Notificacao>> GetNotificacao(int id)
+        //{
+        //    var notificacao = await _context.Notificacaos.FindAsync(id);
 
-            if (notificacao == null)
-            {
-                return NotFound();
-            }
+        //    if (notificacao == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return notificacao;
-        }
+        //    return notificacao;
+        //}
 
-        /// <summary>
-        /// Atualiza os dados de uma notificação existente.
-        /// </summary>
-        /// <param name="id">Identificador da notificação a ser atualizada.</param>
-        /// <param name="notificacao">Objeto <see cref="Notificacao"/> contendo os dados atualizados da notificação.</param>
-        /// <returns>Um status de resposta que indica o sucesso ou falha da operação.</returns>
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutNotificacao(int id, Notificacao notificacao)
-        {
-            if (id != notificacao.NotificacaoId)
-            {
-                return BadRequest();
-            }
+        ///// <summary>
+        ///// Atualiza os dados de uma notificação existente.
+        ///// </summary>
+        ///// <param name="id">Identificador da notificação a ser atualizada.</param>
+        ///// <param name="notificacao">Objeto <see cref="Notificacao"/> contendo os dados atualizados da notificação.</param>
+        ///// <returns>Um status de resposta que indica o sucesso ou falha da operação.</returns>
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> PutNotificacao(int id, Notificacao notificacao)
+        //{
+        //    if (id != notificacao.NotificacaoId)
+        //    {
+        //        return BadRequest();
+        //    }
 
-            _context.Entry(notificacao).State = EntityState.Modified;
+        //    _context.Entry(notificacao).State = EntityState.Modified;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!NotificacaoExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+        //    try
+        //    {
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    catch (DbUpdateConcurrencyException)
+        //    {
+        //        if (!NotificacaoExists(id))
+        //        {
+        //            return NotFound();
+        //        }
+        //        else
+        //        {
+        //            throw;
+        //        }
+        //    }
 
-            return NoContent();
-        }
+        //    return NoContent();
+        //}
 
-        /// <summary>
-        /// Cria uma nova notificação no sistema.
-        /// </summary>
-        /// <param name="notificacao">Objeto <see cref="Notificacao"/> com os dados da notificação a ser criada.</param>
-        /// <returns>O objeto <see cref="Notificacao"/> criado, incluindo o identificador da notificação.</returns>
-        [HttpPost]
-        public async Task<ActionResult<Notificacao>> PostNotificacao(Notificacao notificacao)
-        {
-            _context.Notificacaos.Add(notificacao);
-            await _context.SaveChangesAsync();
+        ///// <summary>
+        ///// Cria uma nova notificação no sistema.
+        ///// </summary>
+        ///// <param name="notificacao">Objeto <see cref="Notificacao"/> com os dados da notificação a ser criada.</param>
+        ///// <returns>O objeto <see cref="Notificacao"/> criado, incluindo o identificador da notificação.</returns>
+        //[HttpPost]
+        //public async Task<ActionResult<Notificacao>> PostNotificacao(Notificacao notificacao)
+        //{
+        //    _context.Notificacaos.Add(notificacao);
+        //    await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetNotificacao", new { id = notificacao.NotificacaoId }, notificacao);
-        }
+        //    return CreatedAtAction("GetNotificacao", new { id = notificacao.NotificacaoId }, notificacao);
+        //}
 
-        /// <summary>
-        /// Exclui uma notificação do sistema com base no identificador.
-        /// </summary>
-        /// <param name="id">Identificador único da notificação a ser excluída.</param>
-        /// <returns>Um status de resposta que indica o sucesso ou falha da operação.</returns>
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteNotificacao(int id)
-        {
-            var notificacao = await _context.Notificacaos.FindAsync(id);
-            if (notificacao == null)
-            {
-                return NotFound();
-            }
+        ///// <summary>
+        ///// Exclui uma notificação do sistema com base no identificador.
+        ///// </summary>
+        ///// <param name="id">Identificador único da notificação a ser excluída.</param>
+        ///// <returns>Um status de resposta que indica o sucesso ou falha da operação.</returns>
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeleteNotificacao(int id)
+        //{
+        //    var notificacao = await _context.Notificacaos.FindAsync(id);
+        //    if (notificacao == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            _context.Notificacaos.Remove(notificacao);
-            await _context.SaveChangesAsync();
+        //    _context.Notificacaos.Remove(notificacao);
+        //    await _context.SaveChangesAsync();
 
-            return NoContent();
-        }
+        //    return NoContent();
+        //}
+
+        #endregion
 
         /// <summary>
         /// Verifica se existe uma notificação com o identificador especificado.
@@ -135,7 +139,7 @@ namespace CommuniCare.Controllers
         /// <returns>Uma lista de notificações não lidas do utilizador autenticado, ou NotFound se não houver notificações.</returns>
         /// <response code="401">Se o utilizador não estiver autenticado.</response>
         /// <response code="404">Se não houver notificações para o utilizador.</response>
-        [HttpGet("notificacoes")]
+        [HttpGet("Notificacoes")]
         [Authorize]
         public async Task<IActionResult> VerNotificacoes()
         {

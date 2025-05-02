@@ -22,7 +22,7 @@
   {
     "ContainingType": "CommuniCare.Controllers.ArtigosController",
     "Method": "ReporStock",
-    "RelativePath": "api/Artigos/{id}/repor-stock",
+    "RelativePath": "api/Artigos/{id}/Repor-stock-(admin)",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -53,7 +53,7 @@
   {
     "ContainingType": "CommuniCare.Controllers.ArtigosController",
     "Method": "GetArtigosDisponiveis",
-    "RelativePath": "api/Artigos/disponiveis",
+    "RelativePath": "api/Artigos/Disponiveis",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -73,7 +73,7 @@
   {
     "ContainingType": "CommuniCare.Controllers.ArtigosController",
     "Method": "IndisponibilizarArtigo",
-    "RelativePath": "api/Artigos/indisponibilizar/{id}",
+    "RelativePath": "api/Artigos/Indisponibilizar-(admin)/{id}",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -89,7 +89,7 @@
   {
     "ContainingType": "CommuniCare.Controllers.ArtigosController",
     "Method": "PublicarArtigo",
-    "RelativePath": "api/Artigos/publicar",
+    "RelativePath": "api/Artigos/Publicar-(admin)",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -461,97 +461,8 @@
   },
   {
     "ContainingType": "CommuniCare.Controllers.EmprestimosController",
-    "Method": "PostEmprestimo",
-    "RelativePath": "api/Emprestimos",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "emprestimo",
-        "Type": "CommuniCare.Models.Emprestimo",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "CommuniCare.Models.Emprestimo",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.EmprestimosController",
-    "Method": "GetEmprestimo",
-    "RelativePath": "api/Emprestimos/{id}",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "CommuniCare.Models.Emprestimo",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.EmprestimosController",
-    "Method": "PutEmprestimo",
-    "RelativePath": "api/Emprestimos/{id}",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      },
-      {
-        "Name": "emprestimo",
-        "Type": "CommuniCare.Models.Emprestimo",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.EmprestimosController",
-    "Method": "DeleteEmprestimo",
-    "RelativePath": "api/Emprestimos/{id}",
-    "HttpMethod": "DELETE",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.EmprestimosController",
     "Method": "ConcluirEmprestimo",
-    "RelativePath": "api/Emprestimos/devolucao-item/{emprestimoId}",
+    "RelativePath": "api/Emprestimos/DevolucaoItem/{emprestimoId}",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -567,7 +478,7 @@
   {
     "ContainingType": "CommuniCare.Controllers.EmprestimosController",
     "Method": "RejeitarEmprestimo",
-    "RelativePath": "api/Emprestimos/rejeitar-emprestimo/{emprestimoId}",
+    "RelativePath": "api/Emprestimos/RejeitarEmprestimo-(admin)/{emprestimoId}",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -583,7 +494,7 @@
   {
     "ContainingType": "CommuniCare.Controllers.EmprestimosController",
     "Method": "ValidarDevolucaoEmprestimo",
-    "RelativePath": "api/Emprestimos/validar-devolucao/{emprestimoId}",
+    "RelativePath": "api/Emprestimos/ValidarDevolucao-(admin)/{emprestimoId}",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -599,7 +510,7 @@
   {
     "ContainingType": "CommuniCare.Controllers.EmprestimosController",
     "Method": "ValidarEmprestimo",
-    "RelativePath": "api/Emprestimos/validar-emprestimo/{emprestimoId}",
+    "RelativePath": "api/Emprestimos/ValidarEmprestimo-(admin)/{emprestimoId}",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -686,97 +597,8 @@
   },
   {
     "ContainingType": "CommuniCare.Controllers.ItensEmprestimoController",
-    "Method": "PostItemEmprestimo",
-    "RelativePath": "api/ItensEmprestimo",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "itemEmprestimo",
-        "Type": "CommuniCare.Models.ItemEmprestimo",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "CommuniCare.Models.ItemEmprestimo",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.ItensEmprestimoController",
-    "Method": "GetItemEmprestimo",
-    "RelativePath": "api/ItensEmprestimo/{id}",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "CommuniCare.Models.ItemEmprestimo",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.ItensEmprestimoController",
-    "Method": "PutItemEmprestimo",
-    "RelativePath": "api/ItensEmprestimo/{id}",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      },
-      {
-        "Name": "itemEmprestimo",
-        "Type": "CommuniCare.Models.ItemEmprestimo",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.ItensEmprestimoController",
-    "Method": "DeleteItemEmprestimo",
-    "RelativePath": "api/ItensEmprestimo/{id}",
-    "HttpMethod": "DELETE",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.ItensEmprestimoController",
     "Method": "AdicionarItemEmprestimo",
-    "RelativePath": "api/ItensEmprestimo/adicionar-item",
+    "RelativePath": "api/ItensEmprestimo/AdicionarItem",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -792,7 +614,7 @@
   {
     "ContainingType": "CommuniCare.Controllers.ItensEmprestimoController",
     "Method": "AdquirirItem",
-    "RelativePath": "api/ItensEmprestimo/adquirir-item/{itemId}",
+    "RelativePath": "api/ItensEmprestimo/AdquirirItem/{itemId}",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -808,7 +630,7 @@
   {
     "ContainingType": "CommuniCare.Controllers.ItensEmprestimoController",
     "Method": "AtualizarDescricaoItem",
-    "RelativePath": "api/ItensEmprestimo/atualizar-descricao/{itemId}",
+    "RelativePath": "api/ItensEmprestimo/AtualizarDescricao/{itemId}",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -829,7 +651,7 @@
   {
     "ContainingType": "CommuniCare.Controllers.ItensEmprestimoController",
     "Method": "GetItensDisponiveis",
-    "RelativePath": "api/ItensEmprestimo/disponiveis",
+    "RelativePath": "api/ItensEmprestimo/Disponiveis",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -849,7 +671,7 @@
   {
     "ContainingType": "CommuniCare.Controllers.ItensEmprestimoController",
     "Method": "EliminarItemEmprestimo",
-    "RelativePath": "api/ItensEmprestimo/indisponibilizar-permanente-item/{itemId}",
+    "RelativePath": "api/ItensEmprestimo/IndisponibilizarPermanenteItem/{itemId}",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
@@ -865,7 +687,7 @@
   {
     "ContainingType": "CommuniCare.Controllers.ItensEmprestimoController",
     "Method": "GetMeusItens",
-    "RelativePath": "api/ItensEmprestimo/meus-itens",
+    "RelativePath": "api/ItensEmprestimo/MeusItens",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -885,7 +707,7 @@
   {
     "ContainingType": "CommuniCare.Controllers.ItensEmprestimoController",
     "Method": "RejeitarItemEmprestimo",
-    "RelativePath": "api/ItensEmprestimo/rejeitar-item/{itemId}",
+    "RelativePath": "api/ItensEmprestimo/RejeitarItem-(admin)/{itemId}",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
@@ -901,7 +723,7 @@
   {
     "ContainingType": "CommuniCare.Controllers.ItensEmprestimoController",
     "Method": "ValidarItemEmprestimo",
-    "RelativePath": "api/ItensEmprestimo/validar-item/{itemId}",
+    "RelativePath": "api/ItensEmprestimo/ValidarItem-(admin)/{itemId}",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -936,97 +758,8 @@
   },
   {
     "ContainingType": "CommuniCare.Controllers.LojasController",
-    "Method": "PostLoja",
-    "RelativePath": "api/Lojas",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "loja",
-        "Type": "CommuniCare.Models.Loja",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "CommuniCare.Models.Loja",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.LojasController",
-    "Method": "GetLoja",
-    "RelativePath": "api/Lojas/{id}",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "CommuniCare.Models.Loja",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.LojasController",
-    "Method": "PutLoja",
-    "RelativePath": "api/Lojas/{id}",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      },
-      {
-        "Name": "loja",
-        "Type": "CommuniCare.Models.Loja",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.LojasController",
-    "Method": "DeleteLoja",
-    "RelativePath": "api/Lojas/{id}",
-    "HttpMethod": "DELETE",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.LojasController",
     "Method": "AtivarLoja",
-    "RelativePath": "api/Lojas/ativar-loja/{id}",
+    "RelativePath": "api/Lojas/AtivarLoja-(admin)/{id}",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -1042,7 +775,7 @@
   {
     "ContainingType": "CommuniCare.Controllers.LojasController",
     "Method": "CriarLoja",
-    "RelativePath": "api/Lojas/criar-loja",
+    "RelativePath": "api/Lojas/CriarLoja-(admin)",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -1295,97 +1028,8 @@
   },
   {
     "ContainingType": "CommuniCare.Controllers.NotificacoesController",
-    "Method": "PostNotificacao",
-    "RelativePath": "api/Notificacoes",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "notificacao",
-        "Type": "CommuniCare.Models.Notificacao",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "CommuniCare.Models.Notificacao",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.NotificacoesController",
-    "Method": "GetNotificacao",
-    "RelativePath": "api/Notificacoes/{id}",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "CommuniCare.Models.Notificacao",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.NotificacoesController",
-    "Method": "PutNotificacao",
-    "RelativePath": "api/Notificacoes/{id}",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      },
-      {
-        "Name": "notificacao",
-        "Type": "CommuniCare.Models.Notificacao",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.NotificacoesController",
-    "Method": "DeleteNotificacao",
-    "RelativePath": "api/Notificacoes/{id}",
-    "HttpMethod": "DELETE",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.NotificacoesController",
     "Method": "VerNotificacoes",
-    "RelativePath": "api/Notificacoes/notificacoes",
+    "RelativePath": "api/Notificacoes/Notificacoes",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -1414,97 +1058,8 @@
   },
   {
     "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",
-    "Method": "PostPedidoAjuda",
-    "RelativePath": "api/PedidosAjuda",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "pedidoAjuda",
-        "Type": "CommuniCare.Models.PedidoAjuda",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "CommuniCare.Models.PedidoAjuda",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",
-    "Method": "GetPedidoAjuda",
-    "RelativePath": "api/PedidosAjuda/{id}",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "CommuniCare.Models.PedidoAjuda",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",
-    "Method": "PutPedidoAjuda",
-    "RelativePath": "api/PedidosAjuda/{id}",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      },
-      {
-        "Name": "pedidoAjuda",
-        "Type": "CommuniCare.Models.PedidoAjuda",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",
-    "Method": "DeletePedidoAjuda",
-    "RelativePath": "api/PedidosAjuda/{id}",
-    "HttpMethod": "DELETE",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",
     "Method": "RejeitarPedidoAjuda",
-    "RelativePath": "api/PedidosAjuda/{pedidoId}/rejeitar-pedido",
+    "RelativePath": "api/PedidosAjuda/{pedidoId}/RejeitarPedido-(admin)",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -1520,7 +1075,7 @@
   {
     "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",
     "Method": "ValidarPedidoAjuda",
-    "RelativePath": "api/PedidosAjuda/{pedidoId}/validar-pedido",
+    "RelativePath": "api/PedidosAjuda/{pedidoId}/ValidarPedido-(admin)",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -1536,7 +1091,7 @@
   {
     "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",
     "Method": "Voluntariar",
-    "RelativePath": "api/PedidosAjuda/{pedidoId}/voluntariar",
+    "RelativePath": "api/PedidosAjuda/{pedidoId}/Voluntariar",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -1552,7 +1107,7 @@
   {
     "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",
     "Method": "ConcluirPedidoAjuda",
-    "RelativePath": "api/PedidosAjuda/concluir/{pedidoId}",
+    "RelativePath": "api/PedidosAjuda/ConcluirPedido/{pedidoId}",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -1568,7 +1123,7 @@
   {
     "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",
     "Method": "GetMeusPedidosAjuda",
-    "RelativePath": "api/PedidosAjuda/meus-pedidos",
+    "RelativePath": "api/PedidosAjuda/MeusPedidos",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -1588,7 +1143,7 @@
   {
     "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",
     "Method": "GetPedidosAjudaDisponiveis",
-    "RelativePath": "api/PedidosAjuda/pedidos-disponiveis",
+    "RelativePath": "api/PedidosAjuda/PedidosDisponiveis",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -1608,7 +1163,7 @@
   {
     "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",
     "Method": "CriarPedidoAjuda",
-    "RelativePath": "api/PedidosAjuda/pedir",
+    "RelativePath": "api/PedidosAjuda/Pedir",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -1624,7 +1179,7 @@
   {
     "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",
     "Method": "ValidarConclusaoPedidoAjuda",
-    "RelativePath": "api/PedidosAjuda/validar-conclusao/{pedidoId}",
+    "RelativePath": "api/PedidosAjuda/ValidarConclusao-(admin)/{pedidoId}",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -1877,95 +1432,6 @@
   },
   {
     "ContainingType": "CommuniCare.Controllers.TransacoesController",
-    "Method": "PostTransacao",
-    "RelativePath": "api/Transacoes",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "transacao",
-        "Type": "CommuniCare.Models.Transacao",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "CommuniCare.Models.Transacao",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.TransacoesController",
-    "Method": "GetTransacao",
-    "RelativePath": "api/Transacoes/{id}",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "CommuniCare.Models.Transacao",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.TransacoesController",
-    "Method": "PutTransacao",
-    "RelativePath": "api/Transacoes/{id}",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      },
-      {
-        "Name": "transacao",
-        "Type": "CommuniCare.Models.Transacao",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.TransacoesController",
-    "Method": "DeleteTransacao",
-    "RelativePath": "api/Transacoes/{id}",
-    "HttpMethod": "DELETE",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.TransacoesController",
     "Method": "GetHistoricoTransacoes",
     "RelativePath": "api/Transacoes/Historico/{utilizadorId}",
     "HttpMethod": "GET",
@@ -2011,95 +1477,6 @@
     ]
   },
   {
-    "ContainingType": "CommuniCare.Controllers.TransacoesAjudaController",
-    "Method": "PostTransacaoAjuda",
-    "RelativePath": "api/TransacoesAjuda",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "transacaoAjuda",
-        "Type": "CommuniCare.Models.TransacaoAjuda",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "CommuniCare.Models.TransacaoAjuda",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.TransacoesAjudaController",
-    "Method": "GetTransacaoAjuda",
-    "RelativePath": "api/TransacoesAjuda/{id}",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "CommuniCare.Models.TransacaoAjuda",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.TransacoesAjudaController",
-    "Method": "PutTransacaoAjuda",
-    "RelativePath": "api/TransacoesAjuda/{id}",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      },
-      {
-        "Name": "transacaoAjuda",
-        "Type": "CommuniCare.Models.TransacaoAjuda",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.TransacoesAjudaController",
-    "Method": "DeleteTransacaoAjuda",
-    "RelativePath": "api/TransacoesAjuda/{id}",
-    "HttpMethod": "DELETE",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
     "ContainingType": "CommuniCare.Controllers.TransacoesEmprestimoController",
     "Method": "GetTransacaoEmprestimos",
     "RelativePath": "api/TransacoesEmprestimo",
@@ -2118,95 +1495,6 @@
         "StatusCode": 200
       }
     ]
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.TransacoesEmprestimoController",
-    "Method": "PostTransacaoEmprestimo",
-    "RelativePath": "api/TransacoesEmprestimo",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "transacaoEmprestimo",
-        "Type": "CommuniCare.Models.TransacaoEmprestimo",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "CommuniCare.Models.TransacaoEmprestimo",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.TransacoesEmprestimoController",
-    "Method": "GetTransacaoEmprestimo",
-    "RelativePath": "api/TransacoesEmprestimo/{id}",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "CommuniCare.Models.TransacaoEmprestimo",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.TransacoesEmprestimoController",
-    "Method": "PutTransacaoEmprestimo",
-    "RelativePath": "api/TransacoesEmprestimo/{id}",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      },
-      {
-        "Name": "transacaoEmprestimo",
-        "Type": "CommuniCare.Models.TransacaoEmprestimo",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.TransacoesEmprestimoController",
-    "Method": "DeleteTransacaoEmprestimo",
-    "RelativePath": "api/TransacoesEmprestimo/{id}",
-    "HttpMethod": "DELETE",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
   },
   {
     "ContainingType": "CommuniCare.Controllers.UtilizadoresController",
@@ -2230,97 +1518,8 @@
   },
   {
     "ContainingType": "CommuniCare.Controllers.UtilizadoresController",
-    "Method": "PostUtilizador",
-    "RelativePath": "api/Utilizadores",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "utilizador",
-        "Type": "CommuniCare.Models.Utilizador",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "CommuniCare.Models.Utilizador",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.UtilizadoresController",
-    "Method": "GetUtilizador",
-    "RelativePath": "api/Utilizadores/{id}",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "CommuniCare.Models.Utilizador",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.UtilizadoresController",
-    "Method": "PutUtilizador",
-    "RelativePath": "api/Utilizadores/{id}",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      },
-      {
-        "Name": "utilizador",
-        "Type": "CommuniCare.Models.Utilizador",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.UtilizadoresController",
-    "Method": "DeleteUtilizador",
-    "RelativePath": "api/Utilizadores/{id}",
-    "HttpMethod": "DELETE",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.UtilizadoresController",
     "Method": "AdicionarCares",
-    "RelativePath": "api/Utilizadores/adicionar-cares",
+    "RelativePath": "api/Utilizadores/AdicionarCares-(teste)",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -2336,7 +1535,7 @@
   {
     "ContainingType": "CommuniCare.Controllers.UtilizadoresController",
     "Method": "ApagarConta",
-    "RelativePath": "api/Utilizadores/apagar-conta",
+    "RelativePath": "api/Utilizadores/ApagarConta",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
@@ -2352,7 +1551,7 @@
   {
     "ContainingType": "CommuniCare.Controllers.UtilizadoresController",
     "Method": "AprovarUtilizador",
-    "RelativePath": "api/Utilizadores/aprovar-utilizador/{id}",
+    "RelativePath": "api/Utilizadores/AprovarUtilizador-(admin)/{id}",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -2368,7 +1567,7 @@
   {
     "ContainingType": "CommuniCare.Controllers.UtilizadoresController",
     "Method": "CompletarRegisto",
-    "RelativePath": "api/Utilizadores/completar-registo",
+    "RelativePath": "api/Utilizadores/CompletarRegisto",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -2376,22 +1575,6 @@
       {
         "Name": "dto",
         "Type": "CommuniCare.DTOs.MoradaDTO",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.UtilizadoresController",
-    "Method": "EditarPerfil",
-    "RelativePath": "api/Utilizadores/editar-perfil",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "dto",
-        "Type": "CommuniCare.DTOs.EditarPerfilDTO",
         "IsRequired": true
       }
     ],
@@ -2408,6 +1591,22 @@
       {
         "Name": "dto",
         "Type": "CommuniCare.DTOs.FotoUrlDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.UtilizadoresController",
+    "Method": "EditarPerfil",
+    "RelativePath": "api/Utilizadores/EditarPerfil",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "CommuniCare.DTOs.EditarPerfilDTO",
         "IsRequired": true
       }
     ],
@@ -2445,7 +1644,7 @@
   {
     "ContainingType": "CommuniCare.Controllers.UtilizadoresController",
     "Method": "Login",
-    "RelativePath": "api/Utilizadores/login",
+    "RelativePath": "api/Utilizadores/Login",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -2460,8 +1659,18 @@
   },
   {
     "ContainingType": "CommuniCare.Controllers.UtilizadoresController",
+    "Method": "ObterSaldo",
+    "RelativePath": "api/Utilizadores/ObterSaldo",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.UtilizadoresController",
     "Method": "RecuperarSenha",
-    "RelativePath": "api/Utilizadores/recuperar-senha",
+    "RelativePath": "api/Utilizadores/RecuperarSenha",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -2476,8 +1685,8 @@
   },
   {
     "ContainingType": "CommuniCare.Controllers.UtilizadoresController",
-    "Method": "Register",
-    "RelativePath": "api/Utilizadores/register",
+    "Method": "RegisterAdmin",
+    "RelativePath": "api/Utilizadores/RegisterAdmin",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -2492,8 +1701,8 @@
   },
   {
     "ContainingType": "CommuniCare.Controllers.UtilizadoresController",
-    "Method": "RegisterAdmin",
-    "RelativePath": "api/Utilizadores/register-admin",
+    "Method": "Register",
+    "RelativePath": "api/Utilizadores/RegisterUtilizador",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -2509,7 +1718,7 @@
   {
     "ContainingType": "CommuniCare.Controllers.UtilizadoresController",
     "Method": "RejeitarUtilizador",
-    "RelativePath": "api/Utilizadores/rejeitar-utilizador/{id}",
+    "RelativePath": "api/Utilizadores/RejeitarUtilizador-(admin)/{id}",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -2525,7 +1734,7 @@
   {
     "ContainingType": "CommuniCare.Controllers.UtilizadoresController",
     "Method": "ResetarSenha",
-    "RelativePath": "api/Utilizadores/resetar-senha",
+    "RelativePath": "api/Utilizadores/ResetarSenha",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -2541,16 +1750,6 @@
         "IsRequired": true
       }
     ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.UtilizadoresController",
-    "Method": "ObterSaldo",
-    "RelativePath": "api/Utilizadores/saldo",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
     "ReturnTypes": []
   },
   {
@@ -2575,113 +1774,8 @@
   },
   {
     "ContainingType": "CommuniCare.Controllers.VendasController",
-    "Method": "PostVenda",
-    "RelativePath": "api/Vendas",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "venda",
-        "Type": "CommuniCare.Models.Venda",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "CommuniCare.Models.Venda",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.VendasController",
-    "Method": "GetVenda",
-    "RelativePath": "api/Vendas/{id}",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "CommuniCare.Models.Venda",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.VendasController",
-    "Method": "PutVenda",
-    "RelativePath": "api/Vendas/{id}",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      },
-      {
-        "Name": "venda",
-        "Type": "CommuniCare.Models.Venda",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.VendasController",
-    "Method": "DeleteVenda",
-    "RelativePath": "api/Vendas/{id}",
-    "HttpMethod": "DELETE",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.VendasController",
-    "Method": "Comprar",
-    "RelativePath": "api/Vendas/comprar",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "request",
-        "Type": "CommuniCare.DTOs.PedidoCompraDTO",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.VendasController",
     "Method": "ComprarDownload",
-    "RelativePath": "api/Vendas/comprar-download",
+    "RelativePath": "api/Vendas/ComprarDownload",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -2697,7 +1791,7 @@
   {
     "ContainingType": "CommuniCare.Controllers.VendasController",
     "Method": "ComprarEmail",
-    "RelativePath": "api/Vendas/comprar-email",
+    "RelativePath": "api/Vendas/ComprarEmail",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -2732,97 +1826,8 @@
   },
   {
     "ContainingType": "CommuniCare.Controllers.VoluntariadosController",
-    "Method": "PostVoluntariado",
-    "RelativePath": "api/Voluntariados",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "voluntariado",
-        "Type": "CommuniCare.Models.Voluntariado",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "CommuniCare.Models.Voluntariado",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.VoluntariadosController",
-    "Method": "GetVoluntariado",
-    "RelativePath": "api/Voluntariados/{id}",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "CommuniCare.Models.Voluntariado",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.VoluntariadosController",
-    "Method": "PutVoluntariado",
-    "RelativePath": "api/Voluntariados/{id}",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      },
-      {
-        "Name": "voluntariado",
-        "Type": "CommuniCare.Models.Voluntariado",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.VoluntariadosController",
-    "Method": "DeleteVoluntariado",
-    "RelativePath": "api/Voluntariados/{id}",
-    "HttpMethod": "DELETE",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.VoluntariadosController",
     "Method": "AceitarVoluntario",
-    "RelativePath": "api/Voluntariados/aceitar-voluntario/{idVoluntariado}",
+    "RelativePath": "api/Voluntariados/AceitarVoluntario-(admin)/{idVoluntariado}",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -2838,7 +1843,7 @@
   {
     "ContainingType": "CommuniCare.Controllers.VoluntariadosController",
     "Method": "RejeitarVoluntario",
-    "RelativePath": "api/Voluntariados/rejeitar-voluntario/{idVoluntariado}",
+    "RelativePath": "api/Voluntariados/RejeitarVoluntario-(admin)/{idVoluntariado}",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,

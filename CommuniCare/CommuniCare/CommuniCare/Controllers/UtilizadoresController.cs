@@ -42,24 +42,25 @@ namespace CommuniCare.Controllers
             return await _context.Utilizadores.ToListAsync();
         }
 
+        #region CONTROLLERS AUTOMÁTICOS
         /// <summary>
         /// Obtém os detalhes de um utilizador específico, baseado no seu ID.
         /// </summary>
         /// <param name="id">ID do utilizador a ser obtido.</param>
         /// <returns>Retorna o utilizador correspondente ao ID ou 404 Not Found se o utilizador não existir.</returns>
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Utilizador>> GetUtilizador(int id)
-        {
-            var utilizador = await _context.Utilizadores.FindAsync(id);
+        //[HttpGet("{id}")]
+        //public async Task<ActionResult<Utilizador>> GetUtilizador(int id)
+        //{
+        //    var utilizador = await _context.Utilizadores.FindAsync(id);
 
-            if (utilizador == null)
-            {
-                return NotFound();
-            }
+        //    if (utilizador == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return utilizador;
-        }
+        //    return utilizador;
+        //}
 
         /// <summary>
         /// Atualiza os dados de um utilizador existente.
@@ -68,34 +69,34 @@ namespace CommuniCare.Controllers
         /// <param name="utilizador">Objeto contendo os dados atualizados do utilizador.</param>
         /// <returns>Retorna 204 No Content se a atualização for bem-sucedida; retorna 400 Bad Request se os dados não coincidirem; 404 Not Found se o utilizador não existir ou 500 Internal Server Error em caso de falha.</returns>
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutUtilizador(int id, Utilizador utilizador)
-        {
-            if (id != utilizador.UtilizadorId)
-            {
-                return BadRequest();
-            }
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> PutUtilizador(int id, Utilizador utilizador)
+        //{
+        //    if (id != utilizador.UtilizadorId)
+        //    {
+        //        return BadRequest();
+        //    }
 
-            _context.Entry(utilizador).State = EntityState.Modified;
+        //    _context.Entry(utilizador).State = EntityState.Modified;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UtilizadorExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+        //    try
+        //    {
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    catch (DbUpdateConcurrencyException)
+        //    {
+        //        if (!UtilizadorExists(id))
+        //        {
+        //            return NotFound();
+        //        }
+        //        else
+        //        {
+        //            throw;
+        //        }
+        //    }
 
-            return NoContent();
-        }
+        //    return NoContent();
+        //}
 
         /// <summary>
         /// Cria um novo utilizador.
@@ -103,14 +104,14 @@ namespace CommuniCare.Controllers
         /// <param name="utilizador">Objeto contendo os dados do novo utilizador.</param>
         /// <returns>Retorna um status 201 Created com o utilizador criado, incluindo o URI do novo recurso; retorna 500 Internal Server Error em caso de falha.</returns>
 
-        [HttpPost]
-        public async Task<ActionResult<Utilizador>> PostUtilizador(Utilizador utilizador)
-        {
-            _context.Utilizadores.Add(utilizador);
-            await _context.SaveChangesAsync();
+        //[HttpPost]
+        //public async Task<ActionResult<Utilizador>> PostUtilizador(Utilizador utilizador)
+        //{
+        //    _context.Utilizadores.Add(utilizador);
+        //    await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUtilizador", new { id = utilizador.UtilizadorId }, utilizador);
-        }
+        //    return CreatedAtAction("GetUtilizador", new { id = utilizador.UtilizadorId }, utilizador);
+        //}
 
         /// <summary>
         /// Deleta um utilizador específico baseado no seu ID.
@@ -118,28 +119,29 @@ namespace CommuniCare.Controllers
         /// <param name="id">ID do utilizador a ser deletado.</param>
         /// <returns>Retorna 204 No Content se o utilizador for deletado com sucesso; retorna 404 Not Found se o utilizador não existir ou 500 Internal Server Error em caso de falha.</returns>
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUtilizador(int id)
-        {
-            var utilizador = await _context.Utilizadores.FindAsync(id);
-            if (utilizador == null)
-            {
-                return NotFound();
-            }
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeleteUtilizador(int id)
+        //{
+        //    var utilizador = await _context.Utilizadores.FindAsync(id);
+        //    if (utilizador == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            _context.Utilizadores.Remove(utilizador);
-            await _context.SaveChangesAsync();
+        //    _context.Utilizadores.Remove(utilizador);
+        //    await _context.SaveChangesAsync();
 
-            return NoContent();
-        }
+        //    return NoContent();
+        //}
 
         /// <summary>
         /// Regista um novo utilizador com os dados fornecidos.
         /// </summary>
         /// <param name="dto">Objeto DTO contendo os dados necessários para o registro.</param>
         /// <returns>Retorna um status 200 OK se a conta for criada com sucesso, aguardando aprovação de um administrador.</returns>
-
-        [HttpPost("register")]
+        #endregion
+        
+        [HttpPost("RegisterUtilizador")]
         public async Task<IActionResult> Register([FromBody] UtilizadorDTO dto)
         {
             if (!ModelState.IsValid)
@@ -234,7 +236,7 @@ namespace CommuniCare.Controllers
         /// <param name="dto">Objeto DTO contendo os dados necessários para o registro de um administrador.</param>
         /// <returns>Retorna um status 200 OK se a conta de administrador for criada com sucesso, aguardando aprovação de outro administrador.</returns>
 
-        [HttpPost("register-admin")]
+        [HttpPost("RegisterAdmin")]
         public async Task<IActionResult> RegisterAdmin([FromBody] UtilizadorDTO dto)
         {
             if (!ModelState.IsValid)
@@ -408,7 +410,7 @@ namespace CommuniCare.Controllers
         /// </summary>
         /// <param name="id">ID do utilizador a ser aprovado.</param>
         /// <returns>Retorna 200 Ok com mensagem de sucesso ou 404 Not Found se o utilizador não for encontrado, ou 400 Bad Request se o utilizador já estiver ativo.</returns>
-        [HttpPut("aprovar-utilizador/{id}")]
+        [HttpPut("AprovarUtilizador-(admin)/{id}")]
         public async Task<IActionResult> AprovarUtilizador(int id)
         {
 
@@ -449,7 +451,7 @@ namespace CommuniCare.Controllers
         /// </summary>
         /// <param name="id">ID do utilizador a ser rejeitado.</param>
         /// <returns>Retorna 200 Ok com mensagem de sucesso ou 404 Not Found se o utilizador não for encontrado, ou 400 Bad Request se o utilizador já estiver inativo ou ativo.</returns>
-        [HttpPut("rejeitar-utilizador/{id}")]
+        [HttpPut("RejeitarUtilizador-(admin)/{id}")]
         public async Task<IActionResult> RejeitarUtilizador(int id)
         {
             // Buscar o utilizador
@@ -481,7 +483,7 @@ namespace CommuniCare.Controllers
         /// </summary>
         /// <param name="dto">Objeto DTO contendo os dados da morada.</param>
         /// <returns>Retorna 200 Ok com mensagem de sucesso ou 400 Bad Request se o modelo for inválido, ou 404 Not Found se o utilizador não for encontrado.</returns>
-        [HttpPost("completar-registo")]
+        [HttpPost("CompletarRegisto")]
         [Authorize]
         public async Task<IActionResult> CompletarRegisto([FromBody] MoradaDTO dto)
         {
@@ -542,7 +544,7 @@ namespace CommuniCare.Controllers
         /// </summary>
         /// <param name="dto">Objeto DTO contendo as credenciais do utilizador (email e password).</param>
         /// <returns>Retorna 200 Ok com o token de autenticação ou 400 Bad Request se as credenciais forem inválidas, ou 401 Unauthorized se a autenticação falhar.</returns>
-        [HttpPost("login")]
+        [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody] LoginDTO dto)
         {
             if (!ModelState.IsValid)
@@ -620,7 +622,7 @@ namespace CommuniCare.Controllers
         /// </summary>
         /// <param name="dto">Objeto DTO contendo as informações a serem atualizadas (nome, email, telemóvel, etc.).</param>
         /// <returns>Retorna 200 Ok com mensagem de sucesso ou 404 Not Found se o utilizador não for encontrado.</returns>
-        [HttpPut("editar-perfil")]
+        [HttpPut("EditarPerfil")]
         [Authorize]
         public async Task<IActionResult> EditarPerfil([FromBody] EditarPerfilDTO dto)
         {
@@ -677,7 +679,7 @@ namespace CommuniCare.Controllers
         /// Obtém o saldo de cares do utilizador autenticado.
         /// </summary>
         /// <returns>Retorna 200 Ok com o saldo de cares do utilizador ou 404 Not Found se o utilizador não for encontrado.</returns>
-        [HttpGet("saldo")]
+        [HttpGet("ObterSaldo")]
         [Authorize]
         public async Task<IActionResult> ObterSaldo()
         {
@@ -696,7 +698,7 @@ namespace CommuniCare.Controllers
         /// </summary>
         /// <param name="dto">Objeto DTO contendo a senha para confirmação.</param>
         /// <returns>Retorna 200 Ok com mensagem de sucesso ou 400 Bad Request se a senha for incorreta.</returns>
-        [HttpDelete("apagar-conta")]
+        [HttpDelete("ApagarConta")]
         [Authorize]
         public async Task<IActionResult> ApagarConta([FromBody] ConfirmarPasswordDTO dto)
         {
@@ -748,7 +750,7 @@ namespace CommuniCare.Controllers
         /// </summary>
         /// <param name="dto">Objeto DTO contendo o e-mail do utilizador para enviar o link de recuperação.</param>
         /// <returns>Retorna 200 Ok se o e-mail de recuperação for enviado com sucesso, ou 400 Bad Request se o e-mail não for fornecido, ou 404 Not Found se o utilizador não for encontrado.</returns>
-        [HttpPost("recuperar-senha")]
+        [HttpPost("RecuperarSenha")]
         public async Task<IActionResult> RecuperarSenha([FromBody] RecuperarSenhaDTO dto)
         {
             if (string.IsNullOrEmpty(dto.Email))
@@ -804,7 +806,7 @@ namespace CommuniCare.Controllers
         /// <param name="token">Token de recuperação de senha gerado previamente.</param>
         /// <param name="dto">Objeto DTO contendo a nova senha do utilizador.</param>
         /// <returns>Retorna 200 Ok se a senha for redefinida com sucesso, ou 400 Bad Request
-        [HttpPost("resetar-senha")]
+        [HttpPost("ResetarSenha")]
         public async Task<IActionResult> ResetarSenha([FromQuery] string token, [FromBody] NovaSenhaDTO dto)
         {
             if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(dto.NovaSenha))
@@ -859,7 +861,7 @@ namespace CommuniCare.Controllers
         /// </summary>
         /// <param name="dto">Objeto DTO contendo o ID do utilizador e a quantidade de cares a ser adicionada.</param>
         /// <returns>Retorna 200 Ok com a mensagem de sucesso e o saldo de cares atualizado, ou 400 Bad Request se a quantidade de cares for inválida, ou 404 Not Found se o utilizador não for encontrado.</returns>
-        [HttpPost("adicionar-cares")]
+        [HttpPost("AdicionarCares-(teste)")]
         public async Task<IActionResult> AdicionarCares([FromBody] AdicionarCaresDTO dto)
         {
             var utilizador = await _context.Utilizadores.FindAsync(dto.UtilizadorId);

@@ -35,107 +35,109 @@ namespace CommuniCare.Controllers
         {
             return await _context.Venda.ToListAsync();
         }
+        #region CONTROLLERS AUTOMÁTICOS
+        ///// <summary>
+        ///// Obtém os detalhes de uma venda específica com base no ID.
+        ///// </summary>
+        ///// <param name="id">ID da venda.</param>
+        ///// <returns>Retorna os detalhes da venda ou 404 Not Found se a venda não for encontrada.</returns>
+        //[HttpGet("{id}")]
+        //public async Task<ActionResult<Venda>> GetVenda(int id)
+        //{
+        //    var venda = await _context.Venda.FindAsync(id);
 
-        /// <summary>
-        /// Obtém os detalhes de uma venda específica com base no ID.
-        /// </summary>
-        /// <param name="id">ID da venda.</param>
-        /// <returns>Retorna os detalhes da venda ou 404 Not Found se a venda não for encontrada.</returns>
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Venda>> GetVenda(int id)
-        {
-            var venda = await _context.Venda.FindAsync(id);
+        //    if (venda == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            if (venda == null)
-            {
-                return NotFound();
-            }
+        //    return venda;
+        //}
 
-            return venda;
-        }
+        ///// <summary>
+        ///// Atualiza os dados de uma venda existente.
+        ///// </summary>
+        ///// <param name="id">ID da venda a ser atualizada.</param>
+        ///// <param name="venda">Objeto contendo os novos dados da venda.</param>
+        ///// <returns>Retorna 204 No Content se a venda for atualizada com sucesso, ou 400 Bad Request se houver inconsistências.</returns>
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> PutVenda(int id, Venda venda)
+        //{
+        //    if (id != venda.TransacaoId)
+        //    {
+        //        return BadRequest();
+        //    }
 
-        /// <summary>
-        /// Atualiza os dados de uma venda existente.
-        /// </summary>
-        /// <param name="id">ID da venda a ser atualizada.</param>
-        /// <param name="venda">Objeto contendo os novos dados da venda.</param>
-        /// <returns>Retorna 204 No Content se a venda for atualizada com sucesso, ou 400 Bad Request se houver inconsistências.</returns>
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutVenda(int id, Venda venda)
-        {
-            if (id != venda.TransacaoId)
-            {
-                return BadRequest();
-            }
+        //    _context.Entry(venda).State = EntityState.Modified;
 
-            _context.Entry(venda).State = EntityState.Modified;
+        //    try
+        //    {
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    catch (DbUpdateConcurrencyException)
+        //    {
+        //        if (!VendaExists(id))
+        //        {
+        //            return NotFound();
+        //        }
+        //        else
+        //        {
+        //            throw;
+        //        }
+        //    }
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!VendaExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+        //    return NoContent();
+        //}
 
-            return NoContent();
-        }
+        ///// <summary>
+        ///// Cria uma nova venda no sistema.
+        ///// </summary>
+        ///// <param name="venda">Objeto contendo os dados da nova venda.</param>
+        ///// <returns>Retorna 201 Created se a venda for criada com sucesso, ou 409 Conflict se já existir uma venda com o mesmo ID.</returns>
+        //[HttpPost]
+        //public async Task<ActionResult<Venda>> PostVenda(Venda venda)
+        //{
+        //    _context.Venda.Add(venda);
+        //    try
+        //    {
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    catch (DbUpdateException)
+        //    {
+        //        if (VendaExists(venda.TransacaoId))
+        //        {
+        //            return Conflict();
+        //        }
+        //        else
+        //        {
+        //            throw;
+        //        }
+        //    }
 
-        /// <summary>
-        /// Cria uma nova venda no sistema.
-        /// </summary>
-        /// <param name="venda">Objeto contendo os dados da nova venda.</param>
-        /// <returns>Retorna 201 Created se a venda for criada com sucesso, ou 409 Conflict se já existir uma venda com o mesmo ID.</returns>
-        [HttpPost]
-        public async Task<ActionResult<Venda>> PostVenda(Venda venda)
-        {
-            _context.Venda.Add(venda);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (VendaExists(venda.TransacaoId))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+        //    return CreatedAtAction("GetVenda", new { id = venda.TransacaoId }, venda);
+        //}
 
-            return CreatedAtAction("GetVenda", new { id = venda.TransacaoId }, venda);
-        }
+        ///// <summary>
+        ///// Exclui uma venda existente com base no ID.
+        ///// </summary>
+        ///// <param name="id">ID da venda a ser excluída.</param>
+        ///// <returns>Retorna 204 No Content se a venda for excluída com sucesso, ou 404 Not Found se a venda não for encontrada.</returns>
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeleteVenda(int id)
+        //{
+        //    var venda = await _context.Venda.FindAsync(id);
+        //    if (venda == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-        /// <summary>
-        /// Exclui uma venda existente com base no ID.
-        /// </summary>
-        /// <param name="id">ID da venda a ser excluída.</param>
-        /// <returns>Retorna 204 No Content se a venda for excluída com sucesso, ou 404 Not Found se a venda não for encontrada.</returns>
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteVenda(int id)
-        {
-            var venda = await _context.Venda.FindAsync(id);
-            if (venda == null)
-            {
-                return NotFound();
-            }
+        //    _context.Venda.Remove(venda);
+        //    await _context.SaveChangesAsync();
 
-            _context.Venda.Remove(venda);
-            await _context.SaveChangesAsync();
+        //    return NoContent();
+        //}
 
-            return NoContent();
-        }
+        #endregion
 
         private bool VendaExists(int id)
         {
@@ -148,29 +150,29 @@ namespace CommuniCare.Controllers
         /// </summary>
         /// <param name="request">Objeto contendo os IDs dos artigos a serem comprados.</param>
         /// <returns>Retorna 200 OK se a compra for processada com sucesso, ou 400 Bad Request em caso de erro.</returns>
-        [HttpPost("comprar")]
-        [Authorize]
-        public async Task<IActionResult> Comprar([FromBody] PedidoCompraDTO request)
-        {
-            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+        //[HttpPost("comprar")]
+        //[Authorize]
+        //public async Task<IActionResult> Comprar([FromBody] PedidoCompraDTO request)
+        //{
+        //    var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
-            try
-            {
-                await _transacaoServico.ProcessarCompraAsync(userId, request.ArtigosIds);
-                return Ok(new { Sucesso = true, Mensagem = "Compra efetuada com sucesso." });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { Sucesso = false, Erro = ex.Message });
-            }
-        }
+        //    try
+        //    {
+        //        await _transacaoServico.ProcessarCompraAsync(userId, request.ArtigosIds);
+        //        return Ok(new { Sucesso = true, Mensagem = "Compra efetuada com sucesso." });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(new { Sucesso = false, Erro = ex.Message });
+        //    }
+        //}
 
         /// <summary>
         /// Realiza a compra de artigos para o utilizador autenticado e envia o comprovativo por email.
         /// </summary>
         /// <param name="request">Objeto contendo os IDs dos artigos a serem comprados.</param>
         /// <returns>Retorna 200 OK se a compra for processada com sucesso e o comprovativo enviado por e-mail, ou 400 Bad Request em caso de erro.</returns>
-        [HttpPost("comprar-email")]
+        [HttpPost("ComprarEmail")]
         [Authorize]
         public async Task<IActionResult> ComprarEmail([FromBody] PedidoCompraDTO request)
         {
@@ -240,7 +242,7 @@ namespace CommuniCare.Controllers
         /// </summary>
         /// <param name="request">Objeto contendo os IDs dos artigos a serem comprados.</param>
         /// <returns>Retorna 200 OK com o comprovativo de compra em PDF ou 400 Bad Request em caso de erro.</returns>
-        [HttpPost("comprar-download")]
+        [HttpPost("ComprarDownload")]
         [Authorize]
         public async Task<IActionResult> ComprarDownload([FromBody] PedidoCompraDTO request)
         {

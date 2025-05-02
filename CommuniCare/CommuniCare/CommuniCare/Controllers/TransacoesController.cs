@@ -37,18 +37,18 @@ namespace CommuniCare.Controllers
         /// <param name="id">ID da transação a ser obtida.</param>
         /// <returns>Retorna a transação correspondente ao ID ou 404 Not Found se a transação não existir.</returns>
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Transacao>> GetTransacao(int id)
-        {
-            var transacao = await _context.Transacoes.FindAsync(id);
+        //[HttpGet("{id}")]
+        //public async Task<ActionResult<Transacao>> GetTransacao(int id)
+        //{
+        //    var transacao = await _context.Transacoes.FindAsync(id);
 
-            if (transacao == null)
-            {
-                return NotFound();
-            }
+        //    if (transacao == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return transacao;
-        }
+        //    return transacao;
+        //}
 
         /// <summary>
         /// Atualiza os dados de uma transação existente.
@@ -57,34 +57,34 @@ namespace CommuniCare.Controllers
         /// <param name="transacao">Objeto contendo os dados atualizados da transação.</param>
         /// <returns>Retorna 204 No Content se a atualização for bem-sucedida; retorna 400 Bad Request se os dados não coincidirem; 404 Not Found se a transação não existir ou 500 Internal Server Error em caso de falha.</returns>
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutTransacao(int id, Transacao transacao)
-        {
-            if (id != transacao.TransacaoId)
-            {
-                return BadRequest();
-            }
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> PutTransacao(int id, Transacao transacao)
+        //{
+        //    if (id != transacao.TransacaoId)
+        //    {
+        //        return BadRequest();
+        //    }
 
-            _context.Entry(transacao).State = EntityState.Modified;
+        //    _context.Entry(transacao).State = EntityState.Modified;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!TransacaoExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+        //    try
+        //    {
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    catch (DbUpdateConcurrencyException)
+        //    {
+        //        if (!TransacaoExists(id))
+        //        {
+        //            return NotFound();
+        //        }
+        //        else
+        //        {
+        //            throw;
+        //        }
+        //    }
 
-            return NoContent();
-        }
+        //    return NoContent();
+        //}
 
         /// <summary>
         /// Cria uma nova transação.
@@ -92,14 +92,14 @@ namespace CommuniCare.Controllers
         /// <param name="transacao">Objeto contendo os dados da nova transação.</param>
         /// <returns>Retorna um status 201 Created com a transação criada, incluindo o URI do novo recurso; retorna 500 Internal Server Error em caso de falha.</returns>
 
-        [HttpPost]
-        public async Task<ActionResult<Transacao>> PostTransacao(Transacao transacao)
-        {
-            _context.Transacoes.Add(transacao);
-            await _context.SaveChangesAsync();
+        //[HttpPost]
+        //public async Task<ActionResult<Transacao>> PostTransacao(Transacao transacao)
+        //{
+        //    _context.Transacoes.Add(transacao);
+        //    await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetTransacao", new { id = transacao.TransacaoId }, transacao);
-        }
+        //    return CreatedAtAction("GetTransacao", new { id = transacao.TransacaoId }, transacao);
+        //}
 
         /// <summary>
         /// Deleta uma transação específica baseada no seu ID.
@@ -107,20 +107,20 @@ namespace CommuniCare.Controllers
         /// <param name="id">ID da transação a ser deletada.</param>
         /// <returns>Retorna 204 No Content se a transação for deletada com sucesso; retorna 404 Not Found se a transação não existir ou 500 Internal Server Error em caso de falha.</returns>
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTransacao(int id)
-        {
-            var transacao = await _context.Transacoes.FindAsync(id);
-            if (transacao == null)
-            {
-                return NotFound();
-            }
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeleteTransacao(int id)
+        //{
+        //    var transacao = await _context.Transacoes.FindAsync(id);
+        //    if (transacao == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            _context.Transacoes.Remove(transacao);
-            await _context.SaveChangesAsync();
+        //    _context.Transacoes.Remove(transacao);
+        //    await _context.SaveChangesAsync();
 
-            return NoContent();
-        }
+        //    return NoContent();
+        //}
 
         /// <summary>
         /// Verifica se existe uma transação com o identificador especificado.

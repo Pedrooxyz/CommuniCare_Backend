@@ -33,92 +33,96 @@ namespace CommuniCare.Controllers
             return await _context.ItensEmprestimo.ToListAsync();
         }
 
+
+        #region CONTROLLERS AUTOMÁTICOS
         /// <summary>
         /// Obtém um item de empréstimo específico pelo ID.
         /// </summary>
         /// <param name="id">O identificador do item de empréstimo a ser retornado.</param>
         /// <returns>O item de empréstimo correspondente ao ID ou NotFound se não encontrado.</returns>
-        [HttpGet("{id}")]
-        public async Task<ActionResult<ItemEmprestimo>> GetItemEmprestimo(int id)
-        {
-            var itemEmprestimo = await _context.ItensEmprestimo.FindAsync(id);
+        //[HttpGet("{id}")]
+        //public async Task<ActionResult<ItemEmprestimo>> GetItemEmprestimo(int id)
+        //{
+        //    var itemEmprestimo = await _context.ItensEmprestimo.FindAsync(id);
 
-            if (itemEmprestimo == null)
-            {
-                return NotFound();
-            }
+        //    if (itemEmprestimo == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return itemEmprestimo;
-        }
+        //    return itemEmprestimo;
+        //}
 
 
-        /// Atualiza os dados de um item de empréstimo existente.
-        /// </summary>
-        /// <param name="id">O identificador do item de empréstimo a ser atualizado.</param>
-        /// <param name="itemEmprestimo">Os novos dados do item de empréstimo.</param>
-        /// <returns>Resultado da operação: NoContent se bem-sucedido, BadRequest se IDs não corresponderem, NotFound se o item não existir.</returns>
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutItemEmprestimo(int id, ItemEmprestimo itemEmprestimo)
-        {
-            if (id != itemEmprestimo.ItemId)
-            {
-                return BadRequest();
-            }
+        ///// Atualiza os dados de um item de empréstimo existente.
+        ///// </summary>
+        ///// <param name="id">O identificador do item de empréstimo a ser atualizado.</param>
+        ///// <param name="itemEmprestimo">Os novos dados do item de empréstimo.</param>
+        ///// <returns>Resultado da operação: NoContent se bem-sucedido, BadRequest se IDs não corresponderem, NotFound se o item não existir.</returns>
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> PutItemEmprestimo(int id, ItemEmprestimo itemEmprestimo)
+        //{
+        //    if (id != itemEmprestimo.ItemId)
+        //    {
+        //        return BadRequest();
+        //    }
 
-            _context.Entry(itemEmprestimo).State = EntityState.Modified;
+        //    _context.Entry(itemEmprestimo).State = EntityState.Modified;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ItemEmprestimoExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+        //    try
+        //    {
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    catch (DbUpdateConcurrencyException)
+        //    {
+        //        if (!ItemEmprestimoExists(id))
+        //        {
+        //            return NotFound();
+        //        }
+        //        else
+        //        {
+        //            throw;
+        //        }
+        //    }
 
-            return NoContent();
-        }
+        //    return NoContent();
+        //}
 
-        /// <summary>
-        /// Adiciona um novo item de empréstimo.
-        /// </summary>
-        /// <param name="itemEmprestimo">Os dados do item de empréstimo a ser adicionado.</param>
-        /// <returns>O item de empréstimo adicionado.</returns>
-        [HttpPost]
-        public async Task<ActionResult<ItemEmprestimo>> PostItemEmprestimo(ItemEmprestimo itemEmprestimo)
-        {
-            _context.ItensEmprestimo.Add(itemEmprestimo);
-            await _context.SaveChangesAsync();
+        ///// <summary>
+        ///// Adiciona um novo item de empréstimo.
+        ///// </summary>
+        ///// <param name="itemEmprestimo">Os dados do item de empréstimo a ser adicionado.</param>
+        ///// <returns>O item de empréstimo adicionado.</returns>
+        //[HttpPost]
+        //public async Task<ActionResult<ItemEmprestimo>> PostItemEmprestimo(ItemEmprestimo itemEmprestimo)
+        //{
+        //    _context.ItensEmprestimo.Add(itemEmprestimo);
+        //    await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetItemEmprestimo", new { id = itemEmprestimo.ItemId }, itemEmprestimo);
-        }
+        //    return CreatedAtAction("GetItemEmprestimo", new { id = itemEmprestimo.ItemId }, itemEmprestimo);
+        //}
 
-        /// <summary>
-        /// Remove um item de empréstimo específico pelo ID.
-        /// </summary>
-        /// <param name="id">O identificador do item de empréstimo a ser removido.</param>
-        /// <returns>Resultado da operação: NoContent se bem-sucedido, NotFound se o item não existir.</returns>
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteItemEmprestimo(int id)
-        {
-            var itemEmprestimo = await _context.ItensEmprestimo.FindAsync(id);
-            if (itemEmprestimo == null)
-            {
-                return NotFound();
-            }
+        ///// <summary>
+        ///// Remove um item de empréstimo específico pelo ID.
+        ///// </summary>
+        ///// <param name="id">O identificador do item de empréstimo a ser removido.</param>
+        ///// <returns>Resultado da operação: NoContent se bem-sucedido, NotFound se o item não existir.</returns>
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeleteItemEmprestimo(int id)
+        //{
+        //    var itemEmprestimo = await _context.ItensEmprestimo.FindAsync(id);
+        //    if (itemEmprestimo == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            _context.ItensEmprestimo.Remove(itemEmprestimo);
-            await _context.SaveChangesAsync();
+        //    _context.ItensEmprestimo.Remove(itemEmprestimo);
+        //    await _context.SaveChangesAsync();
 
-            return NoContent();
-        }
+        //    return NoContent();
+        //}
+
+        #endregion
 
         /// <summary>
         /// Verifica se um item de empréstimo existe no banco de dados.
@@ -135,7 +139,7 @@ namespace CommuniCare.Controllers
         /// </summary>
         /// <param name="itemData">Os dados do item de empréstimo a ser adicionado.</param>
         /// <returns>Mensagem de sucesso ou falha na adição.</returns>
-        [HttpPost("adicionar-item")]
+        [HttpPost("AdicionarItem")]
         [Authorize]
         public async Task<IActionResult> AdicionarItemEmprestimo([FromBody] ItemEmprestimoDTO itemData)
         {
@@ -209,7 +213,7 @@ namespace CommuniCare.Controllers
         /// </summary>
         /// <param name="itemId">O identificador do item a ser requisitado.</param>
         /// <returns>Mensagem de sucesso ou falha no pedido de empréstimo.</returns>
-        [HttpPost("adquirir-item/{itemId}")]
+        [HttpPost("AdquirirItem/{itemId}")]
         [Authorize]
         public async Task<IActionResult> AdquirirItem(int itemId)
         {
@@ -318,7 +322,7 @@ namespace CommuniCare.Controllers
         /// </summary>
         /// <param name="itemId">ID do item a ser validado.</param>
         /// <returns>Retorna um status indicando se a validação foi bem-sucedida ou se ocorreu um erro.</returns>
-        [HttpPost("validar-item/{itemId}")]
+        [HttpPost("ValidarItem-(admin)/{itemId}")]
         [Authorize]
         public async Task<IActionResult> ValidarItemEmprestimo(int itemId)
         {
@@ -373,7 +377,7 @@ namespace CommuniCare.Controllers
         /// </summary>
         /// <param name="itemId">ID do item a ser rejeitado.</param>
         /// <returns>Retorna um status indicando se a rejeição foi bem-sucedida ou se ocorreu um erro.</returns>
-        [HttpDelete("rejeitar-item/{itemId}")]
+        [HttpDelete("RejeitarItem-(admin)/{itemId}")]
         [Authorize]
         public async Task<IActionResult> RejeitarItemEmprestimo(int itemId)
         {
@@ -440,7 +444,7 @@ namespace CommuniCare.Controllers
         /// </summary>
         /// <returns>Lista de itens disponíveis para empréstimo.</returns>
         [Authorize]
-        [HttpGet("disponiveis")]
+        [HttpGet("Disponiveis")]
         public async Task<ActionResult<IEnumerable<ItemEmprestimo>>> GetItensDisponiveis()
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
@@ -469,7 +473,7 @@ namespace CommuniCare.Controllers
         /// </summary>
         /// <returns>Lista de itens de empréstimo do utilizador.</returns>
         [Authorize]
-        [HttpGet("meus-itens")]
+        [HttpGet("MeusItens")]
         public async Task<ActionResult<IEnumerable<ItemEmprestimo>>> GetMeusItens()
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
@@ -499,7 +503,7 @@ namespace CommuniCare.Controllers
         /// </summary>
         /// <param name="itemId">ID do item a ser removido.</param>
         /// <returns>Retorna um status indicando se a remoção foi bem-sucedida ou se ocorreu um erro.</returns>
-        [HttpDelete("indisponibilizar-permanente-item/{itemId}")]
+        [HttpDelete("IndisponibilizarPermanenteItem/{itemId}")]
         [Authorize]
         public async Task<IActionResult> EliminarItemEmprestimo(int itemId)
         {
@@ -560,7 +564,7 @@ namespace CommuniCare.Controllers
         /// <param name="itemId">ID do item a ser atualizado.</param>
         /// <param name="novaDescricao">Nova descrição do item.</param>
         /// <returns>Retorna um status indicando se a atualização foi bem-sucedida ou se ocorreu um erro.</returns>
-        [HttpPut("atualizar-descricao/{itemId}")]
+        [HttpPut("AtualizarDescricao/{itemId}")]
         [Authorize]
         public async Task<IActionResult> AtualizarDescricaoItem(int itemId, [FromBody] string novaDescricao)
         {

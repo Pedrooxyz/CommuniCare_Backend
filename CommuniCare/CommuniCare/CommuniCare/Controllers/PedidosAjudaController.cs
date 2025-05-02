@@ -37,93 +37,96 @@ namespace CommuniCare.Controllers
             return await _context.PedidosAjuda.ToListAsync();
         }
 
-        /// <summary>
-        /// Obtém um pedido de ajuda específico pelo ID.
-        /// </summary>
-        /// <param name="id">O ID do pedido de ajuda.</param>
-        /// <returns>O pedido de ajuda correspondente ao ID.</returns>
-        [HttpGet("{id}")]
-        public async Task<ActionResult<PedidoAjuda>> GetPedidoAjuda(int id)
-        {
-            var pedidoAjuda = await _context.PedidosAjuda.FindAsync(id);
+        #region CONTROLLERS AUTOMÁTICOS
+        ///// <summary>
+        ///// Obtém um pedido de ajuda específico pelo ID.
+        ///// </summary>
+        ///// <param name="id">O ID do pedido de ajuda.</param>
+        ///// <returns>O pedido de ajuda correspondente ao ID.</returns>
+        //[HttpGet("{id}")]
+        //public async Task<ActionResult<PedidoAjuda>> GetPedidoAjuda(int id)
+        //{
+        //    var pedidoAjuda = await _context.PedidosAjuda.FindAsync(id);
 
-            if (pedidoAjuda == null)
-            {
-                return NotFound();
-            }
+        //    if (pedidoAjuda == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return pedidoAjuda;
-        }
+        //    return pedidoAjuda;
+        //}
 
-        /// <summary>
-        /// Atualiza um pedido de ajuda específico.
-        /// </summary>
-        /// <param name="id">O ID do pedido de ajuda a ser atualizado.</param>
-        /// <param name="pedidoAjuda">O novo pedido de ajuda.</param>
-        /// <returns>Status da operação.</returns>
+        ///// <summary>
+        ///// Atualiza um pedido de ajuda específico.
+        ///// </summary>
+        ///// <param name="id">O ID do pedido de ajuda a ser atualizado.</param>
+        ///// <param name="pedidoAjuda">O novo pedido de ajuda.</param>
+        ///// <returns>Status da operação.</returns>
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutPedidoAjuda(int id, PedidoAjuda pedidoAjuda)
-        {
-            if (id != pedidoAjuda.PedidoId)
-            {
-                return BadRequest();
-            }
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> PutPedidoAjuda(int id, PedidoAjuda pedidoAjuda)
+        //{
+        //    if (id != pedidoAjuda.PedidoId)
+        //    {
+        //        return BadRequest();
+        //    }
 
-            _context.Entry(pedidoAjuda).State = EntityState.Modified;
+        //    _context.Entry(pedidoAjuda).State = EntityState.Modified;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!PedidoAjudaExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+        //    try
+        //    {
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    catch (DbUpdateConcurrencyException)
+        //    {
+        //        if (!PedidoAjudaExists(id))
+        //        {
+        //            return NotFound();
+        //        }
+        //        else
+        //        {
+        //            throw;
+        //        }
+        //    }
 
-            return NoContent();
-        }
+        //    return NoContent();
+        //}
 
-        /// <summary>
-        /// Cria um novo pedido de ajuda.
-        /// </summary>
-        /// <param name="pedidoAjuda">Os dados do novo pedido de ajuda.</param>
-        /// <returns>O pedido de ajuda criado.</returns>
-        [HttpPost]
-        public async Task<ActionResult<PedidoAjuda>> PostPedidoAjuda(PedidoAjuda pedidoAjuda)
-        {
-            _context.PedidosAjuda.Add(pedidoAjuda);
-            await _context.SaveChangesAsync();
+        ///// <summary>
+        ///// Cria um novo pedido de ajuda.
+        ///// </summary>
+        ///// <param name="pedidoAjuda">Os dados do novo pedido de ajuda.</param>
+        ///// <returns>O pedido de ajuda criado.</returns>
+        //[HttpPost]
+        //public async Task<ActionResult<PedidoAjuda>> PostPedidoAjuda(PedidoAjuda pedidoAjuda)
+        //{
+        //    _context.PedidosAjuda.Add(pedidoAjuda);
+        //    await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetPedidoAjuda", new { id = pedidoAjuda.PedidoId }, pedidoAjuda);
-        }
+        //    return CreatedAtAction("GetPedidoAjuda", new { id = pedidoAjuda.PedidoId }, pedidoAjuda);
+        //}
 
-        /// <summary>
-        /// Remove um pedido de ajuda específico pelo ID.
-        /// </summary>
-        /// <param name="id">O ID do pedido de ajuda a ser removido.</param>
-        /// <returns>Status da operação.</returns>
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePedidoAjuda(int id)
-        {
-            var pedidoAjuda = await _context.PedidosAjuda.FindAsync(id);
-            if (pedidoAjuda == null)
-            {
-                return NotFound();
-            }
+        ///// <summary>
+        ///// Remove um pedido de ajuda específico pelo ID.
+        ///// </summary>
+        ///// <param name="id">O ID do pedido de ajuda a ser removido.</param>
+        ///// <returns>Status da operação.</returns>
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeletePedidoAjuda(int id)
+        //{
+        //    var pedidoAjuda = await _context.PedidosAjuda.FindAsync(id);
+        //    if (pedidoAjuda == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            _context.PedidosAjuda.Remove(pedidoAjuda);
-            await _context.SaveChangesAsync();
+        //    _context.PedidosAjuda.Remove(pedidoAjuda);
+        //    await _context.SaveChangesAsync();
 
-            return NoContent();
-        }
+        //    return NoContent();
+        //}
+
+        #endregion
 
         private bool PedidoAjudaExists(int id)
         {
@@ -135,7 +138,7 @@ namespace CommuniCare.Controllers
         /// </summary>
         /// <param name="pedidoData">Os dados do pedido de ajuda a ser criado.</param>
         /// <returns>Status da operação.</returns>
-        [HttpPost("pedir")]
+        [HttpPost("Pedir")]
         [Authorize]
         public async Task<IActionResult> CriarPedidoAjuda([FromBody] PedidoAjudaDTO pedidoData)
         {
@@ -204,7 +207,7 @@ namespace CommuniCare.Controllers
         /// </summary>
         /// <param name="pedidoId">O ID do pedido de ajuda.</param>
         /// <returns>Status da operação.</returns>
-        [HttpPost("{pedidoId}/voluntariar")]
+        [HttpPost("{pedidoId}/Voluntariar")]
         [Authorize]
         public async Task<IActionResult> Voluntariar(int pedidoId)
         {
@@ -278,7 +281,7 @@ namespace CommuniCare.Controllers
         /// </summary>
         /// <param name="pedidoId">O ID do pedido de ajuda a ser rejeitado.</param>
         /// <returns>Status da operação.</returns>
-        [HttpPost("{pedidoId}/rejeitar-pedido")]
+        [HttpPost("{pedidoId}/RejeitarPedido-(admin)")]
         [Authorize]
         public async Task<IActionResult> RejeitarPedidoAjuda(int pedidoId)
         {
@@ -334,7 +337,7 @@ namespace CommuniCare.Controllers
         /// <param name="pedidoId">ID do pedido de ajuda a ser validado.</param>
         /// <returns>Retorna um status 200 OK se o pedido for validado com sucesso; retorna 401 Unauthorized, 403 Forbidden, 404 Not Found ou 400 Bad Request em caso de erro.</returns>
 
-        [HttpPost("{pedidoId}/validar-pedido")]
+        [HttpPost("{pedidoId}/ValidarPedido-(admin)")]
         [Authorize]
         public async Task<IActionResult> ValidarPedidoAjuda(int pedidoId)
         {
@@ -393,7 +396,7 @@ namespace CommuniCare.Controllers
         /// <param name="pedidoId">ID do pedido de ajuda a ser concluído.</param>
         /// <returns>Retorna um status 200 OK se o pedido for concluído com sucesso e os administradores forem notificados; retorna 401 Unauthorized, 403 Forbidden, 404 Not Found ou 400 Bad Request em caso de erro.</returns>
 
-        [HttpPost("concluir/{pedidoId}")]
+        [HttpPost("ConcluirPedido/{pedidoId}")]
         [Authorize]
         public async Task<IActionResult> ConcluirPedidoAjuda(int pedidoId)
         {
@@ -456,7 +459,7 @@ namespace CommuniCare.Controllers
         /// <param name="pedidoId">ID do pedido de ajuda a ter sua conclusão validada.</param>
         /// <returns>Retorna um status 200 OK se a conclusão for validada com sucesso e a recompensa for atribuída; retorna 401 Unauthorized, 403 Forbidden, 404 Not Found ou 400 Bad Request em caso de erro.</returns>
 
-        [HttpPost("validar-conclusao/{pedidoId}")]
+        [HttpPost("ValidarConclusao-(admin)/{pedidoId}")]
         [Authorize]
         public async Task<IActionResult> ValidarConclusaoPedidoAjuda(int pedidoId)
         {
@@ -544,7 +547,7 @@ namespace CommuniCare.Controllers
         /// <returns>Retorna uma lista de pedidos de ajuda disponíveis ou 401 Unauthorized se o utilizador não estiver autenticado.</returns>
 
         [Authorize]
-        [HttpGet("pedidos-disponiveis")]
+        [HttpGet("PedidosDisponiveis")]
         public async Task<ActionResult<IEnumerable<PedidoAjuda>>> GetPedidosAjudaDisponiveis()
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
@@ -569,7 +572,7 @@ namespace CommuniCare.Controllers
         /// <returns>Retorna uma lista de pedidos de ajuda do utilizador ou 401 Unauthorized se o utilizador não estiver autenticado.</returns>
 
         [Authorize]
-        [HttpGet("meus-pedidos")]
+        [HttpGet("MeusPedidos")]
         public async Task<ActionResult<IEnumerable<PedidoAjuda>>> GetMeusPedidosAjuda()
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);

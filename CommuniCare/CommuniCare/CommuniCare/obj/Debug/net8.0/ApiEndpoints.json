@@ -463,7 +463,7 @@
     "ContainingType": "CommuniCare.Controllers.EmprestimosController",
     "Method": "PostEmprestimo",
     "RelativePath": "api/Emprestimos",
-    "HttpMethod": "",
+    "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [

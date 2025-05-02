@@ -91,6 +91,7 @@ namespace CommuniCare.Controllers
         /// </summary>
         /// <param name="emprestimo">Objeto empréstimo a ser criado.</param>
         /// <returns>Empréstimo criado com detalhes.</returns>
+        [HttpPost]
         public async Task<ActionResult<Emprestimo>> PostEmprestimo(Emprestimo emprestimo)
         {
             _context.Emprestimos.Add(emprestimo);

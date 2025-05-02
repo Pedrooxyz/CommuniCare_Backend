@@ -20,14 +20,21 @@ namespace CommuniCare.Controllers
             _context = context;
         }
 
-        // GET: api/Moradas
+        /// <summary>
+        /// Obtém a lista de todas as moradas no sistema.
+        /// </summary>
+        /// <returns>Uma lista de objetos <see cref="Morada"/> representando todas as moradas.</returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Morada>>> GetMorada()
         {
             return await _context.Morada.ToListAsync();
         }
 
-        // GET: api/Moradas/5
+        /// <summary>
+        /// Obtém os detalhes de uma morada específica com base no identificador.
+        /// </summary>
+        /// <param name="id">Identificador único da morada.</param>
+        /// <returns>Um objeto <see cref="Morada"/> com os dados da morada especificada, ou NotFound se a morada não existir.</returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<Morada>> GetMorada(int id)
         {
@@ -41,8 +48,12 @@ namespace CommuniCare.Controllers
             return morada;
         }
 
-        // PUT: api/Moradas/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Atualiza os dados de uma morada existente.
+        /// </summary>
+        /// <param name="id">Identificador da morada a ser atualizada.</param>
+        /// <param name="morada">Objeto <see cref="Morada"/> contendo os dados atualizados da morada.</param>
+        /// <returns>Um status de resposta que indica o sucesso ou falha da operação.</returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> PutMorada(int id, Morada morada)
         {
@@ -72,8 +83,11 @@ namespace CommuniCare.Controllers
             return NoContent();
         }
 
-        // POST: api/Moradas
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Cria uma nova morada no sistema.
+        /// </summary>
+        /// <param name="morada">Objeto <see cref="Morada"/> com os dados da morada a ser criada.</param>
+        /// <returns>O objeto <see cref="Morada"/> criado, incluindo o identificador da morada.</returns>
         [HttpPost]
         public async Task<ActionResult<Morada>> PostMorada(Morada morada)
         {
@@ -83,7 +97,11 @@ namespace CommuniCare.Controllers
             return CreatedAtAction("GetMorada", new { id = morada.MoradaId }, morada);
         }
 
-        // DELETE: api/Moradas/5
+        /// <summary>
+        /// Exclui uma morada do sistema com base no identificador.
+        /// </summary>
+        /// <param name="id">Identificador único da morada a ser excluída.</param>
+        /// <returns>Um status de resposta que indica o sucesso ou falha da operação.</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMorada(int id)
         {
@@ -99,6 +117,11 @@ namespace CommuniCare.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Verifica se existe uma morada com o identificador especificado.
+        /// </summary>
+        /// <param name="id">Identificador da morada a verificar.</param>
+        /// <returns>True se a morada existir; False caso contrário.</returns>
         private bool MoradaExists(int id)
         {
             return _context.Morada.Any(e => e.MoradaId == id);

@@ -22,14 +22,21 @@ namespace CommuniCare.Controllers
             _context = context;
         }
 
-        // GET: api/Notificacoes
+        /// <summary>
+        /// Obtém a lista de todas as notificações no sistema.
+        /// </summary>
+        /// <returns>Uma lista de objetos <see cref="Notificacao"/> representando todas as notificações.</returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Notificacao>>> GetNotificacaos()
         {
             return await _context.Notificacaos.ToListAsync();
         }
 
-        // GET: api/Notificacoes/5
+        /// <summary>
+        /// Obtém os detalhes de uma notificação específica com base no identificador.
+        /// </summary>
+        /// <param name="id">Identificador único da notificação.</param>
+        /// <returns>Um objeto <see cref="Notificacao"/> com os dados da notificação especificada, ou NotFound se a notificação não existir.</returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<Notificacao>> GetNotificacao(int id)
         {
@@ -43,8 +50,12 @@ namespace CommuniCare.Controllers
             return notificacao;
         }
 
-        // PUT: api/Notificacoes/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Atualiza os dados de uma notificação existente.
+        /// </summary>
+        /// <param name="id">Identificador da notificação a ser atualizada.</param>
+        /// <param name="notificacao">Objeto <see cref="Notificacao"/> contendo os dados atualizados da notificação.</param>
+        /// <returns>Um status de resposta que indica o sucesso ou falha da operação.</returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> PutNotificacao(int id, Notificacao notificacao)
         {
@@ -74,8 +85,11 @@ namespace CommuniCare.Controllers
             return NoContent();
         }
 
-        // POST: api/Notificacoes
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Cria uma nova notificação no sistema.
+        /// </summary>
+        /// <param name="notificacao">Objeto <see cref="Notificacao"/> com os dados da notificação a ser criada.</param>
+        /// <returns>O objeto <see cref="Notificacao"/> criado, incluindo o identificador da notificação.</returns>
         [HttpPost]
         public async Task<ActionResult<Notificacao>> PostNotificacao(Notificacao notificacao)
         {
@@ -85,7 +99,11 @@ namespace CommuniCare.Controllers
             return CreatedAtAction("GetNotificacao", new { id = notificacao.NotificacaoId }, notificacao);
         }
 
-        // DELETE: api/Notificacoes/5
+        /// <summary>
+        /// Exclui uma notificação do sistema com base no identificador.
+        /// </summary>
+        /// <param name="id">Identificador único da notificação a ser excluída.</param>
+        /// <returns>Um status de resposta que indica o sucesso ou falha da operação.</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteNotificacao(int id)
         {
@@ -101,16 +119,27 @@ namespace CommuniCare.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Verifica se existe uma notificação com o identificador especificado.
+        /// </summary>
+        /// <param name="id">Identificador da notificação a verificar.</param>
+        /// <returns>True se a notificação existir; False caso contrário.</returns>
         private bool NotificacaoExists(int id)
         {
             return _context.Notificacaos.Any(e => e.NotificacaoId == id);
         }
 
+        /// <summary>
+        /// Obtém as notificações do utilizador autenticado.
+        /// </summary>
+        /// <returns>Uma lista de notificações não lidas do utilizador autenticado, ou NotFound se não houver notificações.</returns>
+        /// <response code="401">Se o utilizador não estiver autenticado.</response>
+        /// <response code="404">Se não houver notificações para o utilizador.</response>
         [HttpGet("notificacoes")]
         [Authorize]
         public async Task<IActionResult> VerNotificacoes()
         {
-            // Obter o ID do utilizador autenticado
+
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
             {
@@ -119,10 +148,10 @@ namespace CommuniCare.Controllers
 
             int utilizadorId = int.Parse(userIdClaim.Value);
 
-            // Obter todas as notificações do utilizador autenticado, onde Lida == 0 (não lidas)
+
             var notificacoes = await _context.Notificacaos
                 .Where(n => n.UtilizadorId == utilizadorId)
-                .OrderByDescending(n => n.DataMensagem) // Ordenar pela data mais recente
+                .OrderByDescending(n => n.DataMensagem)
                 .ToListAsync();
 
             if (notificacoes == null || !notificacoes.Any())
@@ -130,7 +159,6 @@ namespace CommuniCare.Controllers
                 return NotFound("Não há notificações para mostrar.");
             }
 
-            // Retornar as notificações para o utilizador
             return Ok(notificacoes);
         }
 

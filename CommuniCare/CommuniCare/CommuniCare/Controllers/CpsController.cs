@@ -9,25 +9,40 @@ using CommuniCare.Models;
 
 namespace CommuniCare.Controllers
 {
+    /// <summary>
+    /// Controlador responsável pela gestão dos códigos postais (CPs) na aplicação CommuniCare.
+    /// Permite criar, obter, atualizar e eliminar códigos postais armazenados na base de dados.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class CpsController : ControllerBase
     {
         private readonly CommuniCareContext _context;
 
+        /// <summary>
+        /// Construtor do controlador de códigos postais.
+        /// </summary>
+        /// <param name="context">Contexto da base de dados CommuniCare utilizado para aceder aos códigos postais.</param>
         public CpsController(CommuniCareContext context)
         {
             _context = context;
         }
 
-        // GET: api/Cps
+        /// <summary>
+        /// Obtém a lista completa de todos os códigos postais existentes na base de dados.
+        /// </summary>
+        /// <returns>Uma lista de todos os códigos postais registados.</returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Cp>>> GetCps()
         {
             return await _context.Cps.ToListAsync();
         }
 
-        // GET: api/Cps/5
+        /// <summary>
+        /// Obtém um código postal específico com base no seu identificador.
+        /// </summary>
+        /// <param name="id">Código postal a ser obtido.</param>
+        /// <returns>O código postal correspondente ou um código 404 se não for encontrado.</returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<Cp>> GetCp(int id)
         {
@@ -41,8 +56,12 @@ namespace CommuniCare.Controllers
             return cp;
         }
 
-        // PUT: api/Cps/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Atualiza os dados de um código postal existente.
+        /// </summary>
+        /// <param name="id">Código postal a ser atualizado.</param>
+        /// <param name="cp">Objeto Cp com os dados atualizados.</param>
+        /// <returns>Código 204 se a atualização for bem-sucedida; 400 ou 404 caso contrário.</returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCp(string id, Cp cp)
         {
@@ -72,8 +91,11 @@ namespace CommuniCare.Controllers
             return NoContent();
         }
 
-        // POST: api/Cps
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Cria um novo código postal na base de dados.
+        /// </summary>
+        /// <param name="cp">Objeto Cp a ser criado.</param>
+        /// <returns>O código postal criado e a localização do recurso.</returns>
         [HttpPost]
         public async Task<ActionResult<Cp>> PostCp(Cp cp)
         {
@@ -83,7 +105,14 @@ namespace CommuniCare.Controllers
             return CreatedAtAction("GetCp", new { id = cp.CPostal }, cp);
         }
 
-        // DELETE: api/Cps/5
+
+
+
+        /// <summary>
+        /// Elimina um código postal específico com base no seu identificador.
+        /// </summary>
+        /// <param name="id">Código postal a ser eliminado.</param>
+        /// <returns>Código 204 se a eliminação for bem-sucedida; 404 se o código postal não for encontrado.</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCp(int id)
         {
@@ -99,6 +128,12 @@ namespace CommuniCare.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Verifica se existe um código postal com o identificador especificado.
+        /// </summary>
+        /// <param name="id">Código postal a verificar.</param>
+        /// <returns>True se o código postal existir; False caso contrário.</returns>
+        /// 
         private bool CpExists(string id)
         {
             return _context.Cps.Any(e => e.CPostal == id);

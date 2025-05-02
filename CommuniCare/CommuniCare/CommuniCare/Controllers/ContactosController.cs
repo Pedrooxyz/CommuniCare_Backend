@@ -9,25 +9,40 @@ using CommuniCare.Models;
 
 namespace CommuniCare.Controllers
 {
+    /// <summary>
+    /// Controlador responsável pela gestão dos contactos na aplicação CommuniCare.
+    /// Permite criar, obter, atualizar e eliminar contactos de utilizadores.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class ContactosController : ControllerBase
     {
         private readonly CommuniCareContext _context;
 
+        /// <summary>
+        /// Construtor do controlador de contactos.
+        /// </summary>
+        /// <param name="context">Contexto da base de dados CommuniCare utilizado para aceder aos contactos.</param>
         public ContactosController(CommuniCareContext context)
         {
             _context = context;
         }
 
-        // GET: api/Contactos
+        /// <summary>
+        /// Obtém a lista completa de todos os contactos existentes na base de dados.
+        /// </summary>
+        /// <returns>Uma lista de todos os contactos registados.</returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Contacto>>> GetContactos()
         {
             return await _context.Contactos.ToListAsync();
         }
 
-        // GET: api/Contactos/5
+        /// <summary>
+        /// Obtém um contacto específico com base no seu identificador.
+        /// </summary>
+        /// <param name="id">Identificador do contacto a ser obtido.</param>
+        /// <returns>O contacto correspondente ou um código 404 se não for encontrado.</returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<Contacto>> GetContacto(int id)
         {
@@ -41,8 +56,12 @@ namespace CommuniCare.Controllers
             return contacto;
         }
 
-        // PUT: api/Contactos/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Atualiza os dados de um contacto existente.
+        /// </summary>
+        /// <param name="id">Identificador do contacto a ser atualizado.</param>
+        /// <param name="contacto">Objeto contacto com os dados atualizados.</param>
+        /// <returns>Código 204 se a atualização for bem-sucedida; 400 ou 404 caso contrário.</returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> PutContacto(int id, Contacto contacto)
         {
@@ -72,8 +91,11 @@ namespace CommuniCare.Controllers
             return NoContent();
         }
 
-        // POST: api/Contactos
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Cria um novo contacto na base de dados.
+        /// </summary>
+        /// <param name="contacto">Objeto contacto a ser criado.</param>
+        /// <returns>O contacto criado e a localização do recurso.</returns>
         [HttpPost]
         public async Task<ActionResult<Contacto>> PostContacto(Contacto contacto)
         {
@@ -83,7 +105,11 @@ namespace CommuniCare.Controllers
             return CreatedAtAction("GetContacto", new { id = contacto.ContactoId }, contacto);
         }
 
-        // DELETE: api/Contactos/5
+        /// <summary>
+        /// Elimina um contacto específico com base no seu identificador.
+        /// </summary>
+        /// <param name="id">Identificador do contacto a ser eliminado.</param>
+        /// <returns>Código 204 se a eliminação for bem-sucedida; 404 se o contacto não for encontrado.</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteContacto(int id)
         {
@@ -99,6 +125,11 @@ namespace CommuniCare.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Verifica se existe um contacto com o identificador especificado.
+        /// </summary>
+        /// <param name="id">Identificador do contacto a verificar.</param>
+        /// <returns>True se o contacto existir; False caso contrário.</returns>
         private bool ContactoExists(int id)
         {
             return _context.Contactos.Any(e => e.ContactoId == id);

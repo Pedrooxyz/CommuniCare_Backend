@@ -20,14 +20,23 @@ namespace CommuniCare.Controllers
             _context = context;
         }
 
-        // GET: api/TipoUtilizadores
+        /// <summary>
+        /// Obtém a lista de todos os tipos de utilizadores disponíveis.
+        /// </summary>
+        /// <returns>Retorna uma lista de tipos de utilizadores ou 500 Internal Server Error em caso de falha.</returns>
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TipoUtilizador>>> GetTipoUtilizadors()
         {
             return await _context.TipoUtilizadors.ToListAsync();
         }
 
-        // GET: api/TipoUtilizadores/5
+        /// <summary>
+        /// Obtém os detalhes de um tipo de utilizador específico, baseado no seu ID.
+        /// </summary>
+        /// <param name="id">ID do tipo de utilizador a ser obtido.</param>
+        /// <returns>Retorna o tipo de utilizador correspondente ao ID ou 404 Not Found se o tipo de utilizador não existir.</returns>
+
         [HttpGet("{id}")]
         public async Task<ActionResult<TipoUtilizador>> GetTipoUtilizador(int id)
         {
@@ -41,8 +50,13 @@ namespace CommuniCare.Controllers
             return tipoUtilizador;
         }
 
-        // PUT: api/TipoUtilizadores/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Atualiza os dados de um tipo de utilizador existente.
+        /// </summary>
+        /// <param name="id">ID do tipo de utilizador a ser atualizado.</param>
+        /// <param name="tipoUtilizador">Objeto contendo os dados atualizados do tipo de utilizador.</param>
+        /// <returns>Retorna 204 No Content se a atualização for bem-sucedida; retorna 400 Bad Request se os dados não coincidirem; 404 Not Found se o tipo de utilizador não existir ou 500 Internal Server Error em caso de falha.</returns>
+
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTipoUtilizador(int id, TipoUtilizador tipoUtilizador)
         {
@@ -72,8 +86,12 @@ namespace CommuniCare.Controllers
             return NoContent();
         }
 
-        // POST: api/TipoUtilizadores
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Cria um novo tipo de utilizador.
+        /// </summary>
+        /// <param name="tipoUtilizador">Objeto contendo os dados do novo tipo de utilizador.</param>
+        /// <returns>Retorna um status 201 Created com o tipo de utilizador criado, incluindo o URI do novo recurso; retorna 500 Internal Server Error em caso de falha.</returns>
+
         [HttpPost]
         public async Task<ActionResult<TipoUtilizador>> PostTipoUtilizador(TipoUtilizador tipoUtilizador)
         {
@@ -83,7 +101,12 @@ namespace CommuniCare.Controllers
             return CreatedAtAction("GetTipoUtilizador", new { id = tipoUtilizador.TipoUtilizadorId }, tipoUtilizador);
         }
 
-        // DELETE: api/TipoUtilizadores/5
+        /// <summary>
+        /// Deleta um tipo de utilizador específico baseado no seu ID.
+        /// </summary>
+        /// <param name="id">ID do tipo de utilizador a ser deletado.</param>
+        /// <returns>Retorna 204 No Content se o tipo de utilizador for deletado com sucesso; retorna 404 Not Found se o tipo de utilizador não existir ou 500 Internal Server Error em caso de falha.</returns>
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTipoUtilizador(int id)
         {
@@ -98,6 +121,12 @@ namespace CommuniCare.Controllers
 
             return NoContent();
         }
+
+        /// <summary>
+        /// Verifica se existe um tipo de utilizador com o identificador especificado.
+        /// </summary>
+        /// <param name="id">ID do tipo de utilizador a verificar.</param>
+        /// <returns>Retorna true se o tipo de utilizador existir; retorna false caso contrário.</returns>
 
         private bool TipoUtilizadorExists(int id)
         {

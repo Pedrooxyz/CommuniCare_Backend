@@ -22,14 +22,22 @@ namespace CommuniCare.Controllers
             _context = context;
         }
 
-        // GET: api/Emprestimos
+
+        /// <summary>
+        /// Obtém a lista de todos os empréstimos registados.
+        /// </summary>
+        /// <returns>Lista de empréstimos.</returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Emprestimo>>> GetEmprestimos()
         {
             return await _context.Emprestimos.ToListAsync();
         }
 
-        // GET: api/Emprestimos/5
+        /// <summary>
+        /// Obtém os detalhes de um empréstimo específico.
+        /// </summary>
+        /// <param name="id">ID do empréstimo.</param>
+        /// <returns>Detalhes do empréstimo.</returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<Emprestimo>> GetEmprestimo(int id)
         {
@@ -43,8 +51,12 @@ namespace CommuniCare.Controllers
             return emprestimo;
         }
 
-        // PUT: api/Emprestimos/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Atualiza os dados de um empréstimo existente.
+        /// </summary>
+        /// <param name="id">ID do empréstimo a atualizar.</param>
+        /// <param name="emprestimo">Objeto empréstimo com os novos dados.</param>
+        /// <returns>Resposta de sucesso ou erro.</returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> PutEmprestimo(int id, Emprestimo emprestimo)
         {
@@ -74,9 +86,11 @@ namespace CommuniCare.Controllers
             return NoContent();
         }
 
-        // POST: api/Emprestimos
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
+        /// <summary>
+        /// Regista um novo empréstimo.
+        /// </summary>
+        /// <param name="emprestimo">Objeto empréstimo a ser criado.</param>
+        /// <returns>Empréstimo criado com detalhes.</returns>
         public async Task<ActionResult<Emprestimo>> PostEmprestimo(Emprestimo emprestimo)
         {
             _context.Emprestimos.Add(emprestimo);
@@ -85,7 +99,11 @@ namespace CommuniCare.Controllers
             return CreatedAtAction("GetEmprestimo", new { id = emprestimo.EmprestimoId }, emprestimo);
         }
 
-        // DELETE: api/Emprestimos/5
+        /// <summary>
+        /// Elimina um empréstimo existente.
+        /// </summary>
+        /// <param name="id">ID do empréstimo a eliminar.</param>
+        /// <returns>Resposta de sucesso ou erro.</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEmprestimo(int id)
         {
@@ -106,6 +124,11 @@ namespace CommuniCare.Controllers
             return _context.Emprestimos.Any(e => e.EmprestimoId == id);
         }
 
+        /// <summary>
+        /// Regista a devolução de um item de empréstimo.
+        /// </summary>
+        /// <param name="emprestimoId">ID do empréstimo a concluir.</param>
+        /// <returns>Confirmação de devolução registada e notificação enviada aos administradores.</returns>
         [HttpPost("devolucao-item/{emprestimoId}")]
         [Authorize]
         public async Task<IActionResult> ConcluirEmprestimo(int emprestimoId)
@@ -117,7 +140,7 @@ namespace CommuniCare.Controllers
             }
 
             var emprestimo = await _context.Emprestimos
-                .Include(e => e.Items)  // Caso precise acessar detalhes do item do empréstimo
+                .Include(e => e.Items)
                 .FirstOrDefaultAsync(e => e.EmprestimoId == emprestimoId);
 
             if (emprestimo == null)
@@ -130,12 +153,10 @@ namespace CommuniCare.Controllers
                 return BadRequest("Este empréstimo já foi concluído.");
             }
 
-            // Registra a data de devolução
             emprestimo.DataDev = DateTime.UtcNow;
 
-            // Notificar os administradores para validar a devolução
             var admins = await _context.Utilizadores
-                .Where(u => u.TipoUtilizadorId == 2) // Considerando que TipoUtilizadorId 2 é para administradores
+                .Where(u => u.TipoUtilizadorId == 2)
                 .ToListAsync();
 
             foreach (var admin in admins)
@@ -146,7 +167,7 @@ namespace CommuniCare.Controllers
                     Mensagem = $"O empréstimo de item '{emprestimo.Items.FirstOrDefault()?.NomeItem}' foi concluído. Por favor, valide a devolução.",
                     Lida = 0,
                     DataMensagem = DateTime.Now,
-                    ItemId = emprestimo.Items.FirstOrDefault()?.ItemId // Ou algum outro campo que você precise para o item
+                    ItemId = emprestimo.Items.FirstOrDefault()?.ItemId
                 };
 
                 _context.Notificacaos.Add(notificacao);
@@ -160,7 +181,11 @@ namespace CommuniCare.Controllers
 
         #region Administrador
 
-
+        /// <summary>
+        /// Valida o início de um empréstimo (admin).
+        /// </summary>
+        /// <param name="emprestimoId">ID do empréstimo a validar.</param>
+        /// <returns>Confirmação de validação e notificações enviadas ao comprador e dono do item.</returns>
         [HttpPost("validar-emprestimo/{emprestimoId}")]
         [Authorize]
         public async Task<IActionResult> ValidarEmprestimo(int emprestimoId)
@@ -176,7 +201,7 @@ namespace CommuniCare.Controllers
                 return Forbid("Apenas administradores podem validar empréstimos.");
 
             var emprestimo = await _context.Emprestimos
-                .Include(e => e.Items)  // Certificando que a coleção de itens é carregada
+                .Include(e => e.Items)
                 .FirstOrDefaultAsync(e => e.EmprestimoId == emprestimoId);
 
             if (emprestimo == null)
@@ -187,7 +212,7 @@ namespace CommuniCare.Controllers
 
             emprestimo.DataIni = DateTime.UtcNow;
 
-            var item = emprestimo.Items.FirstOrDefault();  // Pegando o primeiro item associado ao empréstimo
+            var item = emprestimo.Items.FirstOrDefault();
             if (item == null)
                 return BadRequest("Item associado não encontrado.");
 
@@ -226,6 +251,11 @@ namespace CommuniCare.Controllers
             return Ok("Empréstimo validado e notificações enviadas.");
         }
 
+        /// <summary>
+        /// Rejeita um pedido de empréstimo (admin).
+        /// </summary>
+        /// <param name="emprestimoId">ID do empréstimo a rejeitar.</param>
+        /// <returns>Confirmação de rejeição, remoção das relações e notificação ao comprador.</returns>
         [HttpPost("rejeitar-emprestimo/{emprestimoId}")]
         [Authorize]
         public async Task<IActionResult> RejeitarEmprestimo(int emprestimoId)
@@ -241,7 +271,7 @@ namespace CommuniCare.Controllers
                 return Forbid("Apenas administradores podem rejeitar empréstimos.");
 
             var emprestimo = await _context.Emprestimos
-                .Include(e => e.Items)  // Incluindo os itens do empréstimo
+                .Include(e => e.Items)
                 .FirstOrDefaultAsync(e => e.EmprestimoId == emprestimoId);
 
             if (emprestimo == null)
@@ -254,14 +284,14 @@ namespace CommuniCare.Controllers
             if (item == null)
                 return BadRequest("Item associado não encontrado.");
 
-            // Buscar relação de comprador pelo emprestimoId
+
             var relacaoComprador = await _context.ItemEmprestimoUtilizadores
                 .FirstOrDefaultAsync(r => r.EmprestimoId == emprestimoId && r.TipoRelacao == "Comprador");
 
             if (relacaoComprador == null)
                 return BadRequest("Relação do comprador não encontrada.");
 
-            // Criação da notificação
+
             var notificacao = new Notificacao
             {
                 UtilizadorId = relacaoComprador.UtilizadorId,
@@ -272,25 +302,31 @@ namespace CommuniCare.Controllers
             };
             _context.Notificacaos.Add(notificacao);
 
-            // Marca o item como disponível novamente
+
             item.Disponivel = 1;
 
-            // Remove as relações de comprador
+
             var relacoesCompradorRemover = await _context.ItemEmprestimoUtilizadores
                 .Where(r => r.EmprestimoId == emprestimoId && r.TipoRelacao == "Comprador")
                 .ToListAsync();
             _context.ItemEmprestimoUtilizadores.RemoveRange(relacoesCompradorRemover);
 
-            // Remove o empréstimo e seus itens
-            emprestimo.Items.Clear(); // Remover relações de itens
+
+            emprestimo.Items.Clear();
             _context.Emprestimos.Remove(emprestimo);
 
-            // Salvar alterações no banco de dados
+
             await _context.SaveChangesAsync();
 
             return Ok("Empréstimo rejeitado, relações removidas e notificação enviada.");
         }
 
+
+        /// <summary>
+        /// Valida a devolução de um empréstimo (admin).
+        /// </summary>
+        /// <param name="emprestimoId">ID do empréstimo cuja devolução será validada.</param>
+        /// <returns>Confirmação de devolução validada, transações registadas e notificações enviadas.</returns>
         [HttpPost("validar-devolucao/{emprestimoId}")]
         [Authorize]
         public async Task<IActionResult> ValidarDevolucaoEmprestimo(int emprestimoId)

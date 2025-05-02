@@ -20,14 +20,23 @@ namespace CommuniCare.Controllers
             _context = context;
         }
 
-        // GET: api/TipoContactos
+        /// <summary>
+        /// Obtém a lista de todos os tipos de contato disponíveis.
+        /// </summary>
+        /// <returns>Retorna uma lista de tipos de contato ou 500 Internal Server Error em caso de falha.</returns>
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TipoContacto>>> GetTipoContactos()
         {
             return await _context.TipoContactos.ToListAsync();
         }
 
-        // GET: api/TipoContactos/5
+        /// <summary>
+        /// Obtém os detalhes de um tipo de contato específico, baseado no seu ID.
+        /// </summary>
+        /// <param name="id">ID do tipo de contato a ser obtido.</param>
+        /// <returns>Retorna o tipo de contato correspondente ao ID ou 404 Not Found se o tipo de contato não existir.</returns>
+
         [HttpGet("{id}")]
         public async Task<ActionResult<TipoContacto>> GetTipoContacto(int id)
         {
@@ -41,8 +50,13 @@ namespace CommuniCare.Controllers
             return tipoContacto;
         }
 
-        // PUT: api/TipoContactos/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Atualiza os dados de um tipo de contato existente.
+        /// </summary>
+        /// <param name="id">ID do tipo de contato a ser atualizado.</param>
+        /// <param name="tipoContacto">Objeto contendo os dados atualizados do tipo de contato.</param>
+        /// <returns>Retorna 204 No Content se a atualização for bem-sucedida; retorna 400 Bad Request se os dados não coincidirem; 404 Not Found se o tipo de contato não existir ou 500 Internal Server Error em caso de falha.</returns>
+
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTipoContacto(int id, TipoContacto tipoContacto)
         {
@@ -72,8 +86,12 @@ namespace CommuniCare.Controllers
             return NoContent();
         }
 
-        // POST: api/TipoContactos
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Cria um novo tipo de contato.
+        /// </summary>
+        /// <param name="tipoContacto">Objeto contendo os dados do novo tipo de contato.</param>
+        /// <returns>Retorna um status 201 Created com o tipo de contato criado, incluindo o URI do novo recurso; retorna 500 Internal Server Error em caso de falha.</returns>
+
         [HttpPost]
         public async Task<ActionResult<TipoContacto>> PostTipoContacto(TipoContacto tipoContacto)
         {
@@ -83,7 +101,12 @@ namespace CommuniCare.Controllers
             return CreatedAtAction("GetTipoContacto", new { id = tipoContacto.TipoContactoId }, tipoContacto);
         }
 
-        // DELETE: api/TipoContactos/5
+        /// <summary>
+        /// Deleta um tipo de contato específico baseado no seu ID.
+        /// </summary>
+        /// <param name="id">ID do tipo de contato a ser deletado.</param>
+        /// <returns>Retorna 204 No Content se o tipo de contato for deletado com sucesso; retorna 404 Not Found se o tipo de contato não existir ou 500 Internal Server Error em caso de falha.</returns>
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTipoContacto(int id)
         {
@@ -98,6 +121,12 @@ namespace CommuniCare.Controllers
 
             return NoContent();
         }
+
+        /// <summary>
+        /// Verifica se existe um tipo de contato com o identificador especificado.
+        /// </summary>
+        /// <param name="id">ID do tipo de contato a verificar.</param>
+        /// <returns>Retorna true se o tipo de contato existir; retorna false caso contrário.</returns>
 
         private bool TipoContactoExists(int id)
         {

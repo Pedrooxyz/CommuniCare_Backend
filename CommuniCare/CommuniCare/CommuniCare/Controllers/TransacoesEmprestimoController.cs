@@ -20,14 +20,23 @@ namespace CommuniCare.Controllers
             _context = context;
         }
 
-        // GET: api/TransacaoEmprestimos
+        /// <summary>
+        /// Obtém a lista de todas as transações de empréstimo.
+        /// </summary>
+        /// <returns>Retorna uma lista de transações de empréstimo ou 500 Internal Server Error em caso de falha.</returns>
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TransacaoEmprestimo>>> GetTransacaoEmprestimos()
         {
             return await _context.TransacoesEmprestimo.ToListAsync();
         }
 
-        // GET: api/TransacaoEmprestimos/5
+        /// <summary>
+        /// Obtém os detalhes de uma transação de empréstimo específica, baseada no seu ID.
+        /// </summary>
+        /// <param name="id">ID da transação de empréstimo a ser obtida.</param>
+        /// <returns>Retorna a transação de empréstimo correspondente ao ID ou 404 Not Found se a transação não existir.</returns>
+
         [HttpGet("{id}")]
         public async Task<ActionResult<TransacaoEmprestimo>> GetTransacaoEmprestimo(int id)
         {
@@ -41,8 +50,13 @@ namespace CommuniCare.Controllers
             return transacaoEmprestimo;
         }
 
-        // PUT: api/TransacaoEmprestimos/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Atualiza os dados de uma transação de empréstimo existente.
+        /// </summary>
+        /// <param name="id">ID da transação de empréstimo a ser atualizada.</param>
+        /// <param name="transacaoEmprestimo">Objeto contendo os dados atualizados da transação de empréstimo.</param>
+        /// <returns>Retorna 204 No Content se a atualização for bem-sucedida; retorna 400 Bad Request se os dados não coincidirem; 404 Not Found se a transação de empréstimo não existir ou 500 Internal Server Error em caso de falha.</returns>
+
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTransacaoEmprestimo(int id, TransacaoEmprestimo transacaoEmprestimo)
         {
@@ -72,8 +86,12 @@ namespace CommuniCare.Controllers
             return NoContent();
         }
 
-        // POST: api/TransacaoEmprestimos
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Cria uma nova transação de empréstimo.
+        /// </summary>
+        /// <param name="transacaoEmprestimo">Objeto contendo os dados da nova transação de empréstimo.</param>
+        /// <returns>Retorna um status 201 Created com a transação de empréstimo criada, incluindo o URI do novo recurso; retorna 500 Internal Server Error em caso de falha.</returns>
+
         [HttpPost]
         public async Task<ActionResult<TransacaoEmprestimo>> PostTransacaoEmprestimo(TransacaoEmprestimo transacaoEmprestimo)
         {
@@ -97,7 +115,12 @@ namespace CommuniCare.Controllers
             return CreatedAtAction("GetTransacaoEmprestimo", new { id = transacaoEmprestimo.TransacaoId }, transacaoEmprestimo);
         }
 
-        // DELETE: api/TransacaoEmprestimos/5
+        /// <summary>
+        /// Deleta uma transação de empréstimo específica baseada no seu ID.
+        /// </summary>
+        /// <param name="id">ID da transação de empréstimo a ser deletada.</param>
+        /// <returns>Retorna 204 No Content se a transação de empréstimo for deletada com sucesso; retorna 404 Not Found se a transação de empréstimo não existir ou 500 Internal Server Error em caso de falha.</returns>
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTransacaoEmprestimo(int id)
         {
@@ -112,6 +135,12 @@ namespace CommuniCare.Controllers
 
             return NoContent();
         }
+
+        /// <summary>
+        /// Verifica se existe uma transação de empréstimo com o identificador especificado.
+        /// </summary>
+        /// <param name="id">ID da transação de empréstimo a verificar.</param>
+        /// <returns>Retorna true se a transação de empréstimo existir; retorna false caso contrário.</returns>
 
         private bool TransacaoEmprestimoExists(int id)
         {

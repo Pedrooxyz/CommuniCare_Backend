@@ -268,21 +268,21 @@ namespace CommuniCareTests
                 };
                 pedido.Voluntariados.Add(voluntariado);
 
-                // Mock Voluntariados DbSet
+                
                 var voluntariados = new List<Voluntariado> { voluntariado }.AsQueryable().BuildMockDbSet();
 
-                // Mock Utilizadores DbSet with FindAsync
+                
                 var adminUser = new Utilizador { UtilizadorId = 10, TipoUtilizadorId = 2 };
                 var mockUtilizadoresDbSet = new Mock<DbSet<Utilizador>>();
                 mockUtilizadoresDbSet.Setup(m => m.FindAsync(10)).ReturnsAsync(adminUser);
 
-                // Mock Notificacoes
+                
                 var notificacaos = new List<Notificacao>();
                 var notificacaosMock = new Mock<DbSet<Notificacao>>();
                 notificacaosMock.Setup(m => m.Add(It.IsAny<Notificacao>()))
                     .Callback<Notificacao>(n => notificacaos.Add(n));
 
-                // Mock context
+                
                 var mockContext = new Mock<CommuniCareContext>();
                 mockContext.Setup(c => c.Voluntariados).Returns(voluntariados.Object);
                 mockContext.Setup(c => c.Utilizadores).Returns(mockUtilizadoresDbSet.Object);
@@ -342,28 +342,28 @@ namespace CommuniCareTests
             };
             pedido.Voluntariados.Add(voluntariado);
 
-            // Mock Voluntariados DbSet
+            
             var voluntariados = new List<Voluntariado> { voluntariado }.AsQueryable().BuildMockDbSet();
 
-            // Properly mock FindAsync for admin user
+            
             var adminUser = new Utilizador { UtilizadorId = 10, TipoUtilizadorId = 2 };
             var mockUtilizadoresDbSet = new Mock<DbSet<Utilizador>>();
             mockUtilizadoresDbSet.Setup(m => m.FindAsync(10)).ReturnsAsync(adminUser);
 
-            // Mock Notificacoes
+           
             var notificacaos = new List<Notificacao>();
             var mockNotificacaosDbSet = new Mock<DbSet<Notificacao>>();
             mockNotificacaosDbSet.Setup(m => m.Add(It.IsAny<Notificacao>()))
                 .Callback<Notificacao>(n => notificacaos.Add(n));
 
-            // Setup mocked context
+            
             var mockContext = new Mock<CommuniCareContext>();
             mockContext.Setup(c => c.Voluntariados).Returns(voluntariados.Object);
             mockContext.Setup(c => c.Utilizadores).Returns(mockUtilizadoresDbSet.Object);
             mockContext.Setup(c => c.Notificacaos).Returns(mockNotificacaosDbSet.Object);
             mockContext.Setup(c => c.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
-            // Setup controller with authenticated admin user
+            
             var controller = new VoluntariadosController(mockContext.Object);
             controller.ControllerContext = new ControllerContext
             {
@@ -416,7 +416,7 @@ namespace CommuniCareTests
             var voluntariado = new Voluntariado
             {
                 IdVoluntariado = 1,
-                Estado = EstadoVoluntariado.Aceite, // Não pendente
+                Estado = EstadoVoluntariado.Aceite, 
                 PedidoId = 1,
                 UtilizadorId = 10,
                 Pedido = new PedidoAjuda

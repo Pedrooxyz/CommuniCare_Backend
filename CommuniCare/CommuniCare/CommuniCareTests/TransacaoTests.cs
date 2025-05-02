@@ -62,7 +62,7 @@ namespace CommuniCareTests
         }
     }.AsQueryable();
 
-            var mockSet = transacoes.BuildMockDbSet(); // supports ToListAsync automatically
+            var mockSet = transacoes.BuildMockDbSet();
 
             _mockContext = new Mock<CommuniCareContext>();
             _mockContext.Setup(c => c.Transacoes).Returns(mockSet.Object);
@@ -74,7 +74,7 @@ namespace CommuniCareTests
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.IsNull(result.Result); // because it's an implicit Ok(historico)
+            Assert.IsNull(result.Result); 
             Assert.IsNotNull(result.Value);
 
             var historico = result.Value.ToList();
@@ -99,7 +99,7 @@ namespace CommuniCareTests
             var utilizadorId = 1;
             var emptyTransacoes = new List<Transacao>().AsQueryable();
 
-            var mockSet = emptyTransacoes.BuildMockDbSet(); // requires MockQueryable.Moq
+            var mockSet = emptyTransacoes.BuildMockDbSet(); 
 
             var mockContext = new Mock<CommuniCareContext>();
             mockContext.Setup(c => c.Transacoes).Returns(mockSet.Object);
@@ -111,11 +111,11 @@ namespace CommuniCareTests
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.IsNull(result.Result); // because it's an implicit Ok(historico), .Result is null
+            Assert.IsNull(result.Result); 
             Assert.IsNotNull(result.Value);
 
             var historico = result.Value.ToList();
-            Assert.AreEqual(0, historico.Count); // Expecting no entries
+            Assert.AreEqual(0, historico.Count); 
         }
         #endregion
     }

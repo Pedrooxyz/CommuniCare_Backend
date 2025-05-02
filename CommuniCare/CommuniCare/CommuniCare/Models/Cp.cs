@@ -1,13 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CommuniCare.Models;
-
-public partial class Cp
+namespace CommuniCare.Models
 {
-    public string CPostal { get; set; }
+    public partial class Cp
+    {
+        #region Atributos
 
-    public string? Localidade { get; set; }
+        string cPostal = null!;
 
-    public virtual ICollection<Morada> Morada { get; set; } = new List<Morada>();
+        string? localidade;
+        
+        ICollection<Morada> morada = new List<Morada>();
+
+        #endregion
+
+        #region Propriedades
+
+        public string CPostal
+        {
+            get { return cPostal; }
+            set { cPostal = value; }
+        }
+
+        public string? Localidade
+        {
+            get { return localidade; }
+            set { localidade = value; }
+        }
+
+        public virtual ICollection<Morada> Morada
+        {
+            get { return morada; }
+            set { morada = value; }
+        }
+
+        #endregion
+
+        #region Construtores
+
+        #endregion
+    }
 }

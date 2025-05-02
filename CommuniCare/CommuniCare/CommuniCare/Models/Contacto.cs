@@ -1,19 +1,70 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CommuniCare.Models;
-
-public partial class Contacto
+namespace CommuniCare.Models
 {
-    public int ContactoId { get; set; }
+    public partial class Contacto
+    {
 
-    public string? NumContacto { get; set; }
+        #region Atributos
 
-    public int? UtilizadorId { get; set; }
+        int contactoId;
 
-    public int TipoContactoId { get; set; }
+        string? numContacto;
 
-    public virtual TipoContacto TipoContacto { get; set; } = null!;
+        int? utilizadorId;
 
-    public virtual Utilizador Utilizador { get; set; } = null!;
+        int tipoContactoId;
+
+        TipoContacto tipoContacto = null!;
+
+        Utilizador utilizador = null!;
+
+        #endregion
+
+        #region Propriedades
+
+        public int ContactoId
+        {
+            get { return contactoId; }
+            set { contactoId = value; }
+        }
+
+        public string? NumContacto
+        {
+            get { return numContacto; }
+            set { numContacto = value; }
+        }
+
+        public int? UtilizadorId
+        {
+            get { return utilizadorId; }
+            set { utilizadorId = value; }
+        }
+
+        public int TipoContactoId
+        {
+            get { return tipoContactoId; }
+            set { tipoContactoId = value; }
+        }
+
+        public virtual TipoContacto TipoContacto
+        {
+            get { return tipoContacto; }
+            set { tipoContacto = value; }
+        }
+
+        public virtual Utilizador Utilizador
+        {
+            get { return utilizador; }
+            set { utilizador = value; }
+        }
+
+        #endregion
+
+        #region Construtores
+
+        #endregion
+        
+    }
 }

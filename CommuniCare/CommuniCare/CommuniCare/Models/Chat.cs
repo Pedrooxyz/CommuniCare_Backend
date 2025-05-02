@@ -1,15 +1,52 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CommuniCare.Models;
-
-public partial class Chat
+namespace CommuniCare.Models
 {
-    public int ChatId { get; set; }
+    public partial class Chat
+    {
+        #region Atributos
 
-    public int UtilizadorId { get; set; }
+        int chatId;
 
-    public virtual ICollection<Mensagem> Mensagems { get; set; } = new List<Mensagem>();
+        int utilizadorId;
 
-    public virtual Utilizador Utilizador { get; set; } = null!;
+        ICollection<Mensagem> mensagems = new List<Mensagem>();
+        
+        Utilizador utilizador = null!;
+
+        #endregion
+
+        #region Propriedades
+
+        public int ChatId
+        {
+            get { return chatId; }
+            set { chatId = value; }
+        }
+
+        public int UtilizadorId
+        {
+            get { return utilizadorId; }
+            set { utilizadorId = value; }
+        }
+
+        public virtual ICollection<Mensagem> Mensagems
+        {
+            get { return mensagems; }
+            set { mensagems = value; }
+        }
+
+        public virtual Utilizador Utilizador
+        {
+            get { return utilizador; }
+            set { utilizador = value; }
+        }
+
+        #endregion
+
+        #region Construtores
+
+        #endregion
+    }
 }

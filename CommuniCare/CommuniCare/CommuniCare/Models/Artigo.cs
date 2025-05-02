@@ -1,39 +1,126 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CommuniCare.Models;
+namespace CommuniCare.Models{
 
 
-public enum EstadoArtigo
-{
-    Disponivel,
-    Indisponivel
-}
+    public enum EstadoArtigo
+    {
+        Disponivel,
+        Indisponivel
+    }
 
-public partial class Artigo
-{
-    
-    public int ArtigoId { get; set; }
+    public partial class Artigo
+    {
 
-    public string? NomeArtigo { get; set; }
+        #region Atributos
 
-    public string? DescArtigo { get; set; }
+        int artigoId;
 
-    public int? CustoCares { get; set; }
+        string? nomeArtigo;
 
-    public int LojaId { get; set; }
+        string? descArtigo;
 
-    public int? TransacaoId { get; set; }
+        int? custoCares;
 
-    public int QuantidadeDisponivel { get; set; }
+        int lojaId;
 
-    public string? FotografiaArt { get; set; }
+        int? transacaoId;
 
-    public virtual Loja Loja { get; set; } = null!;
+        int quantidadeDisponivel;
 
-    public virtual Venda? Transacao { get; set; }
+        string? fotografiaArt;
 
-    public EstadoArtigo Estado { get; set; } = EstadoArtigo.Disponivel;
+        Loja loja = null!;
 
-    public virtual ICollection<Favoritos> FavoritoPor { get; set; } = new List<Favoritos>();
+        Venda? transacao;
+
+        EstadoArtigo estado = EstadoArtigo.Disponivel;
+
+        ICollection<Favoritos> favoritoPor = new List<Favoritos>();
+
+        #endregion
+
+        #region Propriedades
+
+        public int ArtigoId
+        {
+            get { return artigoId; }
+            set { artigoId = value; }
+        }
+
+        public string? NomeArtigo
+        {
+            get { return nomeArtigo; }
+            set { nomeArtigo = value; }
+        }
+
+        public string? DescArtigo
+        {
+            get { return descArtigo; }
+            set { descArtigo = value; }
+        }
+
+        public int? CustoCares
+        {
+            get { return custoCares; }
+            set { custoCares = value; }
+        }
+
+        public int LojaId
+        {
+            get { return lojaId; }
+            set { lojaId = value; }
+        }
+
+        public int? TransacaoId
+        {
+            get { return transacaoId; }
+            set { transacaoId = value; }
+        }
+
+        public int QuantidadeDisponivel
+        {
+            get { return quantidadeDisponivel; }
+            set { quantidadeDisponivel = value; }
+        }
+
+        public string? FotografiaArt
+        {
+            get { return fotografiaArt; }
+            set { fotografiaArt = value; }
+        }
+
+        public EstadoArtigo Estado
+        {
+            get { return estado; }
+            set { estado = value; }
+        }
+
+        public virtual Loja Loja
+        {
+            get { return loja; }
+            set { loja = value; }
+        }
+
+        public virtual Venda? Transacao
+        {
+            get { return transacao; }
+            set { transacao = value; }
+        }
+
+        public virtual ICollection<Favoritos> FavoritoPor
+        {
+            get { return favoritoPor; }
+            set { favoritoPor = value; }
+        }
+
+        #endregion
+
+        #region Construtores
+
+        #endregion
+        
+    }
+
 }

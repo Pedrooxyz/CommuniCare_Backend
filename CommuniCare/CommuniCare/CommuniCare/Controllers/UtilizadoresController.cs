@@ -140,7 +140,7 @@ namespace CommuniCare.Controllers
         /// <param name="dto">Objeto DTO contendo os dados necessários para o registro.</param>
         /// <returns>Retorna um status 200 OK se a conta for criada com sucesso, aguardando aprovação de um administrador.</returns>
         #endregion
-        
+
         [HttpPost("RegisterUtilizador")]
         public async Task<IActionResult> Register([FromBody] UtilizadorDTO dto)
         {
@@ -410,6 +410,49 @@ namespace CommuniCare.Controllers
         /// </summary>
         /// <param name="id">ID do utilizador a ser aprovado.</param>
         /// <returns>Retorna 200 Ok com mensagem de sucesso ou 404 Not Found se o utilizador não for encontrado, ou 400 Bad Request se o utilizador já estiver ativo.</returns>
+        [Authorize]
+        [HttpPut("/MudarTipoUtilizador/{id:int}")]
+        public async Task<IActionResult> ChangeUserRole(
+    int id,
+    [FromBody] ChangeRoleRequest request,
+    CancellationToken ct)
+        {
+            
+            string? tipoClaim = User.FindFirstValue(ClaimTypes.Role);   
+
+            if (tipoClaim != "2")                  
+                return Unauthorized("Só administradores podem mudar o tipo de utilizador.");
+
+           
+            
+            if (request.NewTipoUtilizadorId is not (1 or 2))
+                return BadRequest("NewTipoUtilizadorId must be 1 or 2.");
+
+            
+            var target = await _context.Utilizadores
+                                       .FirstOrDefaultAsync(u => u.UtilizadorId == id, ct);
+
+            if (target is null)
+                return NotFound($"No user with id {id}");
+
+            
+            if (target.TipoUtilizadorId == request.NewTipoUtilizadorId)
+                return NoContent();
+
+            
+            target.TipoUtilizadorId = request.NewTipoUtilizadorId;
+            target.SecurityStamp = Guid.NewGuid().ToString();   
+
+            await _context.SaveChangesAsync(ct);
+
+            return Ok(new
+            {
+                target.UtilizadorId,
+                target.NomeUtilizador,
+                target.TipoUtilizadorId
+            });
+        }
+
         [HttpPut("AprovarUtilizador-(admin)/{id}")]
         public async Task<IActionResult> AprovarUtilizador(int id)
         {
@@ -451,6 +494,7 @@ namespace CommuniCare.Controllers
         /// </summary>
         /// <param name="id">ID do utilizador a ser rejeitado.</param>
         /// <returns>Retorna 200 Ok com mensagem de sucesso ou 404 Not Found se o utilizador não for encontrado, ou 400 Bad Request se o utilizador já estiver inativo ou ativo.</returns>
+        [Authorize]
         [HttpPut("RejeitarUtilizador-(admin)/{id}")]
         public async Task<IActionResult> RejeitarUtilizador(int id)
         {
@@ -566,7 +610,7 @@ namespace CommuniCare.Controllers
             if (!BCrypt.Net.BCrypt.Verify(dto.Password, utilizador.Password))
                 return Unauthorized("Email ou password inválidos.");
 
-            var token = GerarToken(utilizador.UtilizadorId, dto.Email, utilizador.TipoUtilizadorId);
+            var token = GerarToken(utilizador.UtilizadorId, dto.Email, utilizador.TipoUtilizadorId, utilizador);
 
             return Ok(new
             {
@@ -582,7 +626,7 @@ namespace CommuniCare.Controllers
         /// <param name="email">Email do utilizador.</param>
         /// <param name="tipoUtilizadorId">ID do tipo de utilizador.</param>
         /// <returns>Retorna o token JWT gerado.</returns>
-        private string GerarToken(int utilizadorId, string email, int tipoUtilizadorId)
+        private string GerarToken(int utilizadorId, string email, int tipoUtilizadorId, Utilizador user)
         {
             var jwtSettings = _configuration.GetSection("JwtSettings").Get<JwtSettings>();
             var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSettings.SecretKey));
@@ -592,7 +636,8 @@ namespace CommuniCare.Controllers
             {
             new Claim(ClaimTypes.NameIdentifier, utilizadorId.ToString()),
             new Claim(ClaimTypes.Name, email),
-            new Claim(ClaimTypes.Role, tipoUtilizadorId.ToString())
+            new Claim(ClaimTypes.Role, tipoUtilizadorId.ToString()),
+            new Claim("sstamp",      user.SecurityStamp) 
             };
 
             var token = new JwtSecurityToken(

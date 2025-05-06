@@ -318,6 +318,8 @@ namespace CommuniCare.Models{
             set { artigosFavoritos = value; }
         }
 
+        public string SecurityStamp { get; set; } = Guid.NewGuid().ToString();
+
         #endregion
 
         #region Metodos

@@ -66,6 +66,30 @@ public class Program // Alteração: tornou-se pública
                 ValidateLifetime = true,
                 ClockSkew = TimeSpan.Zero
             };
+
+            options.Events = new JwtBearerEvents
+            {
+                OnTokenValidated = async context =>
+                {
+                    var principal = context.Principal!;
+                    var userId = int.Parse(
+                                        principal.FindFirstValue(ClaimTypes.NameIdentifier)!);
+                    var tokenStamp = principal.FindFirstValue("sstamp");
+
+                    var db = context.HttpContext.RequestServices
+                                              .GetRequiredService<CommuniCareContext>();
+
+                    var currentStamp = await db.Utilizadores
+                                               .Where(u => u.UtilizadorId == userId)
+                                               .Select(u => u.SecurityStamp)
+                                               .SingleOrDefaultAsync();
+
+                    if (currentStamp is null || currentStamp != tokenStamp)
+                    {
+                        context.Fail("Token não valido, volte a fazer o login.");
+                    }
+                }
+            };
         });
 
         // Serviços essenciais

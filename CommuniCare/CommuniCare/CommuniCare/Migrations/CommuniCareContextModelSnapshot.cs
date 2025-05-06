@@ -217,14 +217,14 @@ namespace CommuniCare.Migrations
                     b.Property<string>("FotografiaItem")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("IdEmprestador")
+                        .HasColumnType("int");
+
                     b.Property<string>("NomeItem")
                         .HasMaxLength(255)
                         .IsUnicode(false)
                         .HasColumnType("varchar(255)")
                         .HasColumnName("nomeItem");
-
-                    b.Property<int>("idEmprestador")
-                        .HasColumnType("int");
 
                     b.HasKey("ItemId")
                         .HasName("PK__ItemEmpr__56A1284AB54FF227");
@@ -602,6 +602,10 @@ namespace CommuniCare.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(255)")
                         .HasColumnName("password");
+
+                    b.Property<string>("SecurityStamp")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("TipoUtilizadorId")
                         .HasColumnType("int")

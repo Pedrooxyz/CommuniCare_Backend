@@ -815,7 +815,7 @@ namespace CommuniCare.Controllers
 
 
             var tokenRecuperacao = GerarTokenRecuperacaoSenha(utilizador.UtilizadorId);
-            var resetLink = $"{Request.Scheme}://{Request.Host}/api/utilizadores/resetar-senha?token={tokenRecuperacao}";
+            var resetLink = $"http://localhost:3000/resetpassword?token={tokenRecuperacao}";
 
 
             var emailService = new EmailService(_configuration);

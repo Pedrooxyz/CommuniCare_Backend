@@ -1037,6 +1037,22 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "CommuniCare.Controllers.NotificacoesController",
+    "Method": "MarcarComoLida",
+    "RelativePath": "api/Notificacoes/Notificacoes/MarcarComoLida/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",
     "Method": "GetPedidoAjuda",
     "RelativePath": "api/PedidosAjuda",
@@ -1851,6 +1867,27 @@
       {
         "Name": "idVoluntariado",
         "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.UtilizadoresController",
+    "Method": "ChangeUserRole",
+    "RelativePath": "MudarTipoUtilizador/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "ChangeRoleRequest",
         "IsRequired": true
       }
     ],

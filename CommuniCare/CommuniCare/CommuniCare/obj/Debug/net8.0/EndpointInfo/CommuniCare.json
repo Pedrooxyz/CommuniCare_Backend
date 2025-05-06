@@ -1768,6 +1768,29 @@
         }
       }
     },
+    "/api/Notificacoes/Notificacoes/MarcarComoLida/{id}": {
+      "put": {
+        "tags": [
+          "Notificacoes"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/PedidosAjuda": {
       "get": {
         "tags": [
@@ -2735,6 +2758,48 @@
         }
       }
     },
+    "/MudarTipoUtilizador/{id}": {
+      "put": {
+        "tags": [
+          "Utilizadores"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeRoleRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeRoleRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeRoleRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Utilizadores/AprovarUtilizador-(admin)/{id}": {
       "put": {
         "tags": [
@@ -3329,6 +3394,16 @@
             "nullable": true
           },
           "lojaId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ChangeRoleRequest": {
+        "type": "object",
+        "properties": {
+          "newTipoUtilizadorId": {
             "type": "integer",
             "format": "int32"
           }
@@ -4302,6 +4377,10 @@
             "items": {
               "$ref": "#/components/schemas/Favoritos"
             },
+            "nullable": true
+          },
+          "securityStamp": {
+            "type": "string",
             "nullable": true
           }
         },

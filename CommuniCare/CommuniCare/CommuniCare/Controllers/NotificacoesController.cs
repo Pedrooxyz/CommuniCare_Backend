@@ -166,5 +166,23 @@ namespace CommuniCare.Controllers
             return Ok(notificacoes);
         }
 
+        /// <summary>
+        /// Marca uma notificação como lida.
+        /// </summary>
+        /// <returns>A notificação alterada, ou NotFound se não encontrar a notificação.</returns>
+        [HttpPut("Notificacoes/MarcarComoLida/{id}")]
+        [Authorize]
+        public async Task<IActionResult> MarcarComoLida(int id)
+        {
+            var notificacao = await _context.Notificacaos.FindAsync(id);
+            if (notificacao == null)
+            {
+                return NotFound("Notificação não encontrada.");
+            }
+            notificacao.Lida = 1;
+            await _context.SaveChangesAsync();
+            return Ok(notificacao);
+        }
+
     }
 }

@@ -33,6 +33,74 @@ namespace CommuniCare.Controllers
             return await _context.ItensEmprestimo.ToListAsync();
         }
 
+        /// <summary>
+        /// Obtém todos os itens de empréstimo para um item específico.
+        /// </summary>
+        /// <param name="itemId">O ID do item.</param>
+        /// <returns>Uma lista de itens de empréstimo do item especificado.</returns>
+        [HttpGet("{itemId}")]
+        public async Task<ActionResult<IEnumerable<ItemEmprestimo>>> GetItemEmprestimosPorItemId(int itemId)
+        {
+            var itensEmprestimo = await _context.ItensEmprestimo
+                .Where(ie => ie.ItemId == itemId)
+                .ToListAsync();
+
+            if (itensEmprestimo == null || itensEmprestimo.Count == 0)
+            {
+                return NotFound();
+            }
+
+            return itensEmprestimo;
+        }
+
+        /// <summary>
+        /// Obtém a foto do utilizador dono associado a um item de empréstimo específico.
+        /// </summary>
+        /// <param name="itemEmprestimoId">O ID do item de empréstimo.</param>
+        /// <returns>A foto do utilizador dono.</returns>
+        [HttpGet("{itemEmprestimoId}/foto-emprestador")]
+        public async Task<ActionResult<string?>> GetFotoEmprestador(int itemEmprestimoId)
+        {
+            //Console.WriteLine($"Início da execução da função GetFotoEmprestador com o itemEmprestimoId: {itemEmprestimoId}");
+
+            try
+            {
+                var relacaoEmprestador = await _context.ItemEmprestimoUtilizadores
+                    .Where(rel => rel.ItemId == itemEmprestimoId && rel.TipoRelacao == "Dono")
+                    .Select(rel => new
+                    {
+                        rel.Utilizador.UtilizadorId,
+                        rel.Utilizador.NomeUtilizador,
+                        rel.Utilizador.FotoUtil
+                    })
+                    .FirstOrDefaultAsync();
+
+                if (relacaoEmprestador == null)
+                {
+                    //Console.WriteLine("Nenhum utilizador dono encontrado para este item.");
+                    return NotFound();
+                }
+
+                // Logs detalhados do utilizador encontrado
+                //Console.WriteLine($"Utilizador encontrado: ID = {relacaoEmprestador.UtilizadorId}, Nome = {relacaoEmprestador.NomeUtilizador}");
+                //Console.WriteLine($"Foto do emprestador encontrada: {relacaoEmprestador.FotoUtil}");
+
+                if (relacaoEmprestador.FotoUtil == null)
+                {
+                    //Console.WriteLine("Foto do emprestador não encontrada.");
+                    return NotFound();
+                }
+
+                //Console.WriteLine("Foto do emprestador retornada com sucesso.");
+                return relacaoEmprestador.FotoUtil;
+            }
+            catch (Exception ex)
+            {
+                //Console.WriteLine($"Erro na execução: {ex.Message}");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
+        }
+
 
         #region CONTROLLERS AUTOMÁTICOS
         /// <summary>

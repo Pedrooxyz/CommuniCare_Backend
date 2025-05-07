@@ -571,9 +571,19 @@ namespace CommuniCare.Controllers
         /// </summary>
         /// <returns>Lista de itens com pendências administrativas.</returns>
         [HttpGet("Admin/ItensPendentes")]
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         public async Task<IActionResult> ObterItensEmprestimoPendentesAdmin()
         {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+                return Unauthorized();
+
+            int adminId = int.Parse(userIdClaim.Value);
+
+            var admin = await _context.Utilizadores.FindAsync(adminId);
+            if (admin == null || admin.TipoUtilizadorId != 2)
+                return Forbid("Apenas administradores podem rejeitar itens.");
+                
             var itens = await _context.ItensEmprestimo
                 .Include(i => i.Emprestimos)
                     .ThenInclude(e => e.Transacao)

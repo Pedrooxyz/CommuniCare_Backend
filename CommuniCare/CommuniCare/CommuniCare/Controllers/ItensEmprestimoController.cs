@@ -566,6 +566,33 @@ namespace CommuniCare.Controllers
         }
 
         /// <summary>
+        /// Retorna os itens de empréstimo que requerem ações administrativas.
+        /// </summary>
+        /// <returns>Lista de itens com pendências administrativas.</returns>
+        [HttpGet("Admin/ItensPendentes")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ObterItensEmprestimoPendentesAdmin()
+        {
+            var itens = await _context.ItensEmprestimo
+                .Include(i => i.Emprestimos)
+                    .ThenInclude(e => e.Transacao)
+                .Where(i =>
+                    // Critério 1: Disponível = 0 mas não está marcado como permanentemente indisponível
+                    i.Disponivel == 0 ||
+
+                    // Critério 2: Algum empréstimo com DataInicio == null
+                    i.Emprestimos.Any(e => e.DataIni == null) ||
+
+                    // Critério 3: Algum empréstimo sem transação associada
+                    i.Emprestimos.Any(e => e.Transacao == null)
+                )
+                .ToListAsync();
+
+            return Ok(itens);
+        }
+
+
+        /// <summary>
         /// Remove permanentemente um item de empréstimo, tornando-o indisponível.
         /// Apenas o "Dono" do item pode realizar essa ação.
         /// </summary>

@@ -172,7 +172,8 @@ namespace CommuniCare.Controllers
                 NPessoas = pedidoData.NPessoas,
                 UtilizadorId = utilizadorId,
                 Estado = EstadoPedido.Pendente,
-                FotografiaPA = pedidoData.FotografiaPA
+                FotografiaPA = pedidoData.FotografiaPA,
+                RecompensaCares = pedidoData.NHoras * 50
             };
 
             _context.PedidosAjuda.Add(pedido);
@@ -590,5 +591,28 @@ namespace CommuniCare.Controllers
 
             return Ok(meusPedidos);
         }
+
+        /// <summary>
+        /// Retorna todos os pedidos que requerem ações do administrador.
+        /// </summary>
+        /// <returns>Lista de pedidos pendentes de ação administrativa.</returns>
+        [HttpGet("Admin/Pendentes")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ObterPedidosPendentesAdmin()
+        {
+            var pedidos = await _context.PedidosAjuda
+                .Include(p => p.Voluntariados)
+                .Include(p => p.Transacao)
+                .Where(p =>
+                    p.Estado == EstadoPedido.Pendente ||
+                    (p.Estado == EstadoPedido.Concluido && p.Transacao == null) ||
+                    p.Voluntariados.Any(v => v.Estado == EstadoVoluntariado.Pendente)
+                )
+                .ToListAsync();
+
+            return Ok(pedidos);
+        }
+
+
     }
 }

@@ -41,18 +41,18 @@ namespace CommuniCare.Controllers
 
 
         #region CONTROLLERS AUTOMÁTICOS
-        //[HttpGet("{id}")]
-        //public async Task<ActionResult<Artigo>> GetArtigo(int id)
-        //{
-        //    var artigo = await _context.Artigos.FindAsync(id);
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Artigo>> GetArtigo(int id)
+        {
+            var artigo = await _context.Artigos.FindAsync(id);
 
-        //    if (artigo == null)
-        //    {
-        //        return NotFound();
-        //    }
+            if (artigo == null)
+            {
+                return NotFound();
+            }
 
-        //    return artigo;
-        //}
+            return artigo;
+        }
 
         //[HttpPut("{id}")]
         //public async Task<IActionResult> PutArtigo(int id, Artigo artigo)

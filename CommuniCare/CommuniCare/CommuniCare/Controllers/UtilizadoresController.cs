@@ -402,7 +402,26 @@ namespace CommuniCare.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Verifica se o utilizador é administrador.
+        /// </summary>
+        /// <returns>Retorna true se o utilizador for administrador (tipoClaim == "2"), caso contrário retorna false.</returns>
+        [HttpGet("VerificarAdmin")]
+        [Authorize]
+        public IActionResult VerificarAdmin()
+        {
+            // Obtém o valor do claim de tipo de utilizador
+            string? tipoClaim = User.FindFirstValue(ClaimTypes.Role);
 
+            // Verifica se o tipo de utilizador é 2 (administrador)
+            if (tipoClaim == "2")
+            {
+                return Ok(true); // Retorna true se for administrador
+            }
+            
+            return Ok(false); // Retorna false se não for administrador
+        }
+        
         #region Administrador
 
         /// <summary>

@@ -234,7 +234,7 @@ namespace CommuniCare.Controllers
             {
                 NomeItem = itemData.NomeItem,
                 DescItem = itemData.DescItem,
-                Disponivel = 0,
+                Disponivel = EstadoItemEmprestimo.Indisponivel,
                 ComissaoCares = itemData.ComissaoCares,
                 FotografiaItem = itemData.FotografiaItem
             };
@@ -326,7 +326,7 @@ namespace CommuniCare.Controllers
                 return BadRequest("Não pode adquirir o item que você mesmo colocou.");
             }
 
-            if (itemEmprestimo.Disponivel == 0)
+            if (itemEmprestimo.Disponivel == EstadoItemEmprestimo.Indisponivel)
             {
                 return BadRequest("Este item não está disponível para empréstimo.");
             }
@@ -410,10 +410,10 @@ namespace CommuniCare.Controllers
             if (item == null)
                 return NotFound("Item não encontrado.");
 
-            if (item.Disponivel == 1)
+            if (item.Disponivel == EstadoItemEmprestimo.Disponivel)
                 return BadRequest("Este item já está validado e disponível.");
 
-            item.Disponivel = 1;
+            item.Disponivel = EstadoItemEmprestimo.Disponivel;
 
 
             var relacaoDono = await _context.ItemEmprestimoUtilizadores
@@ -530,7 +530,7 @@ namespace CommuniCare.Controllers
                 .ToListAsync();
 
             var itensDisponiveis = await _context.ItensEmprestimo
-                .Where(item => item.Disponivel == 1 && !meusItemIds.Contains(item.ItemId))
+                .Where(item => item.Disponivel == EstadoItemEmprestimo.Disponivel && !meusItemIds.Contains(item.ItemId))
                 .ToListAsync();
 
             return Ok(itensDisponiveis);
@@ -559,8 +559,9 @@ namespace CommuniCare.Controllers
                 .ToListAsync();
 
             var meusItens = await _context.ItensEmprestimo
-                .Where(item => meusItemIds.Contains(item.ItemId))
+                .Where(item => meusItemIds.Contains(item.ItemId) && item.Disponivel != EstadoItemEmprestimo.IndisponivelPermanentemente)
                 .ToListAsync();
+
 
             return Ok(meusItens);
         }
@@ -644,7 +645,7 @@ namespace CommuniCare.Controllers
                 return Unauthorized("Você não tem permissão para alterar este item.");
             }
 
-            itemEmprestimo.Disponivel = 0;
+            itemEmprestimo.Disponivel = EstadoItemEmprestimo.IndisponivelPermanentemente;
 
             _context.ItensEmprestimo.Update(itemEmprestimo);
             await _context.SaveChangesAsync();

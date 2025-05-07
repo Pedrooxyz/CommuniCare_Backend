@@ -11,6 +11,14 @@ using System.Collections.Generic;
 
 namespace CommuniCare.Models
 {
+
+    public enum EstadoItemEmprestimo
+    {
+        Indisponivel = 0,
+        Disponivel = 1,
+        IndisponivelPermanentemente = 2
+    }
+
     /// <summary>
     /// Representa um item disponível para empréstimo.
     /// </summary>
@@ -37,7 +45,7 @@ namespace CommuniCare.Models
         /// <summary>
         /// Indica se o item está disponível para empréstimo.
         /// </summary>
-        byte? disponivel;
+        EstadoItemEmprestimo? disponivel = EstadoItemEmprestimo.Indisponivel;
 
         /// <summary>
         /// Fotografia do item.
@@ -108,7 +116,7 @@ namespace CommuniCare.Models
         /// <summary>
         /// Obtém ou define a disponibilidade do item para empréstimo.
         /// </summary>
-        public byte? Disponivel
+        public EstadoItemEmprestimo? Disponivel
         {
             get { return disponivel; }
             set { disponivel = value; }

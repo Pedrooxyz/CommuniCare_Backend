@@ -1191,6 +1191,18 @@
         }
       }
     },
+    "/api/ItensEmprestimo/Admin/ItensPendentes": {
+      "get": {
+        "tags": [
+          "ItensEmprestimo"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/ItensEmprestimo/IndisponibilizarPermanenteItem/{itemId}": {
       "delete": {
         "tags": [
@@ -2047,6 +2059,18 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/api/PedidosAjuda/Admin/Pendentes": {
+      "get": {
+        "tags": [
+          "PedidosAjuda"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -3579,6 +3603,15 @@
         "type": "integer",
         "format": "int32"
       },
+      "EstadoItemEmprestimo": {
+        "enum": [
+          0,
+          1,
+          2
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
       "EstadoLoja": {
         "enum": [
           0,
@@ -3669,9 +3702,7 @@
             "nullable": true
           },
           "disponivel": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
+            "$ref": "#/components/schemas/EstadoItemEmprestimo"
           },
           "fotografiaItem": {
             "type": "string",

@@ -613,6 +613,16 @@
   },
   {
     "ContainingType": "CommuniCare.Controllers.ItensEmprestimoController",
+    "Method": "ObterItensEmprestimoPendentesAdmin",
+    "RelativePath": "api/ItensEmprestimo/Admin/ItensPendentes",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.ItensEmprestimoController",
     "Method": "AdquirirItem",
     "RelativePath": "api/ItensEmprestimo/AdquirirItem/{itemId}",
     "HttpMethod": "POST",
@@ -1118,6 +1128,16 @@
         "IsRequired": true
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",
+    "Method": "ObterPedidosPendentesAdmin",
+    "RelativePath": "api/PedidosAjuda/Admin/Pendentes",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {

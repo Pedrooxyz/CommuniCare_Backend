@@ -308,7 +308,7 @@ namespace CommuniCare.Controllers
             _context.Notificacaos.Add(notificacao);
 
 
-            item.Disponivel = 1;
+            item.Disponivel = EstadoItemEmprestimo.Disponivel;
 
 
             var relacoesCompradorRemover = await _context.ItemEmprestimoUtilizadores
@@ -375,7 +375,7 @@ namespace CommuniCare.Controllers
 
             foreach (var item in emprestimo.Items)
             {
-                item.Disponivel = 1;
+                item.Disponivel = EstadoItemEmprestimo.Disponivel;
 
                 var comprador = item.ItemEmprestimoUtilizadores
                     .FirstOrDefault(rel => rel.TipoRelacao == "Comprador")?.Utilizador;

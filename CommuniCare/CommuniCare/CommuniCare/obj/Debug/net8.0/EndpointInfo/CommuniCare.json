@@ -3425,7 +3425,7 @@
         }
       }
     },
-    "/api/Vendas/ComprarEmail": {
+    "/api/Vendas/Comprar": {
       "post": {
         "tags": [
           "Vendas"
@@ -3456,30 +3456,45 @@
         }
       }
     },
-    "/api/Vendas/ComprarDownload": {
-      "post": {
+    "/api/Vendas/Comprovativo/Email/{transacaoId}": {
+      "get": {
         "tags": [
           "Vendas"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PedidoCompraDTO"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PedidoCompraDTO"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/PedidoCompraDTO"
-              }
+        "parameters": [
+          {
+            "name": "transacaoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
             }
           }
-        },
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Vendas/Comprovativo/Download/{transacaoId}": {
+      "get": {
+        "tags": [
+          "Vendas"
+        ],
+        "parameters": [
+          {
+            "name": "transacaoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"

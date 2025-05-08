@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CommuniCare.Models;
+using CommuniCare.DTOs;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace CommuniCare.Controllers
 {
@@ -133,6 +136,75 @@ namespace CommuniCare.Controllers
         private bool ContactoExists(int id)
         {
             return _context.Contactos.Any(e => e.ContactoId == id);
+        }
+
+        /// <summary>
+        /// Obtém os contactos do utilizador autenticado.
+        /// </summary>
+        /// <returns>Retorna a lista de contactos do utilizador autenticado ou 401 Unauthorized se o utilizador não for autenticado.</returns>
+        [HttpGet("ContactosUtilizador")]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<IEnumerable<ContactoDTO>>> GetContactosUtilizador()
+        {
+            var idClaim = User.FindFirst(ClaimTypes.NameIdentifier) ?? User.FindFirst("sub");
+            if (idClaim is null) return Unauthorized();
+
+            if (!int.TryParse(idClaim.Value, out var userId))
+                return Unauthorized();
+
+            var contactos = await _context.Contactos
+                .AsNoTracking()
+                .Where(c => c.UtilizadorId == userId)
+                .Select(c => new ContactoDTO
+                {
+                    TipoContactoId = c.TipoContactoId,
+                    NumContacto = c.NumContacto
+                })
+                .ToListAsync();
+
+            return Ok(contactos);
+        }
+
+        /// <summary>
+        /// Adiciona um novo contacto para o utilizador autenticado.
+        /// </summary>
+        /// <param name="novoContacto">Os dados do novo contacto a ser adicionado.</param>
+        /// <returns>Retorna o contacto adicionado ou 401 Unauthorized se o utilizador não for autenticado.</returns>
+        [HttpPost("AdicionarContacto")]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<ContactoDTO>> AdicionarContacto([FromBody] ContactoDTO novoContacto)
+        {
+
+            var idClaim = User.FindFirst(ClaimTypes.NameIdentifier) ?? User.FindFirst("sub");
+            if (idClaim is null) return Unauthorized();
+
+            if (!int.TryParse(idClaim.Value, out var userId))
+                return Unauthorized();
+
+
+            var contacto = new Contacto
+            {
+                UtilizadorId = userId,
+                TipoContactoId = novoContacto.TipoContactoId,
+                NumContacto = novoContacto.NumContacto
+            };
+
+
+            _context.Contactos.Add(contacto);
+            await _context.SaveChangesAsync();
+
+
+            var contactoAdicionado = new ContactoDTO
+            {
+                TipoContactoId = contacto.TipoContactoId,
+                NumContacto = contacto.NumContacto
+            };
+
+            return Ok(contactoAdicionado);
         }
     }
 }

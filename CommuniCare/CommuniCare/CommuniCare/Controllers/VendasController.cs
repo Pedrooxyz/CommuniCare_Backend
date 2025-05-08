@@ -167,24 +167,146 @@ namespace CommuniCare.Controllers
         //    }
         //}
 
-        /// <summary>
-        /// Realiza a compra de artigos para o utilizador autenticado e envia o comprovativo por email.
-        /// </summary>
-        /// <param name="request">Objeto contendo os IDs dos artigos a serem comprados.</param>
-        /// <returns>Retorna 200 OK se a compra for processada com sucesso e o comprovativo enviado por e-mail, ou 400 Bad Request em caso de erro.</returns>
-        [HttpPost("ComprarEmail")]
+        ///// <summary>
+        ///// Realiza a compra de artigos para o utilizador autenticado e envia o comprovativo por email.
+        ///// </summary>
+        ///// <param name="request">Objeto contendo os IDs dos artigos a serem comprados.</param>
+        ///// <returns>Retorna 200 OK se a compra for processada com sucesso e o comprovativo enviado por e-mail, ou 400 Bad Request em caso de erro.</returns>
+        //[HttpPost("ComprarEmail")]
+        //[Authorize]
+        //public async Task<IActionResult> ComprarEmail([FromBody] PedidoCompraDTO request)
+        //{
+        //    var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+        //    try
+        //    {
+        //        var user = await _context.Utilizadores.FindAsync(userId);
+        //        var emailContacto = await _context.Contactos
+        //            .Where(c => c.UtilizadorId == userId && c.TipoContactoId == 1)
+        //            .Select(c => c.NumContacto)
+        //            .FirstOrDefaultAsync();
+
+        //        var artigosDisponiveis = await _context.Artigos
+        //            .Include(a => a.Loja)
+        //            .Where(a => request.ArtigosIds.Contains(a.ArtigoId))
+        //            .ToListAsync();
+
+        //        if (artigosDisponiveis.Any(a => a.QuantidadeDisponivel <= 0))
+        //        {
+        //            return BadRequest(new
+        //            {
+        //                Sucesso = false,
+        //                Erro = "Um ou mais artigos selecionados não estão disponíveis no momento."
+        //            });
+        //        }
+
+        //        if (artigosDisponiveis.Any(a => a.Loja == null || a.Loja.Estado != EstadoLoja.Ativo))
+        //        {
+        //            return BadRequest(new
+        //            {
+        //                Sucesso = false,
+        //                Erro = "Um ou mais artigos pertencem a lojas que não estão ativas no momento."
+        //            });
+        //        }
+
+        //        var (venda, transacao, artigos, dataCompra) = await _transacaoServico.ProcessarCompraAsync(userId, request.ArtigosIds);
+
+        //        foreach (var artigo in artigos)
+        //        {
+        //            artigo.QuantidadeDisponivel -= 1;
+        //        }
+
+        //        transacao.Quantidade = artigos.Sum(a => a.CustoCares ?? 0);
+        //        await _context.SaveChangesAsync();
+
+        //        var comprovativoUnico = ComprovativoGenerator.GerarComprovativoUnicoPDF(venda, user, artigos);
+
+        //        await _emailService.EnviarComprovativoCompra(emailContacto, user.NomeUtilizador, comprovativoUnico);
+
+        //        return Ok(new
+        //        {
+        //            Sucesso = true,
+        //            Mensagem = "Compra efetuada e comprovativo enviado por email.",
+        //            DataHora = dataCompra.ToString("yyyy-MM-dd HH:mm"),
+        //            NomeArtigos = artigos.Select(a => a.NomeArtigo)
+        //        });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(new { Sucesso = false, Erro = ex.Message });
+        //    }
+        //}
+
+        ///// <summary>
+        ///// Realiza a compra de artigos para o utilizador autenticado e permite o download do comprovativo em PDF.
+        ///// </summary>
+        ///// <param name="request">Objeto contendo os IDs dos artigos a serem comprados.</param>
+        ///// <returns>Retorna 200 OK com o comprovativo de compra em PDF ou 400 Bad Request em caso de erro.</returns>
+        //[HttpPost("ComprarDownload")]
+        //[Authorize]
+        //public async Task<IActionResult> ComprarDownload([FromBody] PedidoCompraDTO request)
+        //{
+        //    var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+        //    try
+        //    {
+        //        var user = await _context.Utilizadores.FindAsync(userId);
+
+        //        var artigosDisponiveis = await _context.Artigos
+        //            .Include(a => a.Loja)
+        //            .Where(a => request.ArtigosIds.Contains(a.ArtigoId))
+        //            .ToListAsync();
+
+        //        if (artigosDisponiveis.Any(a => a.QuantidadeDisponivel <= 0))
+        //        {
+        //            return BadRequest(new
+        //            {
+        //                Sucesso = false,
+        //                Erro = "Um ou mais artigos selecionados não estão disponíveis no momento."
+        //            });
+        //        }
+
+        //        if (artigosDisponiveis.Any(a => a.Loja == null || a.Loja.Estado != EstadoLoja.Ativo))
+        //        {
+        //            return BadRequest(new
+        //            {
+        //                Sucesso = false,
+        //                Erro = "Um ou mais artigos pertencentes à lojas que não estão ativas no momento."
+        //            });
+        //        }
+
+        //        var (venda, transacao, artigos, dataCompra) = await _transacaoServico.ProcessarCompraAsync(userId, request.ArtigosIds);
+
+        //        foreach (var artigo in artigos)
+        //        {
+        //            artigo.QuantidadeDisponivel -= 1;
+        //        }
+
+        //        transacao.Quantidade = artigos.Sum(a => a.CustoCares ?? 0);
+        //        await _context.SaveChangesAsync();
+
+        //        var comprovativoUnico = ComprovativoGenerator.GerarComprovativoUnicoPDF(venda, user, artigos);
+
+        //        Response.Headers.Add("X-DataCompra", dataCompra.ToString("yyyy-MM-dd HH:mm"));
+        //        Response.Headers.Add("X-Artigos", string.Join(", ", artigos.Select(a => a.NomeArtigo)));
+
+        //        return File(comprovativoUnico, "application/pdf", $"Vouchers_Compra.pdf");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(new { Sucesso = false, Erro = ex.Message });
+        //    }
+        //}
+
+        [HttpPost("Comprar")]
         [Authorize]
-        public async Task<IActionResult> ComprarEmail([FromBody] PedidoCompraDTO request)
+        public async Task<IActionResult> Comprar([FromBody] PedidoCompraDTO request)
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
             try
             {
                 var user = await _context.Utilizadores.FindAsync(userId);
-                var emailContacto = await _context.Contactos
-                    .Where(c => c.UtilizadorId == userId && c.TipoContactoId == 1)
-                    .Select(c => c.NumContacto)
-                    .FirstOrDefaultAsync();
 
                 var artigosDisponiveis = await _context.Artigos
                     .Include(a => a.Loja)
@@ -192,41 +314,24 @@ namespace CommuniCare.Controllers
                     .ToListAsync();
 
                 if (artigosDisponiveis.Any(a => a.QuantidadeDisponivel <= 0))
-                {
-                    return BadRequest(new
-                    {
-                        Sucesso = false,
-                        Erro = "Um ou mais artigos selecionados não estão disponíveis no momento."
-                    });
-                }
+                    return BadRequest(new { Sucesso = false, Erro = "Artigos indisponíveis." });
 
                 if (artigosDisponiveis.Any(a => a.Loja == null || a.Loja.Estado != EstadoLoja.Ativo))
-                {
-                    return BadRequest(new
-                    {
-                        Sucesso = false,
-                        Erro = "Um ou mais artigos pertencem a lojas que não estão ativas no momento."
-                    });
-                }
+                    return BadRequest(new { Sucesso = false, Erro = "Artigos pertencem a lojas inativas." });
 
                 var (venda, transacao, artigos, dataCompra) = await _transacaoServico.ProcessarCompraAsync(userId, request.ArtigosIds);
 
                 foreach (var artigo in artigos)
-                {
                     artigo.QuantidadeDisponivel -= 1;
-                }
 
                 transacao.Quantidade = artigos.Sum(a => a.CustoCares ?? 0);
                 await _context.SaveChangesAsync();
 
-                var comprovativoUnico = ComprovativoGenerator.GerarComprovativoUnicoPDF(venda, user, artigos);
-
-                await _emailService.EnviarComprovativoCompra(emailContacto, user.NomeUtilizador, comprovativoUnico);
-
                 return Ok(new
                 {
                     Sucesso = true,
-                    Mensagem = "Compra efetuada e comprovativo enviado por email.",
+                    Mensagem = "Compra realizada com sucesso.",
+                    TransacaoId = transacao.TransacaoId,
                     DataHora = dataCompra.ToString("yyyy-MM-dd HH:mm"),
                     NomeArtigos = artigos.Select(a => a.NomeArtigo)
                 });
@@ -237,66 +342,70 @@ namespace CommuniCare.Controllers
             }
         }
 
-        /// <summary>
-        /// Realiza a compra de artigos para o utilizador autenticado e permite o download do comprovativo em PDF.
-        /// </summary>
-        /// <param name="request">Objeto contendo os IDs dos artigos a serem comprados.</param>
-        /// <returns>Retorna 200 OK com o comprovativo de compra em PDF ou 400 Bad Request em caso de erro.</returns>
-        [HttpPost("ComprarDownload")]
+        [HttpGet("Comprovativo/Email/{transacaoId}")]
         [Authorize]
-        public async Task<IActionResult> ComprarDownload([FromBody] PedidoCompraDTO request)
+        public async Task<IActionResult> EnviarComprovativoEmail(int transacaoId)
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
             try
             {
+                var venda = await _context.Venda
+                    .Include(v => v.Artigos)
+                    .Include(v => v.Transacao)
+                    .FirstOrDefaultAsync(v => v.TransacaoId == transacaoId && v.UtilizadorId == userId);
+
+                if (venda == null)
+                    return NotFound(new { Sucesso = false, Erro = "Venda não encontrada." });
+
                 var user = await _context.Utilizadores.FindAsync(userId);
+                var emailContacto = await _context.Contactos
+                    .Where(c => c.UtilizadorId == userId && c.TipoContactoId == 1)
+                    .Select(c => c.NumContacto)
+                    .FirstOrDefaultAsync();
 
-                var artigosDisponiveis = await _context.Artigos
-                    .Include(a => a.Loja)
-                    .Where(a => request.ArtigosIds.Contains(a.ArtigoId))
-                    .ToListAsync();
+                var comprovativo = ComprovativoGenerator.GerarComprovativoUnicoPDF(venda, user, venda.Artigos.ToList());
 
-                if (artigosDisponiveis.Any(a => a.QuantidadeDisponivel <= 0))
-                {
-                    return BadRequest(new
-                    {
-                        Sucesso = false,
-                        Erro = "Um ou mais artigos selecionados não estão disponíveis no momento."
-                    });
-                }
+                await _emailService.EnviarComprovativoCompra(emailContacto, user.NomeUtilizador, comprovativo);
 
-                if (artigosDisponiveis.Any(a => a.Loja == null || a.Loja.Estado != EstadoLoja.Ativo))
-                {
-                    return BadRequest(new
-                    {
-                        Sucesso = false,
-                        Erro = "Um ou mais artigos pertencentes à lojas que não estão ativas no momento."
-                    });
-                }
-
-                var (venda, transacao, artigos, dataCompra) = await _transacaoServico.ProcessarCompraAsync(userId, request.ArtigosIds);
-
-                foreach (var artigo in artigos)
-                {
-                    artigo.QuantidadeDisponivel -= 1;
-                }
-
-                transacao.Quantidade = artigos.Sum(a => a.CustoCares ?? 0);
-                await _context.SaveChangesAsync();
-
-                var comprovativoUnico = ComprovativoGenerator.GerarComprovativoUnicoPDF(venda, user, artigos);
-
-                Response.Headers.Add("X-DataCompra", dataCompra.ToString("yyyy-MM-dd HH:mm"));
-                Response.Headers.Add("X-Artigos", string.Join(", ", artigos.Select(a => a.NomeArtigo)));
-
-                return File(comprovativoUnico, "application/pdf", $"Vouchers_Compra.pdf");
+                return Ok(new { Sucesso = true, Mensagem = "Comprovativo enviado por email com sucesso." });
             }
             catch (Exception ex)
             {
                 return BadRequest(new { Sucesso = false, Erro = ex.Message });
             }
         }
+
+        [HttpGet("Comprovativo/Download/{transacaoId}")]
+        [Authorize]
+        public async Task<IActionResult> DownloadComprovativo(int transacaoId)
+        {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+            try
+            {
+                var venda = await _context.Venda
+                    .Include(v => v.Artigos)
+                    .Include(v => v.Transacao)
+                    .FirstOrDefaultAsync(v => v.TransacaoId == transacaoId && v.UtilizadorId == userId);
+
+                if (venda == null)
+                    return NotFound(new { Sucesso = false, Erro = "Venda não encontrada." });
+
+                var user = await _context.Utilizadores.FindAsync(userId);
+
+                var comprovativo = ComprovativoGenerator.GerarComprovativoUnicoPDF(venda, user, venda.Artigos.ToList());
+
+                return File(comprovativo, "application/pdf", "ComprovativoCompra.pdf");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Sucesso = false, Erro = ex.Message });
+            }
+        }
+
+
+
 
     }
 }

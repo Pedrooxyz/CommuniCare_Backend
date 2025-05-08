@@ -728,6 +728,39 @@ namespace CommuniCare.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Pesquisa um item de empréstimo pelo nome, de forma insensível a maiúsculas e minúsculas.
+        /// O nome é transformado para minúsculas para garantir que a pesquisa não seja case sensitive.
+        /// </summary>
+        /// <param name="nome">Nome do item de empréstimo a ser pesquisado.</param>
+        /// <returns>Retorna uma lista de itens que correspondem ao nome pesquisado.</returns>
+        [HttpPost("PesquisarItemPorNome")]
+        public async Task<IActionResult> PesquisarItemPorNome([FromBody] ItemEmprestimoDTO request)
+        {
+            if (string.IsNullOrWhiteSpace(request.NomeItem))
+            {
+                return BadRequest("O nome do item não pode ser vazio.");
+            }
 
+            var nome = request.NomeItem.ToLower();
+
+            var itensEncontrados = await _context.ItensEmprestimo
+                .Where(i => i.NomeItem.ToLower().Contains(nome))
+                .Select(i => new ItemEmprestimoDTO
+                {
+                    NomeItem = i.NomeItem,
+                    DescItem = i.DescItem,
+                    ComissaoCares = i.ComissaoCares,
+                    FotografiaItem = i.FotografiaItem
+                })
+                .ToListAsync();
+
+            if (!itensEncontrados.Any())
+            {
+                return NotFound("Nenhum item encontrado com esse nome.");
+            }
+
+            return Ok(itensEncontrados);
+        }
     }
 }

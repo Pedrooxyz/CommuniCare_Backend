@@ -167,10 +167,44 @@ namespace CommuniCare.Controllers
         }
 
         /// <summary>
+        /// Obtém as notificações do utilizador autenticado.
+        /// </summary>
+        /// <returns>Uma lista de notificações não lidas do utilizador autenticado, ou NotFound se não houver notificações.</returns>
+        /// <response code="401">Se o utilizador não estiver autenticado.</response>
+        /// <response code="404">Se não houver notificações para o utilizador.</response>
+        [HttpGet("NotificacoesNaoLidas")]
+        [Authorize]
+        public async Task<IActionResult> VerNotificacoesNaoLidas()
+        {
+
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Unauthorized("Utilizador não autenticado.");
+            }
+
+            int utilizadorId = int.Parse(userIdClaim.Value);
+
+
+            var notificacoes = await _context.Notificacaos
+                .Where(n => n.UtilizadorId == utilizadorId)
+                .Where(n => n.Lida == 0)
+                .OrderByDescending(n => n.DataMensagem)
+                .ToListAsync();
+
+            if (notificacoes == null || !notificacoes.Any())
+            {
+                return NotFound("Não há notificações para mostrar.");
+            }
+
+            return Ok(notificacoes);
+        }
+
+        /// <summary>
         /// Marca uma notificação como lida.
         /// </summary>
         /// <returns>A notificação alterada, ou NotFound se não encontrar a notificação.</returns>
-        [HttpPut("Notificacoes/MarcarComoLida/{id}")]
+        [HttpPut("MarcarComoLida/{id}")]
         [Authorize]
         public async Task<IActionResult> MarcarComoLida(int id)
         {

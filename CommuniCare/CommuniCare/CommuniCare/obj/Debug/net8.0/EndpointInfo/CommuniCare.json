@@ -43,6 +43,46 @@
         }
       }
     },
+    "/api/Artigos/{id}": {
+      "get": {
+        "tags": [
+          "Artigos"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Artigo"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Artigo"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Artigo"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Artigos/Disponiveis": {
       "get": {
         "tags": [
@@ -1015,6 +1055,95 @@
         }
       }
     },
+    "/api/ItensEmprestimo/{itemId}": {
+      "get": {
+        "tags": [
+          "ItensEmprestimo"
+        ],
+        "parameters": [
+          {
+            "name": "itemId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ItemEmprestimo"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ItemEmprestimo"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ItemEmprestimo"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/ItensEmprestimo/{itemEmprestimoId}/foto-emprestador": {
+      "get": {
+        "tags": [
+          "ItensEmprestimo"
+        ],
+        "parameters": [
+          {
+            "name": "itemEmprestimoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/ItensEmprestimo/AdicionarItem": {
       "post": {
         "tags": [
@@ -1780,7 +1909,19 @@
         }
       }
     },
-    "/api/Notificacoes/Notificacoes/MarcarComoLida/{id}": {
+    "/api/Notificacoes/NotificacoesNaoLidas": {
+      "get": {
+        "tags": [
+          "Notificacoes"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Notificacoes/MarcarComoLida/{id}": {
       "put": {
         "tags": [
           "Notificacoes"
@@ -2775,6 +2916,18 @@
             }
           }
         },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Utilizadores/VerificarAdmin": {
+      "get": {
+        "tags": [
+          "Utilizadores"
+        ],
         "responses": {
           "200": {
             "description": "OK"

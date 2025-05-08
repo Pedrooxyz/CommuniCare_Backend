@@ -752,8 +752,8 @@
   },
   {
     "ContainingType": "CommuniCare.Controllers.ItensEmprestimoController",
-    "Method": "AtualizarDescricaoItem",
-    "RelativePath": "api/ItensEmprestimo/AtualizarDescricao/{itemId}",
+    "Method": "AtualizarItem",
+    "RelativePath": "api/ItensEmprestimo/AtualizarItem/{itemId}",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -764,8 +764,8 @@
         "IsRequired": true
       },
       {
-        "Name": "novaDescricao",
-        "Type": "System.String",
+        "Name": "itemEmprestimoDTO",
+        "Type": "CommuniCare.DTOs.ItemEmprestimoDTO",
         "IsRequired": true
       }
     ],

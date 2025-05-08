@@ -731,15 +731,17 @@ namespace CommuniCare.Controllers
         }
 
         /// <summary>
-        /// Atualiza a descrição de um item de empréstimo.
+        /// Atualiza os campos de um item de empréstimo, exceto o número de pessoas.
         /// Apenas o "Dono" do item pode realizar essa atualização.
         /// </summary>
         /// <param name="itemId">ID do item a ser atualizado.</param>
         /// <param name="novaDescricao">Nova descrição do item.</param>
+        /// <param name="novoNome">Novo nome do item.</param>
+        /// <param name="novaComissaoCares">Nova comissão em Cares por hora.</param>
         /// <returns>Retorna um status indicando se a atualização foi bem-sucedida ou se ocorreu um erro.</returns>
-        [HttpPut("AtualizarDescricao/{itemId}")]
+        [HttpPut("AtualizarItem/{itemId}")]
         [Authorize]
-        public async Task<IActionResult> AtualizarDescricaoItem(int itemId, [FromBody] string novaDescricao)
+        public async Task<IActionResult> AtualizarItem(int itemId, [FromBody] ItemEmprestimoDTO itemEmprestimoDTO)
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
@@ -765,10 +767,10 @@ namespace CommuniCare.Controllers
                 .Where(e => e.Items.Any(i => i.ItemId == itemId))
                 .FirstOrDefaultAsync();
 
-            if (emprestimo == null)
-            {
-                return NotFound("Empréstimo relacionado não encontrado.");
-            }
+            //if (emprestimo == null)
+            //{
+            //    return NotFound("Empréstimo relacionado não encontrado.");
+            //}
 
             var itemEmprestimoUtilizador = await _context.ItemEmprestimoUtilizadores
                 .FirstOrDefaultAsync(ie => ie.ItemId == itemId && ie.UtilizadorId == utilizadorId);
@@ -783,15 +785,17 @@ namespace CommuniCare.Controllers
                 return Unauthorized("Você não tem permissão para atualizar este item.");
             }
 
-            itemEmprestimo.DescItem = novaDescricao;
+            // Atualizando os campos, exceto o número de pessoas
+            itemEmprestimo.NomeItem = itemEmprestimoDTO.NomeItem;
+            itemEmprestimo.DescItem = itemEmprestimoDTO.DescItem;
+            itemEmprestimo.ComissaoCares = itemEmprestimoDTO.ComissaoCares;
+            itemEmprestimo.FotografiaItem = itemEmprestimoDTO.FotografiaItem;
 
             _context.ItensEmprestimo.Update(itemEmprestimo);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
-
-
 
 
     }

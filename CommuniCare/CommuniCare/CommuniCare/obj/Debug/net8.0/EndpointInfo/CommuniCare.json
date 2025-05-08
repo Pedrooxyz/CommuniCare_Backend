@@ -1481,7 +1481,7 @@
         }
       }
     },
-    "/api/ItensEmprestimo/AtualizarDescricao/{itemId}": {
+    "/api/ItensEmprestimo/AtualizarItem/{itemId}": {
       "put": {
         "tags": [
           "ItensEmprestimo"
@@ -1501,17 +1501,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "string"
+                "$ref": "#/components/schemas/ItemEmprestimoDTO"
               }
             },
             "text/json": {
               "schema": {
-                "type": "string"
+                "$ref": "#/components/schemas/ItemEmprestimoDTO"
               }
             },
             "application/*+json": {
               "schema": {
-                "type": "string"
+                "$ref": "#/components/schemas/ItemEmprestimoDTO"
               }
             }
           }

@@ -1972,8 +1972,8 @@
   },
   {
     "ContainingType": "CommuniCare.Controllers.VendasController",
-    "Method": "ComprarDownload",
-    "RelativePath": "api/Vendas/ComprarDownload",
+    "Method": "Comprar",
+    "RelativePath": "api/Vendas/Comprar",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -1988,15 +1988,31 @@
   },
   {
     "ContainingType": "CommuniCare.Controllers.VendasController",
-    "Method": "ComprarEmail",
-    "RelativePath": "api/Vendas/ComprarEmail",
-    "HttpMethod": "POST",
+    "Method": "DownloadComprovativo",
+    "RelativePath": "api/Vendas/Comprovativo/Download/{transacaoId}",
+    "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "request",
-        "Type": "CommuniCare.DTOs.PedidoCompraDTO",
+        "Name": "transacaoId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.VendasController",
+    "Method": "EnviarComprovativoEmail",
+    "RelativePath": "api/Vendas/Comprovativo/Email/{transacaoId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "transacaoId",
+        "Type": "System.Int32",
         "IsRequired": true
       }
     ],

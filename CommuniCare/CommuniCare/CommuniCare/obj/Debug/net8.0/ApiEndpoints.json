@@ -675,6 +675,41 @@
   },
   {
     "ContainingType": "CommuniCare.Controllers.ItensEmprestimoController",
+    "Method": "AdicionarContacto",
+    "RelativePath": "api/ItensEmprestimo/AdicionarContacto",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "novoContacto",
+        "Type": "CommuniCare.DTOs.ContactoDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "CommuniCare.DTOs.ContactoDTO",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 401
+      }
+    ]
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.ItensEmprestimoController",
     "Method": "AdicionarItemEmprestimo",
     "RelativePath": "api/ItensEmprestimo/AdicionarItem",
     "HttpMethod": "POST",
@@ -735,6 +770,35 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.ItensEmprestimoController",
+    "Method": "GetContactosUtilizador",
+    "RelativePath": "api/ItensEmprestimo/ContactosUtilizador",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[CommuniCare.DTOs.ContactoDTO, CommuniCare, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 401
+      }
+    ]
   },
   {
     "ContainingType": "CommuniCare.Controllers.ItensEmprestimoController",

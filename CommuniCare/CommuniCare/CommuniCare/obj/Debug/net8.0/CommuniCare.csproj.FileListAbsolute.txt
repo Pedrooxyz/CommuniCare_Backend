@@ -1327,7 +1327,6 @@ D:\2ano\2sem\Projeto Desenvolvimento Software\RepoCOMMUNICARE\CommuniCare_PDS\Co
 D:\2ano\2sem\Projeto Desenvolvimento Software\RepoCOMMUNICARE\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\obj\Debug\net8.0\CommuniCare.dll
 D:\2ano\2sem\Projeto Desenvolvimento Software\RepoCOMMUNICARE\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\obj\Debug\net8.0\refint\CommuniCare.dll
 D:\2ano\2sem\Projeto Desenvolvimento Software\RepoCOMMUNICARE\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\obj\Debug\net8.0\CommuniCare.pdb
-C:\Users\João\OneDrive - Instituto Politécnico do Cávado e do Ave\Desktop\ipca\ano 2\2º semestre\PDS\Segunda Fase\Codigo\CommuniCare\CommuniCare\CommuniCare\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 D:\2ano\2sem\Projeto Desenvolvimento Software\repositorio-atual\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\bin\Debug\net8.0\appsettings.Development.json
 D:\2ano\2sem\Projeto Desenvolvimento Software\repositorio-atual\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\bin\Debug\net8.0\appsettings.json
 D:\2ano\2sem\Projeto Desenvolvimento Software\repositorio-atual\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\bin\Debug\net8.0\CommuniCare.staticwebassets.endpoints.json
@@ -2909,3 +2908,4 @@ C:\Users\João\OneDrive - Instituto Politécnico do Cávado e do Ave\Desktop\ipc
 C:\Users\João\OneDrive - Instituto Politécnico do Cávado e do Ave\Desktop\ipca\ano 2\2º semestre\PDS\Segunda Fase\Codigo\CommuniCare\CommuniCare\CommuniCare\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Diagnostics.EventLog.dll
 C:\Users\João\OneDrive - Instituto Politécnico do Cávado e do Ave\Desktop\ipca\ano 2\2º semestre\PDS\Segunda Fase\Codigo\CommuniCare\CommuniCare\CommuniCare\obj\Debug\net8.0\MvcTestingAppManifest.json
 C:\Users\ferna\Documents\GitHub\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+C:\Users\João\OneDrive - Instituto Politécnico do Cávado e do Ave\Desktop\ipca\ano 2\2º semestre\PDS\Segunda Fase\Codigo\CommuniCare\CommuniCare\CommuniCare\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

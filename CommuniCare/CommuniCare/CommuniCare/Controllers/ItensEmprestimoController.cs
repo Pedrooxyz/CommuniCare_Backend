@@ -506,7 +506,7 @@ namespace CommuniCare.Controllers
 
         #endregion
 
-                /// <summary>
+        /// <summary>
         /// Obtém os contactos do utilizador autenticado.
         /// </summary>
         /// <returns>Retorna a lista de contactos do utilizador autenticado ou 401 Unauthorized se o utilizador não for autenticado.</returns>
@@ -546,26 +546,26 @@ namespace CommuniCare.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<ContactoDTO>> AdicionarContacto([FromBody] ContactoDTO novoContacto)
         {
-            // Obter o UserId a partir do token JWT
+            
             var idClaim = User.FindFirst(ClaimTypes.NameIdentifier) ?? User.FindFirst("sub");
             if (idClaim is null) return Unauthorized();
 
             if (!int.TryParse(idClaim.Value, out var userId))
                 return Unauthorized();
 
-            // Criar um novo contacto
+            
             var contacto = new Contacto
             {
-                UtilizadorId = userId,  // O UserId vem automaticamente do token
+                UtilizadorId = userId,  
                 TipoContactoId = novoContacto.TipoContactoId,
                 NumContacto = novoContacto.NumContacto
             };
 
-            // Adicionar o contacto à base de dados
+            
             _context.Contactos.Add(contacto);
             await _context.SaveChangesAsync();
 
-            // Retornar o contacto adicionado como DTO
+            
             var contactoAdicionado = new ContactoDTO
             {
                 TipoContactoId = contacto.TipoContactoId,
@@ -657,13 +657,11 @@ namespace CommuniCare.Controllers
                 .Include(i => i.Emprestimos)
                     .ThenInclude(e => e.Transacao)
                 .Where(i =>
-                    // Critério 1: Disponível = 0 mas não está marcado como permanentemente indisponível
+                   
                     i.Disponivel == 0 ||
 
-                    // Critério 2: Algum empréstimo com DataInicio == null
                     i.Emprestimos.Any(e => e.DataIni == null) ||
-
-                    // Critério 3: Algum empréstimo sem transação associada
+                    
                     i.Emprestimos.Any(e => e.Transacao == null)
                 )
                 .ToListAsync();
@@ -706,10 +704,10 @@ namespace CommuniCare.Controllers
                 .Where(e => e.Items.Any(i => i.ItemId == itemId))
                 .FirstOrDefaultAsync();
 
-            if (emprestimo == null)
-            {
-                return NotFound("Empréstimo relacionado não encontrado.");
-            }
+            //if (emprestimo == null)
+            //{
+            //    return NotFound("Empréstimo relacionado não encontrado.");
+            //}
 
             var itemEmprestimoUtilizador = await _context.ItemEmprestimoUtilizadores
                 .FirstOrDefaultAsync(ie => ie.ItemId == itemId && ie.UtilizadorId == utilizadorId);
@@ -792,6 +790,8 @@ namespace CommuniCare.Controllers
 
             return NoContent();
         }
+
+
 
 
     }

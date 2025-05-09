@@ -7,8 +7,8 @@ public class PedidoPendenteDTO
     public string Descricao { get; set; }
     public DateTime? DataCriacao { get; set; }
     public int NumeroVoluntarios { get; set; }
-    public string? FotografiaPA { get; set; }  // Adicionado
-    public int NHoras { get; set; }            // Adicionado
-    public int NPessoas { get; set; }          // Adicionado
+    public string? FotografiaPA { get; set; } 
+    public int NHoras { get; set; }            
+    public int NPessoas { get; set; }          
     public TransacaoDTO? Transacao { get; set; }
 }

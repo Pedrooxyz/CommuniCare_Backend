@@ -39,18 +39,18 @@ namespace CommuniCare.Controllers
         ///// </summary>
         ///// <param name="id">Identificador único da loja.</param>
         ///// <returns>Um objeto <see cref="Loja"/> com os dados da loja especificada, ou NotFound se a loja não existir.</returns>
-        //[HttpGet("{id}")]
-        //public async Task<ActionResult<Loja>> GetLoja(int id)
-        //{
-        //    var loja = await _context.Lojas.FindAsync(id);
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Loja>> GetLoja(int id)
+        {
+            var loja = await _context.Lojas.FindAsync(id);
 
-        //    if (loja == null)
-        //    {
-        //        return NotFound();
-        //    }
+            if (loja == null)
+           {
+               return NotFound();
+            }
 
-        //    return loja;
-        //}
+            return loja;
+        }
 
         ///// <summary>
         ///// Atualiza os dados de uma loja existente.

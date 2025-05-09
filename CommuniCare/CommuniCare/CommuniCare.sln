@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.13.35913.81
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommuniCare", "CommuniCare\CommuniCare.csproj", "{61DB51D4-BA6F-4B0E-B19F-7CA964E4D85A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommuniCare", "CommuniCare\CommuniCare.csproj", "{61DB51D4-BA6F-4B0E-B19F-7CA964E4D85A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommuniCareTests", "CommuniCareTests\CommuniCareTests.csproj", "{16F96599-D5F6-447E-BF2D-C99A3F1FFEE3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommuniCareTests", "CommuniCareTests\CommuniCareTests.csproj", "{16F96599-D5F6-447E-BF2D-C99A3F1FFEE3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunicareIntegrationsTests", "CommunicareIntegrationsTests\CommunicareIntegrationsTests.csproj", "{800C2372-97D1-4429-AA18-DE64F4E69200}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{16F96599-D5F6-447E-BF2D-C99A3F1FFEE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{16F96599-D5F6-447E-BF2D-C99A3F1FFEE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{16F96599-D5F6-447E-BF2D-C99A3F1FFEE3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{800C2372-97D1-4429-AA18-DE64F4E69200}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{800C2372-97D1-4429-AA18-DE64F4E69200}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{800C2372-97D1-4429-AA18-DE64F4E69200}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{800C2372-97D1-4429-AA18-DE64F4E69200}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

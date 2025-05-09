@@ -30,5 +30,9 @@
 	<ItemGroup>
 		<InternalsVisibleTo Include="CommunicareTest" />
 	</ItemGroup>
-	
+	<ItemGroup>
+		<InternalsVisibleTo Include="CommunicareIntegrationsTests" />
+	</ItemGroup>
+
+
 </Project>

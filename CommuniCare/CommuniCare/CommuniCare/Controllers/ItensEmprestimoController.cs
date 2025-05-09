@@ -830,5 +830,59 @@ namespace CommuniCare.Controllers
 
             return Ok(itensEncontrados);
         }
+
+        [HttpPut("atualizar-descricao/{itemId}")]
+        [Authorize]
+        public async Task<IActionResult> AtualizarDescricaoItem(int itemId, [FromBody] string novaDescricao)
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Unauthorized("Utilizador não autenticado.");
+            }
+
+            int utilizadorId;
+            if (!int.TryParse(userIdClaim.Value, out utilizadorId))
+            {
+                return Unauthorized("ID de utilizador inválido.");
+            }
+
+            var itemEmprestimo = await _context.ItensEmprestimo
+                .FirstOrDefaultAsync(i => i.ItemId == itemId);
+
+            if (itemEmprestimo == null)
+            {
+                return NotFound("Item de empréstimo não encontrado.");
+            }
+
+            var emprestimo = await _context.Emprestimos
+                .Where(e => e.Items.Any(i => i.ItemId == itemId))
+                .FirstOrDefaultAsync();
+
+            if (emprestimo == null)
+            {
+                return NotFound("Empréstimo relacionado não encontrado.");
+            }
+
+            var itemEmprestimoUtilizador = await _context.ItemEmprestimoUtilizadores
+                .FirstOrDefaultAsync(ie => ie.ItemId == itemId && ie.UtilizadorId == utilizadorId);
+
+            if (itemEmprestimoUtilizador == null)
+            {
+                return NotFound("Item de empréstimo ou relação de utilizador não encontrado.");
+            }
+
+            if (itemEmprestimoUtilizador.TipoRelacao != "Dono")
+            {
+                return Unauthorized("Você não tem permissão para atualizar este item.");
+            }
+
+            itemEmprestimo.DescItem = novaDescricao;
+
+            _context.ItensEmprestimo.Update(itemEmprestimo);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
     }
 }

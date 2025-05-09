@@ -180,7 +180,7 @@ namespace CommuniCareTests
             {
                 ItemId = 10,
                 NomeItem = "Martelo",
-                Disponivel = 1,
+                Disponivel = EstadoItemEmprestimo.Disponivel,
                 ComissaoCares = 10,
                 Utilizadores = new List<Utilizador>
                 {
@@ -250,7 +250,7 @@ namespace CommuniCareTests
             {
                 ItemId = 10,
                 NomeItem = "Martelo",
-                Disponivel = 1,
+                Disponivel = EstadoItemEmprestimo.Disponivel,
                 ComissaoCares = 10,
                 Utilizadores = new List<Utilizador>()
             };
@@ -319,8 +319,8 @@ namespace CommuniCareTests
 
             var itens = new List<ItemEmprestimo>
             {
-             new ItemEmprestimo { ItemId = 2, NomeItem = "Martelo", Disponivel = 1 },
-             new ItemEmprestimo { ItemId = 1, NomeItem = "Chave", Disponivel = 1 }
+             new ItemEmprestimo { ItemId = 2, NomeItem = "Martelo", Disponivel  = EstadoItemEmprestimo.Disponivel },
+             new ItemEmprestimo { ItemId = 1, NomeItem = "Chave", Disponivel  = EstadoItemEmprestimo.Disponivel }
             }.AsQueryable();
 
             _mockContext.Setup(c => c.ItemEmprestimoUtilizadores).Returns(relacoes.BuildMockDbSet().Object);
@@ -398,8 +398,8 @@ namespace CommuniCareTests
 
             var itens = new List<ItemEmprestimo>
             {
-             new ItemEmprestimo { ItemId = 1, NomeItem = "Chave", Disponivel = 1 },
-             new ItemEmprestimo { ItemId = 2, NomeItem = "Martelo", Disponivel = 1 }
+             new ItemEmprestimo { ItemId = 1, NomeItem = "Chave", Disponivel  = EstadoItemEmprestimo.Disponivel },
+             new ItemEmprestimo { ItemId = 2, NomeItem = "Martelo", Disponivel  = EstadoItemEmprestimo.Disponivel }
             }.AsQueryable();
 
             _mockContext.Setup(c => c.ItemEmprestimoUtilizadores).Returns(relacoes.BuildMockDbSet().Object);
@@ -471,7 +471,7 @@ namespace CommuniCareTests
             int userId = 1;
             int itemId = 10;
 
-            var item = new ItemEmprestimo { ItemId = itemId, Disponivel = 1 };
+            var item = new ItemEmprestimo { ItemId = itemId, Disponivel = EstadoItemEmprestimo.Disponivel };
             var emprestimo = new Emprestimo { EmprestimoId = 1, Items = new List<ItemEmprestimo> { item } };
             var relacao = new ItemEmprestimoUtilizador { ItemId = itemId, UtilizadorId = userId, TipoRelacao = "Dono" };
 
@@ -565,31 +565,52 @@ namespace CommuniCareTests
         [TestMethod]
         public async Task EliminarItemEmprestimo_EmprestimoNotFound_ReturnsNotFound()
         {
-            int userId = 1;
-            int itemId = 10;
-            var item = new ItemEmprestimo { ItemId = itemId };
+          
+            const int userId = 1;
+            const int itemId = 10;
 
-            _mockContext.Setup(c => c.ItensEmprestimo)
-                .Returns(new List<ItemEmprestimo> { item }.AsQueryable().BuildMockDbSet().Object);
+            
+            var itensDbSet = new List<ItemEmprestimo>
+    {
+        new ItemEmprestimo { ItemId = itemId }
+    }
+            .AsQueryable()
+            .BuildMockDbSet();
 
-            _mockContext.Setup(c => c.Emprestimos)
-                .Returns(new List<Emprestimo>().AsQueryable().BuildMockDbSet().Object);
+            var emprestimosDbSet = new List<Emprestimo>()
+                                              .AsQueryable()
+                                              .BuildMockDbSet();
+            var relacoesDbSet = new List<ItemEmprestimoUtilizador>()
+                                              .AsQueryable()
+                                              .BuildMockDbSet();
+
+            _mockContext.Setup(c => c.ItensEmprestimo).Returns(itensDbSet.Object);
+            _mockContext.Setup(c => c.Emprestimos).Returns(emprestimosDbSet.Object);
+            _mockContext.Setup(c => c.ItemEmprestimoUtilizadores).Returns(relacoesDbSet.Object);
+
+            _mockContext.Setup(c => c.SaveChangesAsync(It.IsAny<CancellationToken>()))
+                        .ReturnsAsync(1);
 
             _controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext
                 {
-                    User = new ClaimsPrincipal(new ClaimsIdentity(new[] {
-                    new Claim(ClaimTypes.NameIdentifier, userId.ToString())
-                    }, "TestAuth"))
+                    User = new ClaimsPrincipal(
+                               new ClaimsIdentity(
+                                   new[] { new Claim(ClaimTypes.NameIdentifier, userId.ToString()) },
+                                   "TestAuth"))
                 }
             };
 
+            
             var result = await _controller.EliminarItemEmprestimo(itemId);
 
+           
             Assert.IsInstanceOfType(result, typeof(NotFoundObjectResult));
-            var notFound = result as NotFoundObjectResult;
-            Assert.AreEqual("Empréstimo relacionado não encontrado.", notFound.Value);
+
+            var notFound = (NotFoundObjectResult)result;
+            Assert.AreEqual("Item de empréstimo ou relação de utilizador não encontrado.",
+                            notFound.Value);
         }
 
         /// <summary>
@@ -656,7 +677,7 @@ namespace CommuniCareTests
             int itemId = 10;
             string novaDescricao = "Nova descrição do martelo";
 
-            var item = new ItemEmprestimo { ItemId = itemId, DescItem = "Descrição antiga", Disponivel = 1 };
+            var item = new ItemEmprestimo { ItemId = itemId, DescItem = "Descrição antiga", Disponivel = EstadoItemEmprestimo.Disponivel };
             var emprestimo = new Emprestimo { EmprestimoId = 1, Items = new List<ItemEmprestimo> { item } };
             var relacao = new ItemEmprestimoUtilizador { ItemId = itemId, UtilizadorId = userId, TipoRelacao = "Dono" };
 
@@ -1015,7 +1036,7 @@ namespace CommuniCareTests
             int adminId = 1;
             int itemId = 10;
 
-            var item = new ItemEmprestimo { ItemId = itemId, NomeItem = "Martelo", Disponivel = 1 };
+            var item = new ItemEmprestimo { ItemId = itemId, NomeItem = "Martelo", Disponivel = EstadoItemEmprestimo.Disponivel };
             var admin = new Utilizador { UtilizadorId = adminId, TipoUtilizadorId = 2 };
 
             _mockContext.Setup(c => c.ItensEmprestimo)

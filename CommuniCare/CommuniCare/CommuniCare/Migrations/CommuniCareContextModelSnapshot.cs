@@ -447,6 +447,9 @@ namespace CommuniCare.Migrations
                         .HasColumnType("int")
                         .HasColumnName("recompensaCares");
 
+                    b.Property<string>("Titulo")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("TransacaoId")
                         .HasColumnType("int")
                         .HasColumnName("transacaoID");

@@ -620,23 +620,38 @@ namespace CommuniCare.Controllers
             var itens = await _context.ItensEmprestimo
                 .Include(i => i.Emprestimos)
                     .ThenInclude(e => e.Transacao)
-                    .Where(i =>
-                        // Critério 1: Estado disponível
-                        i.Disponivel == EstadoItemEmprestimo.Disponivel &&
-
-                        // Critério 2: Algum empréstimo sem transação associada
-                        i.Emprestimos.Any(e => e.DataIni == null)
-
-                    )
+                .Where(i =>
+                    i.Disponivel == EstadoItemEmprestimo.Disponivel &&
+                    i.Emprestimos.Any(e => e.DataIni == null)
+                )
                 .ToListAsync();
 
-            return Ok(itens);
+            // Mapeando para DTOs
+            var itensDTO = itens.Select(i => new ItemEmpPendenteDTO
+            {
+                NomeItem = i.NomeItem,
+                DescItem = i.DescItem,
+                ComissaoCares = i.ComissaoCares,
+                FotografiaItem = i.FotografiaItem,
+                Emprestimos = i.Emprestimos.Select(e => new EmprestimoDTO
+                {
+                    Id = e.EmprestimoId,
+                    DataIni = e.DataIni,
+                    Transacao = e.Transacao == null ? null : new TransacaoDTO
+                    {
+                        Id = e.Transacao.TransacaoId,
+                        DataTransacao = e.Transacao.Transacao.DataTransacao
+                    }
+                }).ToList()
+            }).ToList();
+
+            return Ok(itensDTO);
         }
 
         /// <summary>
-        /// Retorna os itens de empréstimo que requerem ações administrativas.
+        /// Retorna os itens de empréstimo que requerem ações administrativas na devolução.
         /// </summary>
-        /// <returns>Lista de itens com pendências administrativas.</returns>
+        /// <returns>Lista de itens com pendências de devolução.</returns>
         [HttpGet("Admin/ItensPendentes/Devolucao")]
         [Authorize]
         public async Task<IActionResult> ObterItensEmprestimoDevolucaoAdmin()
@@ -649,24 +664,40 @@ namespace CommuniCare.Controllers
 
             var admin = await _context.Utilizadores.FindAsync(adminId);
             if (admin == null || admin.TipoUtilizadorId != 2)
-                return Forbid("Apenas administradores podem rejeitar itens.");
+                return Forbid("Apenas administradores podem ver esses itens.");
 
             var itens = await _context.ItensEmprestimo
                 .Include(i => i.Emprestimos)
                     .ThenInclude(e => e.Transacao)
-                    .Where(i =>
-                        // Critério 1: Estado disponível
-                        i.Disponivel == EstadoItemEmprestimo.Disponivel &&
-
-                        // Critério 2: Algum empréstimo sem transação associada
-                        i.Emprestimos.Any(e => e.Transacao == null) &&
-
-                        i.Emprestimos.Any(e => e.DataDev != null)
-                    )
+                .Where(i =>
+                    i.Disponivel == EstadoItemEmprestimo.Disponivel &&
+                    i.Emprestimos.Any(e => e.Transacao == null) &&
+                    i.Emprestimos.Any(e => e.DataDev != null)
+                )
                 .ToListAsync();
 
-            return Ok(itens);
+            // Mapeando para DTOs
+            var itensDTO = itens.Select(i => new ItemEmpPendenteDTO
+            {
+                NomeItem = i.NomeItem,
+                DescItem = i.DescItem,
+                ComissaoCares = i.ComissaoCares,
+                FotografiaItem = i.FotografiaItem,
+                Emprestimos = i.Emprestimos
+                    .Where(e => e.Transacao == null && e.DataDev != null)
+                    .Select(e => new EmprestimoDTO
+                    {
+                        Id = e.EmprestimoId,
+                        DataIni = e.DataIni,
+                        DataDev = e.DataDev,
+                        Transacao = null
+                    })
+                    .ToList()
+            }).ToList();
+
+            return Ok(itensDTO);
         }
+
 
 
         /// <summary>

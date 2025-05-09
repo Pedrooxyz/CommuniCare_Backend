@@ -221,6 +221,8 @@ namespace CommuniCare.Controllers
             if (item == null)
                 return BadRequest("Item associado não encontrado.");
 
+            item.Disponivel = EstadoItemEmprestimo.Indisponivel;
+
             var relacoes = await _context.ItemEmprestimoUtilizadores
                 .Where(r => r.ItemId == item.ItemId)
                 .ToListAsync();

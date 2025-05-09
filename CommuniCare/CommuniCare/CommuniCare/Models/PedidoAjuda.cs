@@ -58,6 +58,11 @@ namespace CommuniCare.Models
         int pedidoId;
 
         /// <summary>
+        /// Titulo do Pedido de Ajuda.
+        /// </summary>
+        string? titulo;
+
+        /// <summary>
         /// Descrição do pedido de ajuda.
         /// </summary>
         string descPedido;
@@ -205,6 +210,12 @@ namespace CommuniCare.Models
         {
             get { return utilizadorId; }
             set { utilizadorId = value; }
+        }
+
+        public string? Titulo
+        {
+            get { return titulo; }
+            set { titulo = value; }
         }
 
         /// <summary>

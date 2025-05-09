@@ -166,6 +166,7 @@ namespace CommuniCare.Controllers
 
             var pedido = new PedidoAjuda
             {
+                Titulo = pedidoData.Titulo,
                 DescPedido = pedidoData.DescPedido,
                 HorarioAjuda = pedidoData.HorarioAjuda,
                 NHoras = pedidoData.NHoras,

@@ -594,25 +594,131 @@ namespace CommuniCare.Controllers
         }
 
         /// <summary>
-        /// Retorna todos os pedidos que requerem ações do administrador.
+        /// Retorna todos os pedidos de ajuda que requerem ações administrativas.
+        /// Apenas administradores podem aceder a este endpoint.
         /// </summary>
-        /// <returns>Lista de pedidos pendentes de ação administrativa.</returns>
+        /// <returns>Lista de pedidos pendentes com detalhes completas para administração.</returns>
         [HttpGet("Admin/Pendentes")]
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         public async Task<IActionResult> ObterPedidosPendentesAdmin()
         {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+                return Unauthorized();
+
+            int adminId = int.Parse(userIdClaim.Value);
+
+            var admin = await _context.Utilizadores.FindAsync(adminId);
+            if (admin == null || admin.TipoUtilizadorId != 2)
+                return Forbid("Apenas administradores podem aceder a esta informação.");
+
             var pedidos = await _context.PedidosAjuda
                 .Include(p => p.Voluntariados)
                 .Include(p => p.Transacao)
-                .Where(p =>
-                    p.Estado == EstadoPedido.Pendente ||
-                    (p.Estado == EstadoPedido.Concluido && p.Transacao == null) ||
-                    p.Voluntariados.Any(v => v.Estado == EstadoVoluntariado.Pendente)
-                )
+                .Where(p => p.Estado == EstadoPedido.Pendente)
                 .ToListAsync();
 
-            return Ok(pedidos);
+            var pedidosDTO = pedidos.Select(p => new PedidoPendenteDTO
+            {
+                PedidoId = p.PedidoId,
+                Titulo = p.Titulo,
+                Descricao = p.DescPedido,
+                DataCriacao = p.HorarioAjuda,
+                NumeroVoluntarios = p.Voluntariados.Count,
+                Transacao = p.Transacao == null ? null : new TransacaoDTO
+                {
+                    Id = p.Transacao.TransacaoId,
+                    DataTransacao = p.Transacao.Transacao.DataTransacao ?? DateTime.MinValue
+                }
+            }).ToList();
+
+            return Ok(pedidosDTO);
         }
+
+
+    /// <summary>
+    /// Retorna todos os pedidos que requerem ações do administrador.
+    /// </summary>
+    /// <returns>Lista de pedidos pendentes de ação administrativa.</returns>
+    [HttpGet("Admin/ObterValidarVoluntariado")]
+    [Authorize]
+    public async Task<IActionResult> ValidarVoluntariado()
+    {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+        if (userIdClaim == null)
+            return Unauthorized();
+
+        int adminId = int.Parse(userIdClaim.Value);
+
+        var admin = await _context.Utilizadores.FindAsync(adminId);
+        if (admin == null || admin.TipoUtilizadorId != 2)
+            return Forbid("Apenas administradores podem aceder a esta informação.");
+
+        var pedidos = await _context.PedidosAjuda
+            .Include(p => p.Voluntariados)
+            .Include(p => p.Transacao)
+            .Where(p =>
+                p.Voluntariados.Any(v => v.Estado == EstadoVoluntariado.Pendente))
+            .ToListAsync();
+
+        var pedidosDTO = pedidos.Select(p => new PedidoPendenteDTO
+        {
+            PedidoId = p.PedidoId,
+            Titulo = p.Titulo,
+            Descricao = p.DescPedido,
+            DataCriacao = p.HorarioAjuda,
+            NumeroVoluntarios = p.Voluntariados.Count,
+            Transacao = p.Transacao == null ? null : new TransacaoDTO
+            {
+                Id = p.Transacao.TransacaoId,
+                DataTransacao = p.Transacao.Transacao.DataTransacao ?? DateTime.MinValue
+            }
+        }).ToList();
+
+        return Ok(pedidosDTO);
+    }
+    
+    
+    /// <summary>
+    /// Retorna todos os pedidos que requerem ações do administrador.
+    /// </summary>
+    /// <returns>Lista de pedidos pendentes de ação administrativa.</returns>
+    [HttpGet("Admin/ObterValidarConclusaoPedido")]
+    public async Task<IActionResult> ValidarConclusaoPedido()
+    {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+        if (userIdClaim == null)
+            return Unauthorized();
+
+        int adminId = int.Parse(userIdClaim.Value);
+
+        var admin = await _context.Utilizadores.FindAsync(adminId);
+        if (admin == null || admin.TipoUtilizadorId != 2)
+            return Forbid("Apenas administradores podem aceder a esta informação.");
+
+        var pedidos = await _context.PedidosAjuda
+            .Include(p => p.Voluntariados)
+            .Include(p => p.Transacao)
+            .Where(p =>
+                (p.Estado == EstadoPedido.Concluido && p.Transacao == null))
+            .ToListAsync();
+
+        var pedidosDTO = pedidos.Select(p => new PedidoPendenteDTO
+        {
+            PedidoId = p.PedidoId,
+            Titulo = p.Titulo,
+            Descricao = p.DescPedido,
+            DataCriacao = p.HorarioAjuda,
+            NumeroVoluntarios = p.Voluntariados.Count,
+            Transacao = p.Transacao == null ? null : new TransacaoDTO
+            {
+                Id = p.Transacao.TransacaoId,
+                DataTransacao = p.Transacao.Transacao.DataTransacao ?? DateTime.MinValue
+            }
+        }).ToList();
+    
+        return Ok(pedidosDTO);
+    }
 
 
     }

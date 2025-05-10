@@ -976,7 +976,6 @@ C:\Users\ferna\Documents\GitHub\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniC
 C:\Users\ferna\Documents\GitHub\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\bin\Debug\net8.0\runtimes\win-x86\native\libstdc++-6.dll
 C:\Users\ferna\Documents\GitHub\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\bin\Debug\net8.0\runtimes\win-x86\native\libwinpthread-1.dll
 C:\Users\ferna\Documents\GitHub\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\bin\Debug\net8.0\runtimes\win-x86\native\qpdf.dll
-Z:\Universidade\Semestre1\24-25\PDS\PDS_Api\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\bin\Debug\net8.0\appsettings.Development.json
 Z:\Universidade\Semestre1\24-25\PDS\PDS_Api\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\bin\Debug\net8.0\appsettings.json
 Z:\Universidade\Semestre1\24-25\PDS\PDS_Api\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\bin\Debug\net8.0\LatoFont\Lato-Black.ttf
 Z:\Universidade\Semestre1\24-25\PDS\PDS_Api\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\bin\Debug\net8.0\LatoFont\Lato-BlackItalic.ttf

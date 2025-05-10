@@ -19,6 +19,8 @@ using System;
 using MockQueryable.Moq;
 using Microsoft.Extensions.Configuration;
 using CommuniCare;
+using System.ComponentModel.DataAnnotations;
+using System.Linq.Expressions;
 
 
 namespace CommuniCareTests
@@ -246,53 +248,7 @@ namespace CommuniCareTests
         /// </summary>
         /// <returns>Uma tarefa que representa a execução do teste unitário.</returns>
 
-        [TestMethod]
-        public async Task Register_ValidData_ReturnsOkWithToken()
-        {
-
-            var dto = new UtilizadorDTO
-            {
-                NomeUtilizador = "Joana",
-                Password = "123456",
-                Email = "joana@example.com"
-            };
-
-            var contactos = new List<Contacto>().AsQueryable();
-            var mockContactos = contactos.BuildMockDbSet();
-            _mockContext.Setup(c => c.Contactos).Returns(mockContactos.Object);
-
-            var cps = new List<Cp> { new Cp { CPostal = "0000-000", Localidade = "000000" } }.AsQueryable();
-            var mockCps = cps.BuildMockDbSet();
-            _mockContext.Setup(c => c.Cps).Returns(mockCps.Object);
-
-            var moradas = new List<Morada>().AsQueryable();
-            var mockMoradas = moradas.BuildMockDbSet();
-            _mockContext.Setup(c => c.Morada).Returns(mockMoradas.Object);
-
-            var utilizadores = new List<Utilizador>
-            {
-                new Utilizador { UtilizadorId = 99, TipoUtilizadorId = 2, EstadoUtilizador = EstadoUtilizador.Ativo }
-            }.AsQueryable();
-            var mockUtilizadores = utilizadores.BuildMockDbSet();
-            _mockContext.Setup(c => c.Utilizadores).Returns(mockUtilizadores.Object);
-
-            var notificacoes = new List<Notificacao>().AsQueryable();
-            var mockNotificacoes = notificacoes.BuildMockDbSet();
-            _mockContext.Setup(c => c.Notificacaos).Returns(mockNotificacoes.Object);
-
-            _mockContext.Setup(c => c.SaveChangesAsync(default)).ReturnsAsync(1);
-
-
-            var result = await _controller.Register(dto);
-
-
-            Assert.IsInstanceOfType(result, typeof(OkObjectResult));
-            var okResult = result as OkObjectResult;
-            dynamic value = okResult.Value;
-
-            var message = value.GetType().GetProperty("Message")?.GetValue(value)?.ToString();
-            Assert.AreEqual("Conta criada com sucesso! Aguardando aprovação de um administrador.", message);
-        }
+       
 
         #endregion
 

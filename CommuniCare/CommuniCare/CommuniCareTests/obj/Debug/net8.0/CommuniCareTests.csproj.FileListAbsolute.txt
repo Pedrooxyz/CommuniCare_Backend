@@ -1561,7 +1561,6 @@ C:\Users\ferna\Documents\GitHub\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniC
 C:\Users\ferna\Documents\GitHub\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCareTests\bin\Debug\net8.0\MockQueryable.EntityFrameworkCore.dll
 C:\Users\ferna\Documents\GitHub\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCareTests\bin\Debug\net8.0\MockQueryable.Moq.dll
 Z:\Universidade\Semestre1\24-25\PDS\PDS_Api\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCareTests\bin\Debug\net8.0\.msCoverageSourceRootsMapping_CommuniCareTests
-Z:\Universidade\Semestre1\24-25\PDS\PDS_Api\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCareTests\bin\Debug\net8.0\appsettings.Development.json
 Z:\Universidade\Semestre1\24-25\PDS\PDS_Api\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCareTests\bin\Debug\net8.0\appsettings.json
 Z:\Universidade\Semestre1\24-25\PDS\PDS_Api\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCareTests\bin\Debug\net8.0\testhost.exe
 Z:\Universidade\Semestre1\24-25\PDS\PDS_Api\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCareTests\bin\Debug\net8.0\testhost.dll

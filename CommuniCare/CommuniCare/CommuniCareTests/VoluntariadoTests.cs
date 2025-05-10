@@ -355,7 +355,7 @@ namespace CommuniCareTests
             };
 
 
-            var result = await controller.AceitarVoluntario(1);
+            var result = await controller.AceitarVoluntario(1, 10, 1);
 
 
             Assert.IsInstanceOfType(result, typeof(OkObjectResult));
@@ -436,7 +436,7 @@ namespace CommuniCareTests
             };
 
 
-            var result = await controller.AceitarVoluntario(1);
+            var result = await controller.AceitarVoluntario(1, 10, 1); ;
 
 
             Assert.IsInstanceOfType(result, typeof(OkObjectResult));
@@ -465,7 +465,7 @@ namespace CommuniCareTests
             };
 
 
-            var result = await controller.AceitarVoluntario(1);
+            var result = await controller.AceitarVoluntario(1, 10, 1); ;
 
 
             Assert.IsInstanceOfType(result, typeof(UnauthorizedObjectResult));
@@ -481,68 +481,75 @@ namespace CommuniCareTests
         [TestMethod]
         public async Task AceitarVoluntario_DeveRetornarBadRequest_SeVoluntariadoNaoPendente()
         {
+           
+            var pedido = new PedidoAjuda
+            {
+                PedidoId = 1,
+                UtilizadorId = 5,
+                NPessoas = 2,
+                Estado = EstadoPedido.Pendente,
+                Voluntariados = new List<Voluntariado>()
+            };
 
             var voluntariado = new Voluntariado
             {
                 IdVoluntariado = 1,
-                Estado = EstadoVoluntariado.Aceite,
+                Estado = EstadoVoluntariado.Aceite,  
                 PedidoId = 1,
                 UtilizadorId = 10,
-                Pedido = new PedidoAjuda
-                {
-                    PedidoId = 1,
-                    UtilizadorId = 5,
-                    NPessoas = 2,
-                    Estado = EstadoPedido.Pendente,
-                    Voluntariados = new List<Voluntariado>()
-                },
+                Pedido = pedido,
                 Utilizador = new Utilizador { UtilizadorId = 10 }
             };
+            pedido.Voluntariados.Add(voluntariado);
 
-            var data = new List<Voluntariado> { voluntariado }.AsQueryable();
-            var mockVoluntariadoDbSet = new Mock<DbSet<Voluntariado>>();
-            var asyncQueryProvider = new Mock<IAsyncQueryProvider>();
-            asyncQueryProvider
-                .Setup(p => p.ExecuteAsync<Voluntariado>(It.IsAny<Expression>(), It.IsAny<CancellationToken>()))
-                .Returns((Expression expression, CancellationToken _) =>
-                {
-                    var query = data.AsQueryable();
-                    var filteredData = query.Where(v => v.IdVoluntariado == 1 && v.Estado == EstadoVoluntariado.Pendente);
-                    return filteredData.FirstOrDefault();
-                });
-            asyncQueryProvider
-                .Setup(p => p.ExecuteAsync<IEnumerable<Voluntariado>>(It.IsAny<Expression>(), It.IsAny<CancellationToken>()))
-                .Returns((Expression expression, CancellationToken _) => data.Provider.Execute<IEnumerable<Voluntariado>>(expression));
+            var mockVoluntariados = new List<Voluntariado> { voluntariado }
+                                    .AsQueryable()
+                                    .BuildMockDbSet();
 
-            mockVoluntariadoDbSet.As<IQueryable<Voluntariado>>().Setup(m => m.Provider).Returns(asyncQueryProvider.Object);
-            mockVoluntariadoDbSet.As<IQueryable<Voluntariado>>().Setup(m => m.Expression).Returns(data.Expression);
-            mockVoluntariadoDbSet.As<IQueryable<Voluntariado>>().Setup(m => m.ElementType).Returns(data.ElementType);
-            mockVoluntariadoDbSet.As<IQueryable<Voluntariado>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
-            mockVoluntariadoDbSet.Setup(m => m.FindAsync(1)).ReturnsAsync(voluntariado);
+            
+            var admin = new Utilizador { UtilizadorId = 10, TipoUtilizadorId = 2 };
+            var mockUtilizadores = new List<Utilizador> { admin }
+                                   .AsQueryable()
+                                   .BuildMockDbSet();
 
-            var utilizador = new Utilizador { UtilizadorId = 10, TipoUtilizadorId = 2 };
-            var mockUtilizadoresDbSet = new List<Utilizador> { utilizador }.AsQueryable().BuildMockDbSet();
+            var ctx = new Mock<CommuniCareContext>();
+            ctx.Setup(c => c.Voluntariados).Returns(mockVoluntariados.Object);
+            ctx.Setup(c => c.Utilizadores).Returns(mockUtilizadores.Object);
 
-            var mockContext = new Mock<CommuniCareContext>();
-            mockContext.Setup(c => c.Voluntariados).Returns(mockVoluntariadoDbSet.Object);
-            mockContext.Setup(c => c.Utilizadores).Returns(mockUtilizadoresDbSet.Object);
-            mockContext.Setup(c => c.Utilizadores.FindAsync(10)).ReturnsAsync(utilizador);
+            
+            ctx.Setup(c => c.Utilizadores.FindAsync(It.IsAny<object[]>()))
+               .ReturnsAsync((object[] ids) =>
+               {
+                   var id = (int)ids[0];
+                   return mockUtilizadores.Object.FirstOrDefault(u => u.UtilizadorId == id);
+               });
 
-            var controller = new VoluntariadosController(mockContext.Object);
-            var claims = new List<Claim> { new Claim(ClaimTypes.NameIdentifier, "10") };
-            var identity = new ClaimsIdentity(claims, "TestAuth");
+            
+            ctx.Setup(c => c.SaveChangesAsync(default)).ReturnsAsync(1);
+
+            var controller = new VoluntariadosController(ctx.Object);
             controller.ControllerContext = new ControllerContext
             {
-                HttpContext = new DefaultHttpContext { User = new ClaimsPrincipal(identity) }
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new ClaimsPrincipal(
+                        new ClaimsIdentity(
+                            new[] { new Claim(ClaimTypes.NameIdentifier, "10") },
+                            "TestAuth"))
+                }
             };
 
+            
+            var result = await controller.AceitarVoluntario(
+                pedido.PedidoId,
+                voluntariado.UtilizadorId!.Value,
+                voluntariado.IdVoluntariado);
 
-            var result = await controller.AceitarVoluntario(1);
-
-
+           
             Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
-            var badRequestResult = result as BadRequestObjectResult;
-            Assert.AreEqual("Voluntariado não encontrado ou não está pendente.", badRequestResult.Value);
+
+            var badRequest = (BadRequestObjectResult)result;
+            StringAssert.Contains(badRequest.Value?.ToString(), "não está pendente");
         }
 
         #endregion

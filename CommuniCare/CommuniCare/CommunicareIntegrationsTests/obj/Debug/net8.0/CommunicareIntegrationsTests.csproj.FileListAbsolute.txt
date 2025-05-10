@@ -2,7 +2,6 @@ Z:\Universidade\Semestre1\24-25\PDS\PDS_Api\CommuniCare_PDS\CommuniCare\CommuniC
 Z:\Universidade\Semestre1\24-25\PDS\PDS_Api\CommuniCare_PDS\CommuniCare\CommuniCare\CommunicareIntegrationsTests\bin\Debug\net8.0\testhost.dll
 Z:\Universidade\Semestre1\24-25\PDS\PDS_Api\CommuniCare_PDS\CommuniCare\CommuniCare\CommunicareIntegrationsTests\bin\Debug\net8.0\CommuniCare.deps.json
 Z:\Universidade\Semestre1\24-25\PDS\PDS_Api\CommuniCare_PDS\CommuniCare\CommuniCare\CommunicareIntegrationsTests\bin\Debug\net8.0\CommuniCare.runtimeconfig.json
-Z:\Universidade\Semestre1\24-25\PDS\PDS_Api\CommuniCare_PDS\CommuniCare\CommuniCare\CommunicareIntegrationsTests\bin\Debug\net8.0\appsettings.Development.json
 Z:\Universidade\Semestre1\24-25\PDS\PDS_Api\CommuniCare_PDS\CommuniCare\CommuniCare\CommunicareIntegrationsTests\bin\Debug\net8.0\appsettings.json
 Z:\Universidade\Semestre1\24-25\PDS\PDS_Api\CommuniCare_PDS\CommuniCare\CommuniCare\CommunicareIntegrationsTests\bin\Debug\net8.0\CommuniCare.exe
 Z:\Universidade\Semestre1\24-25\PDS\PDS_Api\CommuniCare_PDS\CommuniCare\CommuniCare\CommunicareIntegrationsTests\bin\Debug\net8.0\testhost.exe

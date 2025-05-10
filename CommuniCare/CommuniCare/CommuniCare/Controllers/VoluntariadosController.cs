@@ -193,15 +193,17 @@ namespace CommuniCare.Controllers
             return Ok("Voluntário rejeitado com sucesso.");
         }
 
-        /// <summary>
+                /// <summary>
         /// Aceita um voluntário para um pedido específico e atualiza o estado do pedido caso o número de voluntários aceites seja atingido.
         /// Apenas administradores têm permissão para aceitar voluntários.
         /// </summary>
-        /// <param name="idVoluntariado">Identificador do voluntariado a ser aceito.</param>
+        /// <param name="pedidoId">Identificador do pedido.</param>
+        /// <param name="utilizadorId">Identificador do voluntário a ser aceite.</param>
+        /// <param name="idVoluntariado">Identificador do voluntariado a ser aceite.</param>
         /// <returns>Resultado da aceitação. Retorna Ok se bem-sucedido, Unauthorized se não autenticado, ou Forbid se não for um administrador.</returns>
-        [HttpPost("AceitarVoluntario-(admin)/{idVoluntariado}")]
+        [HttpPost("AceitarVoluntario-(admin)/pedido{pedidoId}/utilizador{utilizadorId}/Voluntariado{idVoluntariado}")]
         [Authorize]
-        public async Task<IActionResult> AceitarVoluntario(int idVoluntariado)
+        public async Task<IActionResult> AceitarVoluntario(int pedidoId, int utilizadorId, int idVoluntariado)
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
@@ -210,7 +212,6 @@ namespace CommuniCare.Controllers
             }
 
             int adminId = int.Parse(userIdClaim.Value);
-
 
             var utilizador = await _context.Utilizadores.FindAsync(adminId);
             if (utilizador == null || utilizador.TipoUtilizadorId != 2)
@@ -222,13 +223,16 @@ namespace CommuniCare.Controllers
                 .Include(v => v.Pedido)
                 .Include(v => v.Pedido.Voluntariados)
                 .Include(v => v.Pedido.Utilizador)
-                .FirstOrDefaultAsync(v => v.IdVoluntariado == idVoluntariado && v.Estado == EstadoVoluntariado.Pendente);
+                .FirstOrDefaultAsync(v =>
+                    v.IdVoluntariado == idVoluntariado &&
+                    v.PedidoId == pedidoId &&
+                    v.UtilizadorId == utilizadorId &&
+                    v.Estado == EstadoVoluntariado.Pendente);
 
             if (voluntariado == null)
             {
-                return BadRequest("Voluntariado não encontrado ou não está pendente.");
+                return BadRequest("Voluntariado não encontrado, dados incorretos ou não está pendente.");
             }
-
 
             voluntariado.Estado = EstadoVoluntariado.Aceite;
 

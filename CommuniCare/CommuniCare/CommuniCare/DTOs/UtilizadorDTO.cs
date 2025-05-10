@@ -12,6 +12,12 @@ namespace CommuniCare.DTOs
 
         [Required]
         public string Password { get; set; }
+
+        public string Rua { get; set; }
+        public int? NumPorta { get; set; }
+        public string CPostal { get; set; }
+        public string Localidade { get; set; }
+
     }
 
 

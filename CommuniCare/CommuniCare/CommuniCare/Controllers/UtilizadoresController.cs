@@ -141,6 +141,101 @@ namespace CommuniCare.Controllers
         /// <returns>Retorna um status 200 OK se a conta for criada com sucesso, aguardando aprovação de um administrador.</returns>
         #endregion
 
+        //[HttpPost("RegisterUtilizador")]
+        //public async Task<IActionResult> Register([FromBody] UtilizadorDTO dto)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
+
+        //    bool emailExiste = await _context.Contactos
+        //        .AnyAsync(c => c.NumContacto == dto.Email);
+
+        //    if (emailExiste)
+        //    {
+        //        return BadRequest("Já existe uma conta com este email.");
+        //    }
+
+        //    var codigoPostalPadrao = await _context.Cps.FirstOrDefaultAsync(cp => cp.CPostal == "0000-000");
+        //    if (codigoPostalPadrao == null)
+        //    {
+        //        codigoPostalPadrao = new Cp
+        //        {
+        //            CPostal = "0000-000",
+        //            Localidade = "000000"
+        //        };
+        //        _context.Cps.Add(codigoPostalPadrao);
+        //        await _context.SaveChangesAsync();
+        //    }
+
+        //    var moradaTemporaria = new Morada
+        //    {
+        //        Rua = "A definir",
+        //        NumPorta = null,
+        //        CPostal = codigoPostalPadrao.CPostal
+        //    };
+
+        //    _context.Morada.Add(moradaTemporaria);
+        //    await _context.SaveChangesAsync();
+
+        //    var novoUtilizador = new Utilizador
+        //    {
+        //        NomeUtilizador = dto.NomeUtilizador,
+        //        Password = BCrypt.Net.BCrypt.HashPassword(dto.Password),
+        //        NumCares = 0,
+        //        TipoUtilizadorId = 1,
+        //        MoradaId = moradaTemporaria.MoradaId,
+        //        EstadoUtilizador = EstadoUtilizador.Pendente
+        //    };
+
+        //    _context.Utilizadores.Add(novoUtilizador);
+        //    await _context.SaveChangesAsync();
+
+        //    var contactoEmail = new Contacto
+        //    {
+        //        NumContacto = dto.Email,
+        //        TipoContactoId = 1,
+        //        UtilizadorId = novoUtilizador.UtilizadorId
+        //    };
+
+        //    _context.Contactos.Add(contactoEmail);
+        //    await _context.SaveChangesAsync();
+
+
+        //    var admins = await _context.Utilizadores
+        //        .Where(u => u.TipoUtilizadorId == 2 && u.EstadoUtilizador == EstadoUtilizador.Ativo)
+        //        .ToListAsync();
+
+        //    foreach (var admin in admins)
+        //    {
+        //        var notificacao = new Notificacao
+        //        {
+        //            UtilizadorId = admin.UtilizadorId,
+        //            Mensagem = $"Nova conta criada: {novoUtilizador.NomeUtilizador}. Aguardando aprovação.",
+        //            Lida = 0,
+        //            DataMensagem = DateTime.Now,
+        //            PedidoId = null,
+        //            ItemId = null
+        //        };
+
+        //        _context.Notificacaos.Add(notificacao);
+        //    }
+
+        //    await _context.SaveChangesAsync();
+
+        //    return Ok(new
+        //    {
+        //        Message = "Conta criada com sucesso! Aguardando aprovação de um administrador.",
+        //    });
+        //}
+
+        /// <summary>
+        /// Regista um novo administrador com os dados fornecidos.
+        /// </summary>
+        /// <param name="dto">Objeto DTO contendo os dados necessários para o registro de um administrador.</param>
+        /// <returns>Retorna um status 200 OK se a conta de administrador for criada com sucesso, aguardando aprovação de outro administrador.</returns>
+
         [HttpPost("RegisterUtilizador")]
         public async Task<IActionResult> Register([FromBody] UtilizadorDTO dto)
         {
@@ -149,6 +244,7 @@ namespace CommuniCare.Controllers
                 return BadRequest(ModelState);
             }
 
+            // Verifica se o email já existe nos contactos
             bool emailExiste = await _context.Contactos
                 .AnyAsync(c => c.NumContacto == dto.Email);
 
@@ -157,174 +253,124 @@ namespace CommuniCare.Controllers
                 return BadRequest("Já existe uma conta com este email.");
             }
 
-            var codigoPostalPadrao = await _context.Cps.FirstOrDefaultAsync(cp => cp.CPostal == "0000-000");
-            if (codigoPostalPadrao == null)
+            // Validação extra do Código Postal e Localidade
+            if (string.IsNullOrWhiteSpace(dto.CPostal) || string.IsNullOrWhiteSpace(dto.Localidade))
             {
-                codigoPostalPadrao = new Cp
-                {
-                    CPostal = "0000-000",
-                    Localidade = "000000"
-                };
-                _context.Cps.Add(codigoPostalPadrao);
-                await _context.SaveChangesAsync();
+                return BadRequest("Código postal e localidade são obrigatórios.");
             }
 
-            var moradaTemporaria = new Morada
+            // Verifica se o código postal já existe
+            var cpExistente = await _context.Cps.FirstOrDefaultAsync(cp => cp.CPostal == dto.CPostal);
+            if (cpExistente == null)
             {
-                Rua = "A definir",
-                NumPorta = null,
-                CPostal = codigoPostalPadrao.CPostal
+                cpExistente = new Cp
+                {
+                    CPostal = dto.CPostal,
+                    Localidade = dto.Localidade
+                };
+                _context.Cps.Add(cpExistente);
+            }
+
+            // Cria a morada com os dados fornecidos
+            var morada = new Morada
+            {
+                Rua = dto.Rua,
+                NumPorta = dto.NumPorta,
+                CPostal = cpExistente.CPostal
             };
+            _context.Morada.Add(morada);
 
-            _context.Morada.Add(moradaTemporaria);
-            await _context.SaveChangesAsync();
-
+            // Cria o utilizador
             var novoUtilizador = new Utilizador
             {
                 NomeUtilizador = dto.NomeUtilizador,
                 Password = BCrypt.Net.BCrypt.HashPassword(dto.Password),
                 NumCares = 0,
-                TipoUtilizadorId = 1,
-                MoradaId = moradaTemporaria.MoradaId,
+                TipoUtilizadorId = 1, // 1 = utilizador normal
+                Morada = morada, // associa diretamente a morada (não precisa MoradaId agora)
                 EstadoUtilizador = EstadoUtilizador.Pendente
             };
-
             _context.Utilizadores.Add(novoUtilizador);
-            await _context.SaveChangesAsync();
 
+            // Cria o contacto (email)
             var contactoEmail = new Contacto
             {
                 NumContacto = dto.Email,
-                TipoContactoId = 1,
-                UtilizadorId = novoUtilizador.UtilizadorId
+                TipoContactoId = 1, // 1 = email
+                Utilizador = novoUtilizador
             };
-
             _context.Contactos.Add(contactoEmail);
-            await _context.SaveChangesAsync();
 
-
+            // Notificar admins
             var admins = await _context.Utilizadores
                 .Where(u => u.TipoUtilizadorId == 2 && u.EstadoUtilizador == EstadoUtilizador.Ativo)
                 .ToListAsync();
 
-            foreach (var admin in admins)
+            var notificacoes = admins.Select(admin => new Notificacao
             {
-                var notificacao = new Notificacao
-                {
-                    UtilizadorId = admin.UtilizadorId,
-                    Mensagem = $"Nova conta criada: {novoUtilizador.NomeUtilizador}. Aguardando aprovação.",
-                    Lida = 0,
-                    DataMensagem = DateTime.Now,
-                    PedidoId = null,
-                    ItemId = null
-                };
+                UtilizadorId = admin.UtilizadorId,
+                Mensagem = $"Nova conta criada: {novoUtilizador.NomeUtilizador}. Aguardando aprovação.",
+                Lida = 0,
+                DataMensagem = DateTime.Now,
+                PedidoId = null,
+                ItemId = null
+            }).ToList();
 
-                _context.Notificacaos.Add(notificacao);
-            }
+            _context.Notificacaos.AddRange(notificacoes);
 
+            // Grava tudo de uma vez
             await _context.SaveChangesAsync();
 
-            return Ok(new
+            // Carregar o utilizador com Morada incluída
+            var utilizadorComMorada = await _context.Utilizadores
+                .Include(u => u.Morada)
+                .FirstOrDefaultAsync(u => u.UtilizadorId == novoUtilizador.UtilizadorId);
+
+            // Devolver resposta controlada (sem password!)
+            var resultado = new
             {
-                Message = "Conta criada com sucesso! Aguardando aprovação de um administrador.",
-            });
+                utilizadorComMorada.UtilizadorId,
+                utilizadorComMorada.NomeUtilizador,
+                utilizadorComMorada.NumCares,
+                utilizadorComMorada.MoradaId,
+                Morada = new
+                {
+                    utilizadorComMorada.Morada?.Rua,
+                    utilizadorComMorada.Morada?.NumPorta,
+                    utilizadorComMorada.Morada?.CPostal
+                },
+                Message = "Conta criada com sucesso! Aguardando aprovação de um administrador."
+            };
+
+            return StatusCode(StatusCodes.Status201Created, resultado);
         }
 
-        /// <summary>
-        /// Regista um novo administrador com os dados fornecidos.
-        /// </summary>
-        /// <param name="dto">Objeto DTO contendo os dados necessários para o registro de um administrador.</param>
-        /// <returns>Retorna um status 200 OK se a conta de administrador for criada com sucesso, aguardando aprovação de outro administrador.</returns>
 
-        [HttpPost("RegisterAdmin")]
-        public async Task<IActionResult> RegisterAdmin([FromBody] UtilizadorDTO dto)
+
+
+
+        [HttpGet("ListarPendentes")]
+        public async Task<IActionResult> ListarUtilizadoresPendentes()
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            bool emailExiste = await _context.Contactos
-                .AnyAsync(c => c.NumContacto == dto.Email);
-
-            if (emailExiste)
-            {
-                return BadRequest("Já existe uma conta com este email.");
-            }
-
-            var codigoPostalPadrao = await _context.Cps.FirstOrDefaultAsync(cp => cp.CPostal == "0000-000");
-            if (codigoPostalPadrao == null)
-            {
-                codigoPostalPadrao = new Cp
+            var pendentes = await _context.Utilizadores
+                .Where(u => u.EstadoUtilizador == EstadoUtilizador.Pendente)
+                .Select(u => new
                 {
-                    CPostal = "0000-000",
-                    Localidade = "000000"
-                };
-                _context.Cps.Add(codigoPostalPadrao);
-                await _context.SaveChangesAsync();
-            }
-
-            var moradaTemporaria = new Morada
-            {
-                Rua = "A definir",
-                NumPorta = null,
-                CPostal = codigoPostalPadrao.CPostal
-            };
-
-            _context.Morada.Add(moradaTemporaria);
-            await _context.SaveChangesAsync();
-
-            var novoAdmin = new Utilizador
-            {
-                NomeUtilizador = dto.NomeUtilizador,
-                Password = BCrypt.Net.BCrypt.HashPassword(dto.Password),
-                NumCares = 0,
-                TipoUtilizadorId = 2,
-                MoradaId = moradaTemporaria.MoradaId,
-                EstadoUtilizador = EstadoUtilizador.Pendente
-            };
-
-            _context.Utilizadores.Add(novoAdmin);
-            await _context.SaveChangesAsync();
-
-            var contactoEmail = new Contacto
-            {
-                NumContacto = dto.Email,
-                TipoContactoId = 1,
-                UtilizadorId = novoAdmin.UtilizadorId
-            };
-
-            _context.Contactos.Add(contactoEmail);
-            await _context.SaveChangesAsync();
-
-
-            var admins = await _context.Utilizadores
-                .Where(u => u.TipoUtilizadorId == 2 && u.EstadoUtilizador == EstadoUtilizador.Ativo)
+                    u.UtilizadorId,
+                    u.NomeUtilizador,
+                    u.FotoUtil,
+                    Morada = new
+                    {
+                        u.Morada.Rua,
+                        u.Morada.NumPorta,
+                        u.Morada.CPostal
+                    }
+                })
                 .ToListAsync();
 
-            foreach (var admin in admins)
-            {
-                var notificacao = new Notificacao
-                {
-                    UtilizadorId = admin.UtilizadorId,
-                    Mensagem = $"Novo administrador registado: {novoAdmin.NomeUtilizador}. Aguardando aprovação.",
-                    Lida = 0,
-                    DataMensagem = DateTime.Now,
-                    PedidoId = null,
-                    ItemId = null
-                };
-
-                _context.Notificacaos.Add(notificacao);
-            }
-
-            await _context.SaveChangesAsync();
-
-
-            return Ok(new
-            {
-                Message = "Conta de administrador criada com sucesso! Aguardando aprovação de outro administrador.",
-            });
+            return Ok(pendentes);
         }
+
 
         /// <summary>
         /// Obtém as informações do utilizador autenticado.

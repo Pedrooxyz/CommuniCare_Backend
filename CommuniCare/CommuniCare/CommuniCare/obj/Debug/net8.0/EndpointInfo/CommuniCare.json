@@ -1658,6 +1658,46 @@
         }
       }
     },
+    "/api/Lojas/{id}": {
+      "get": {
+        "tags": [
+          "Lojas"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Loja"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Loja"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Loja"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Lojas/CriarLoja-(admin)": {
       "post": {
         "tags": [
@@ -2439,6 +2479,30 @@
         }
       }
     },
+    "/api/PedidosAjuda/Admin/ObterValidarVoluntariado": {
+      "get": {
+        "tags": [
+          "PedidosAjuda"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/PedidosAjuda/Admin/ObterValidarConclusaoPedido": {
+      "get": {
+        "tags": [
+          "PedidosAjuda"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/TipoContactos": {
       "get": {
         "tags": [
@@ -3035,30 +3099,11 @@
         }
       }
     },
-    "/api/Utilizadores/RegisterAdmin": {
-      "post": {
+    "/api/Utilizadores/ListarPendentes": {
+      "get": {
         "tags": [
           "Utilizadores"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UtilizadorDTO"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UtilizadorDTO"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/UtilizadorDTO"
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
             "description": "OK"
@@ -4462,6 +4507,10 @@
             "format": "int32",
             "nullable": true
           },
+          "titulo": {
+            "type": "string",
+            "nullable": true
+          },
           "fotografiaPA": {
             "type": "string",
             "nullable": true
@@ -4492,6 +4541,10 @@
       "PedidoAjudaDTO": {
         "type": "object",
         "properties": {
+          "titulo": {
+            "type": "string",
+            "nullable": true
+          },
           "descPedido": {
             "type": "string",
             "nullable": true
@@ -4842,6 +4895,23 @@
           "password": {
             "minLength": 1,
             "type": "string"
+          },
+          "rua": {
+            "type": "string",
+            "nullable": true
+          },
+          "numPorta": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "cPostal": {
+            "type": "string",
+            "nullable": true
+          },
+          "localidade": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false

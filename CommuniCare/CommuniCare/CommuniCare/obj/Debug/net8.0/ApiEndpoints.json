@@ -967,6 +967,32 @@
   },
   {
     "ContainingType": "CommuniCare.Controllers.LojasController",
+    "Method": "GetLoja",
+    "RelativePath": "api/Lojas/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "CommuniCare.Models.Loja",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.LojasController",
     "Method": "AtivarLoja",
     "RelativePath": "api/Lojas/AtivarLoja-(admin)/{id}",
     "HttpMethod": "PUT",
@@ -1337,6 +1363,26 @@
         "IsRequired": true
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",
+    "Method": "ValidarConclusaoPedido",
+    "RelativePath": "api/PedidosAjuda/Admin/ObterValidarConclusaoPedido",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",
+    "Method": "ValidarVoluntariado",
+    "RelativePath": "api/PedidosAjuda/Admin/ObterValidarVoluntariado",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {
@@ -1888,6 +1934,16 @@
   },
   {
     "ContainingType": "CommuniCare.Controllers.UtilizadoresController",
+    "Method": "ListarUtilizadoresPendentes",
+    "RelativePath": "api/Utilizadores/ListarPendentes",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.UtilizadoresController",
     "Method": "Login",
     "RelativePath": "api/Utilizadores/Login",
     "HttpMethod": "POST",
@@ -1923,22 +1979,6 @@
       {
         "Name": "dto",
         "Type": "CommuniCare.DTOs.RecuperarSenhaDTO",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "CommuniCare.Controllers.UtilizadoresController",
-    "Method": "RegisterAdmin",
-    "RelativePath": "api/Utilizadores/RegisterAdmin",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "dto",
-        "Type": "CommuniCare.DTOs.UtilizadorDTO",
         "IsRequired": true
       }
     ],

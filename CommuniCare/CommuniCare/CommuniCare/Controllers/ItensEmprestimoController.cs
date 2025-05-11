@@ -629,6 +629,7 @@ namespace CommuniCare.Controllers
             // Mapeando para DTOs
             var itensDTO = itens.Select(i => new ItemEmpPendenteDTO
             {
+                ItemId = i.ItemId,
                 NomeItem = i.NomeItem,
                 DescItem = i.DescItem,
                 ComissaoCares = i.ComissaoCares,
@@ -679,6 +680,7 @@ namespace CommuniCare.Controllers
             // Mapeando para DTOs
             var itensDTO = itens.Select(i => new ItemEmpPendenteDTO
             {
+                ItemId = i.ItemId,
                 NomeItem = i.NomeItem,
                 DescItem = i.DescItem,
                 ComissaoCares = i.ComissaoCares,

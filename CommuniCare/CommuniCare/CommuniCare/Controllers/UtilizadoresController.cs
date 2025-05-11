@@ -420,32 +420,51 @@ namespace CommuniCare.Controllers
 
         [HttpPut("EditarFoto")]
         [Authorize]
-        public async Task<IActionResult> UpdateFotoUrl([FromBody] FotoUrlDto dto)
+        public async Task<IActionResult> UpdateFoto(IFormFile foto)
         {
-            if (string.IsNullOrWhiteSpace(dto.FotoUrl))
-                return BadRequest("FotoUrl cannot be empty.");
+            // Verifica se o ficheiro é nulo ou vazio
+            if (foto == null || foto.Length == 0)
+                return BadRequest("Nenhum ficheiro enviado.");
 
-
-            var idStr =
-                User.FindFirstValue(ClaimTypes.NameIdentifier) ??
-                User.FindFirstValue("sub") ??
-                User.FindFirstValue("uid") ??
-                User.FindFirstValue("id");
+            // Obtém o ID do utilizador a partir dos claims
+            var idStr = User.FindFirstValue(ClaimTypes.NameIdentifier) ??
+                        User.FindFirstValue("sub") ??
+                        User.FindFirstValue("uid") ??
+                        User.FindFirstValue("id");
 
             if (!int.TryParse(idStr, out var userId))
                 return Unauthorized();
 
-
-            var utilizador = await _context.Utilizadores
-                                           .SingleOrDefaultAsync(u => u.UtilizadorId == userId);
-
+            // Procura o utilizador no banco de dados
+            var utilizador = await _context.Utilizadores.SingleOrDefaultAsync(u => u.UtilizadorId == userId);
             if (utilizador is null)
                 return Unauthorized();
 
-            utilizador.FotoUtil = dto.FotoUrl;
+            // Criação do caminho do diretório de upload
+            var uploadDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+
+            // Verifica se o diretório de uploads existe, se não, cria ele
+            if (!Directory.Exists(uploadDirectory))
+            {
+                Directory.CreateDirectory(uploadDirectory);
+            }
+
+            // Gera o nome do ficheiro com um GUID único
+            var fileName = $"{Guid.NewGuid()}_{foto.FileName}";
+            var filePath = Path.Combine(uploadDirectory, fileName);
+
+            // Guarda o ficheiro no servidor
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await foto.CopyToAsync(stream);
+            }
+
+            // Atualiza a URL da foto no utilizador
+            utilizador.FotoUtil = $"/uploads/{fileName}";
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            // Retorna a URL da foto salva
+            return Ok(new { fotoUtil = utilizador.FotoUtil });
         }
 
         /// <summary>

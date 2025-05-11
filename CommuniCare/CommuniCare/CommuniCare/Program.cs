@@ -218,6 +218,7 @@ public class Program // Alteração: tornou-se pública
 
         app.UseRouting();
         app.UseCors(DevClient);
+        app.UseStaticFiles();
 
         app.UseAuthentication();
         app.UseAuthorization();

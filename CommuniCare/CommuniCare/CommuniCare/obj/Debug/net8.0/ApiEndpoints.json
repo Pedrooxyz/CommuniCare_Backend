@@ -593,6 +593,32 @@
   },
   {
     "ContainingType": "CommuniCare.Controllers.EmprestimosController",
+    "Method": "EmprestimoCorrespondenteItemParaDevolucao",
+    "RelativePath": "api/Emprestimos/EmprestimoCorrespondenteItemParaDevolucao/{itemEmprestimoId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "itemEmprestimoId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "CommuniCare.Models.Emprestimo",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.EmprestimosController",
     "Method": "RejeitarEmprestimo",
     "RelativePath": "api/Emprestimos/RejeitarEmprestimo-(admin)/{emprestimoId}",
     "HttpMethod": "POST",
@@ -914,6 +940,26 @@
     "ReturnTypes": [
       {
         "Type": "System.Collections.Generic.IEnumerable\u00601[[CommuniCare.Models.ItemEmprestimo, CommuniCare, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.ItensEmprestimoController",
+    "Method": "GetMeusItensEmUso",
+    "RelativePath": "api/ItensEmprestimo/MeusItensEmUso",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[CommuniCare.DTOs.ItemEmprestimoDTO, CommuniCare, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1941,16 +1987,16 @@
   },
   {
     "ContainingType": "CommuniCare.Controllers.UtilizadoresController",
-    "Method": "UpdateFotoUrl",
+    "Method": "UpdateFoto",
     "RelativePath": "api/Utilizadores/EditarFoto",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "dto",
-        "Type": "CommuniCare.DTOs.FotoUrlDto",
-        "IsRequired": true
+        "Name": "foto",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []

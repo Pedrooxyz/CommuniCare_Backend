@@ -21,6 +21,9 @@ using Microsoft.Extensions.Configuration;
 using CommuniCare;
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
+using NuGet.ProjectModel;
+using Newtonsoft.Json.Linq;
+using System.Text;
 
 
 namespace CommuniCareTests
@@ -253,10 +256,10 @@ namespace CommuniCareTests
         #endregion
 
 
-        #region UpdateFotoUrl
+        #region UpdateFoto
 
         /// <summary>
-        /// Testa o comportamento do método UpdateFotoUrl quando uma solicitação válida é feita para atualizar a foto do usuário.
+        /// Testa o comportamento do método UpdateFoto quando uma solicitação válida é feita para atualizar a foto do usuário.
         /// Espera-se que o método atualize corretamente a foto do usuário e retorne um resultado NoContent, indicando que a operação foi realizada com sucesso, sem a necessidade de um conteúdo adicional na resposta.
         /// </summary>
         /// <returns>Uma tarefa que representa a execução do teste unitário.</returns>
@@ -264,7 +267,7 @@ namespace CommuniCareTests
         [TestMethod]
         public async Task UpdateFotoUrl_ValidRequest_UpdatesAndReturnsNoContent()
         {
-
+            // Arrange
             var userId = 1;
             var utilizador = new Utilizador
             {
@@ -280,33 +283,48 @@ namespace CommuniCareTests
             _mockContext.Setup(c => c.SaveChangesAsync(default)).ReturnsAsync(1);
 
             var userClaims = new List<Claim>
-            {
-              new Claim(ClaimTypes.NameIdentifier, userId.ToString())
-            };
-
-            var userIdentity = new ClaimsIdentity(userClaims);
-            var userPrincipal = new ClaimsPrincipal(userIdentity);
-
+        {
+            new Claim(ClaimTypes.NameIdentifier, userId.ToString())
+        };
             _controller.ControllerContext = new ControllerContext
             {
-                HttpContext = new DefaultHttpContext { User = userPrincipal }
+                HttpContext = new DefaultHttpContext { User = new ClaimsPrincipal(new ClaimsIdentity(userClaims)) }
             };
 
-            var dto = new FotoUrlDto
+           
+            var fileName = "new_photo.jpg";
+            var content = "fake image content";
+            var stream = new MemoryStream(Encoding.UTF8.GetBytes(content));
+            var mockFile = new FormFile(stream, 0, stream.Length, "foto", fileName)
             {
-                FotoUrl = "new_photo.jpg"
+                Headers = new HeaderDictionary(),
+                ContentType = "image/jpeg"
             };
 
+            // Act
+            var result = await _controller.UpdateFoto(mockFile);
 
-            var result = await _controller.UpdateFotoUrl(dto);
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(OkObjectResult));
+            var okResult = (OkObjectResult)result;
 
+            
+            var json = JObject.FromObject(okResult.Value!);
+            var returnedUrl = json["fotoUtil"]!.ToString();
 
-            Assert.IsInstanceOfType(result, typeof(NoContentResult));
-            Assert.AreEqual("new_photo.jpg", utilizador.FotoUtil);
+            
+            StringAssert.StartsWith(returnedUrl, "/uploads/");
+
+            
+            StringAssert.Contains(returnedUrl, fileName);
+
+            
+            StringAssert.StartsWith(utilizador.FotoUtil, "/uploads/");
+            StringAssert.Contains(utilizador.FotoUtil, fileName);
         }
 
         /// <summary>
-        /// Testa o comportamento do método UpdateFotoUrl quando a URL da foto fornecida está vazia ou contém apenas espaços em branco.
+        /// Testa o comportamento do método UpdateFoto quando a URL da foto fornecida está vazia ou contém apenas espaços em branco.
         /// Espera-se que o método retorne um resultado BadRequest com uma mensagem indicando que a URL da foto não pode ser vazia.
         /// </summary>
         /// <returns>Uma tarefa que representa a execução do teste unitário.</returns>
@@ -314,16 +332,13 @@ namespace CommuniCareTests
         [TestMethod]
         public async Task UpdateFotoUrl_EmptyFotoUrl_ReturnsBadRequest()
         {
-
-            var dto = new FotoUrlDto
-            {
-                FotoUrl = "   "
-            };
+            // Arrange
+            IFormFile mockFile = null; // Simulate no file uploaded
 
             var userClaims = new List<Claim>
-            {
-              new Claim(ClaimTypes.NameIdentifier, "1")
-            };
+    {
+        new Claim(ClaimTypes.NameIdentifier, "1")
+    };
 
             var userIdentity = new ClaimsIdentity(userClaims);
             var userPrincipal = new ClaimsPrincipal(userIdentity);
@@ -333,17 +348,17 @@ namespace CommuniCareTests
                 HttpContext = new DefaultHttpContext { User = userPrincipal }
             };
 
+            // Act
+            var result = await _controller.UpdateFoto(mockFile);
 
-            var result = await _controller.UpdateFotoUrl(dto);
-
-
+            // Assert
             Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
             var badRequest = result as BadRequestObjectResult;
-            Assert.AreEqual("FotoUrl cannot be empty.", badRequest.Value);
+            Assert.AreEqual("Nenhum ficheiro enviado.", badRequest.Value); // ✅ Corrected line
         }
 
         /// <summary>
-        /// Testa o comportamento do método UpdateFotoUrl quando o usuário não é encontrado na base de dados.
+        /// Testa o comportamento do método UpdateFoto quando o usuário não é encontrado na base de dados.
         /// Espera-se que o método retorne um resultado Unauthorized indicando que o usuário não tem permissão para realizar a operação.
         /// </summary>
         /// <returns>Uma tarefa que representa a execução do teste unitário.</returns>
@@ -351,17 +366,29 @@ namespace CommuniCareTests
         [TestMethod]
         public async Task UpdateFotoUrl_UserNotFound_ReturnsUnauthorized()
         {
-
+            // Arrange
             var userId = 99;
+
+            
             var utilizadores = new List<Utilizador>().AsQueryable();
             var mockDbSet = utilizadores.BuildMockDbSet();
-
             _mockContext.Setup(c => c.Utilizadores).Returns(mockDbSet.Object);
 
-            var userClaims = new List<Claim>
+            
+            var content = "fake image data";
+            var fileName = "photo.jpg";
+            var stream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(content));
+            var mockFile = new FormFile(stream, 0, stream.Length, "foto", fileName)
             {
-              new Claim(ClaimTypes.NameIdentifier, userId.ToString())
+                Headers = new HeaderDictionary(),
+                ContentType = "image/jpeg"
             };
+
+            
+            var userClaims = new List<Claim>
+    {
+        new Claim(ClaimTypes.NameIdentifier, userId.ToString())
+    };
 
             var userIdentity = new ClaimsIdentity(userClaims);
             var userPrincipal = new ClaimsPrincipal(userIdentity);
@@ -371,20 +398,15 @@ namespace CommuniCareTests
                 HttpContext = new DefaultHttpContext { User = userPrincipal }
             };
 
-            var dto = new FotoUrlDto
-            {
-                FotoUrl = "new_photo.jpg"
-            };
+            // Act
+            var result = await _controller.UpdateFoto(mockFile);
 
-
-            var result = await _controller.UpdateFotoUrl(dto);
-
-
+            // Assert
             Assert.IsInstanceOfType(result, typeof(UnauthorizedResult));
         }
 
         /// <summary>
-        /// Testa o comportamento do método UpdateFotoUrl quando o identificador de utilizador (UserId) fornecido nos claims é inválido.
+        /// Testa o comportamento do método UpdateFoto quando o identificador de utilizador (UserId) fornecido nos claims é inválido.
         /// Espera-se que o método retorne um resultado Unauthorized, indicando que o utilizador não tem permissão para realizar a operação devido a um ID inválido.
         /// </summary>
         /// <returns>Uma tarefa que representa a execução do teste unitário.</returns>
@@ -392,11 +414,11 @@ namespace CommuniCareTests
         [TestMethod]
         public async Task UpdateFotoUrl_InvalidUserIdClaim_ReturnsUnauthorized()
         {
-
+            
             var userClaims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, "invalid_id")
-            };
+    {
+        new Claim(ClaimTypes.NameIdentifier, "invalid_id") 
+    };
 
             var userIdentity = new ClaimsIdentity(userClaims);
             var userPrincipal = new ClaimsPrincipal(userIdentity);
@@ -406,15 +428,20 @@ namespace CommuniCareTests
                 HttpContext = new DefaultHttpContext { User = userPrincipal }
             };
 
-            var dto = new FotoUrlDto
+            
+            var content = "fake file content";
+            var fileName = "test.jpg";
+            var stream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(content));
+            var mockFile = new FormFile(stream, 0, stream.Length, "foto", fileName)
             {
-                FotoUrl = "photo.jpg"
+                Headers = new HeaderDictionary(),
+                ContentType = "image/jpeg"
             };
 
+            // Act
+            var result = await _controller.UpdateFoto(mockFile);
 
-            var result = await _controller.UpdateFotoUrl(dto);
-
-
+            // Assert
             Assert.IsInstanceOfType(result, typeof(UnauthorizedResult));
         }
 

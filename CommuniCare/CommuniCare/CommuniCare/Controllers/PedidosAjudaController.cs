@@ -38,23 +38,23 @@ namespace CommuniCare.Controllers
         }
 
         #region CONTROLLERS AUTOMÁTICOS
-        ///// <summary>
-        ///// Obtém um pedido de ajuda específico pelo ID.
-        ///// </summary>
-        ///// <param name="id">O ID do pedido de ajuda.</param>
-        ///// <returns>O pedido de ajuda correspondente ao ID.</returns>
-        //[HttpGet("{id}")]
-        //public async Task<ActionResult<PedidoAjuda>> GetPedidoAjuda(int id)
-        //{
-        //    var pedidoAjuda = await _context.PedidosAjuda.FindAsync(id);
+        /// <summary>
+        /// Obtém um pedido de ajuda específico pelo ID.
+        /// </summary>
+        /// <param name="id">O ID do pedido de ajuda.</param>
+        /// <returns>O pedido de ajuda correspondente ao ID.</returns>
+        [HttpGet("{id}")]
+        public async Task<ActionResult<PedidoAjuda>> GetPedidoAjuda(int id)
+        {
+            var pedidoAjuda = await _context.PedidosAjuda.FindAsync(id);
 
-        //    if (pedidoAjuda == null)
-        //    {
-        //        return NotFound();
-        //    }
+            if (pedidoAjuda == null)
+            {
+                return NotFound();
+            }
 
-        //    return pedidoAjuda;
-        //}
+            return pedidoAjuda;
+        }
 
         ///// <summary>
         ///// Atualiza um pedido de ajuda específico.
@@ -719,6 +719,34 @@ namespace CommuniCare.Controllers
     
         return Ok(pedidosDTO);
     }
+
+        [HttpGet("pedido/{pedidoId}/voluntarios")]
+        public async Task<IActionResult> ObterVoluntariosPorPedido(int pedidoId)
+        {
+            var voluntarios = await _context.Voluntariados
+                .Where(v => v.PedidoId == pedidoId && v.Estado != EstadoVoluntariado.Aceite) // Filtra para não incluir voluntários com estado 'Aceite'
+                .Select(v => new
+                {
+                    Nome = v.Utilizador.NomeUtilizador,
+                    UtilizadorId = v.UtilizadorId,
+                    Contacto = v.Utilizador.Contactos
+                        .Where(c => c.TipoContactoId == 1)
+                        .Select(c => c.NumContacto)
+                        .FirstOrDefault() ?? v.Utilizador.Contactos
+                        .Where(c => c.TipoContactoId == 2)
+                        .Select(c => c.NumContacto)
+                        .FirstOrDefault()
+                })
+                .ToListAsync();
+
+            if (voluntarios == null || !voluntarios.Any())
+            {
+                return NotFound(new { mensagem = "Nenhum voluntário encontrado para o pedido de ajuda." });
+            }
+
+            return Ok(voluntarios);
+        }
+
 
 
     }

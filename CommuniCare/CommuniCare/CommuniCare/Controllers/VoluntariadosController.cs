@@ -142,14 +142,15 @@ namespace CommuniCare.Controllers
         }
 
         /// <summary>
-        /// Rejeita um voluntário com base no identificador do voluntariado.
+        /// Rejeita um voluntário para um pedido específico e envia uma notificação.
         /// Apenas administradores têm permissão para rejeitar voluntários.
         /// </summary>
-        /// <param name="idVoluntariado">Identificador do voluntariado a ser rejeitado.</param>
+        /// <param name="pedidoId">Identificador do pedido.</param>
+        /// <param name="utilizadorId">Identificador do voluntário a ser rejeitado.</param>
         /// <returns>Resultado da rejeição. Retorna Ok se bem-sucedido, Unauthorized se não autenticado, ou Forbid se não for um administrador.</returns>
-        [HttpPost("RejeitarVoluntario-(admin)/{idVoluntariado}")]
+        [HttpPost("pedidos/{pedidoId}/voluntarios/{utilizadorId}/rejeitar")]
         [Authorize]
-        public async Task<IActionResult> RejeitarVoluntario(int idVoluntariado)
+        public async Task<IActionResult> RejeitarVoluntario(int pedidoId, int utilizadorId)
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
@@ -159,24 +160,31 @@ namespace CommuniCare.Controllers
 
             int adminId = int.Parse(userIdClaim.Value);
 
+            // Verifica se o usuário é um administrador
             var admin = await _context.Utilizadores.FindAsync(adminId);
             if (admin == null || admin.TipoUtilizadorId != 2)
             {
                 return Forbid("Apenas administradores podem rejeitar voluntários.");
             }
 
+            // Encontra o voluntariado a ser rejeitado, que esteja no estado Pendente
             var voluntariado = await _context.Voluntariados
                 .Include(v => v.Pedido)
                 .Include(v => v.Utilizador)
-                .FirstOrDefaultAsync(v => v.IdVoluntariado == idVoluntariado && v.Estado == EstadoVoluntariado.Pendente);
+                .FirstOrDefaultAsync(v =>
+                    v.PedidoId == pedidoId &&
+                    v.UtilizadorId == utilizadorId &&
+                    v.Estado == EstadoVoluntariado.Pendente);
 
             if (voluntariado == null)
             {
                 return NotFound("Voluntariado não encontrado ou já foi processado.");
             }
 
+            // Remove o voluntariado (rejeita o voluntário)
             _context.Voluntariados.Remove(voluntariado);
 
+            // Cria uma notificação para o voluntário
             var notificacaoVoluntario = new Notificacao
             {
                 Mensagem = $"A tua candidatura como voluntário para o pedido #{voluntariado.Pedido.PedidoId} foi rejeitada.",
@@ -188,22 +196,37 @@ namespace CommuniCare.Controllers
             };
 
             _context.Notificacaos.Add(notificacaoVoluntario);
+
+            // Cria uma notificação para o requisitante
+            var notificacaoRequisitante = new Notificacao
+            {
+                Mensagem = $"Um voluntário foi rejeitado para o teu pedido #{voluntariado.Pedido.PedidoId}.",
+                Lida = 0,
+                DataMensagem = DateTime.Now,
+                PedidoId = voluntariado.PedidoId,
+                UtilizadorId = voluntariado.Pedido.UtilizadorId,
+                ItemId = null
+            };
+
+            _context.Notificacaos.Add(notificacaoRequisitante);
+
+            // Salva as alterações no banco de dados
             await _context.SaveChangesAsync();
 
             return Ok("Voluntário rejeitado com sucesso.");
         }
 
-                /// <summary>
+
+        /// <summary>
         /// Aceita um voluntário para um pedido específico e atualiza o estado do pedido caso o número de voluntários aceites seja atingido.
         /// Apenas administradores têm permissão para aceitar voluntários.
         /// </summary>
         /// <param name="pedidoId">Identificador do pedido.</param>
         /// <param name="utilizadorId">Identificador do voluntário a ser aceite.</param>
-        /// <param name="idVoluntariado">Identificador do voluntariado a ser aceite.</param>
         /// <returns>Resultado da aceitação. Retorna Ok se bem-sucedido, Unauthorized se não autenticado, ou Forbid se não for um administrador.</returns>
-        [HttpPost("AceitarVoluntario-(admin)/pedido{pedidoId}/utilizador{utilizadorId}/Voluntariado{idVoluntariado}")]
+        [HttpPost("pedidos/{pedidoId}/voluntarios/{utilizadorId}/aceitar")]
         [Authorize]
-        public async Task<IActionResult> AceitarVoluntario(int pedidoId, int utilizadorId, int idVoluntariado)
+        public async Task<IActionResult> AceitarVoluntario(int pedidoId, int utilizadorId)
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
@@ -224,7 +247,6 @@ namespace CommuniCare.Controllers
                 .Include(v => v.Pedido.Voluntariados)
                 .Include(v => v.Pedido.Utilizador)
                 .FirstOrDefaultAsync(v =>
-                    v.IdVoluntariado == idVoluntariado &&
                     v.PedidoId == pedidoId &&
                     v.UtilizadorId == utilizadorId &&
                     v.Estado == EstadoVoluntariado.Pendente);
@@ -271,4 +293,5 @@ namespace CommuniCare.Controllers
             return Ok("Voluntário aceite com sucesso" + (pedido.Estado == EstadoPedido.EmProgresso ? " e pedido atualizado para 'Em Progresso'." : "."));
         }
     }
+
 }

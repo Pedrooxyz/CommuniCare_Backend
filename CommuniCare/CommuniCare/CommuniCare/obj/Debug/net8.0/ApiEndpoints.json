@@ -567,6 +567,32 @@
   },
   {
     "ContainingType": "CommuniCare.Controllers.EmprestimosController",
+    "Method": "EmprestimoCorrespondenteItem",
+    "RelativePath": "api/Emprestimos/EmprestimoCorrespondenteItem/{itemEmprestimoId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "itemEmprestimoId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "CommuniCare.Models.Emprestimo",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.EmprestimosController",
     "Method": "RejeitarEmprestimo",
     "RelativePath": "api/Emprestimos/RejeitarEmprestimo-(admin)/{emprestimoId}",
     "HttpMethod": "POST",
@@ -1319,6 +1345,32 @@
   },
   {
     "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",
+    "Method": "GetPedidoAjuda",
+    "RelativePath": "api/PedidosAjuda/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "CommuniCare.Models.PedidoAjuda",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",
     "Method": "RejeitarPedidoAjuda",
     "RelativePath": "api/PedidosAjuda/{pedidoId}/RejeitarPedido-(admin)",
     "HttpMethod": "POST",
@@ -1430,6 +1482,22 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",
+    "Method": "ObterVoluntariosPorPedido",
+    "RelativePath": "api/PedidosAjuda/pedido/{pedidoId}/voluntarios",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pedidoId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   },
   {
     "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",
@@ -2138,13 +2206,18 @@
   {
     "ContainingType": "CommuniCare.Controllers.VoluntariadosController",
     "Method": "AceitarVoluntario",
-    "RelativePath": "api/Voluntariados/AceitarVoluntario-(admin)/{idVoluntariado}",
+    "RelativePath": "api/Voluntariados/pedidos/{pedidoId}/voluntarios/{utilizadorId}/aceitar",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "idVoluntariado",
+        "Name": "pedidoId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "utilizadorId",
         "Type": "System.Int32",
         "IsRequired": true
       }
@@ -2154,13 +2227,18 @@
   {
     "ContainingType": "CommuniCare.Controllers.VoluntariadosController",
     "Method": "RejeitarVoluntario",
-    "RelativePath": "api/Voluntariados/RejeitarVoluntario-(admin)/{idVoluntariado}",
+    "RelativePath": "api/Voluntariados/pedidos/{pedidoId}/voluntarios/{utilizadorId}/rejeitar",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "idVoluntariado",
+        "Name": "pedidoId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "utilizadorId",
         "Type": "System.Int32",
         "IsRequired": true
       }

@@ -992,6 +992,46 @@
         }
       }
     },
+    "/api/Emprestimos/EmprestimoCorrespondenteItem/{itemEmprestimoId}": {
+      "get": {
+        "tags": [
+          "Emprestimos"
+        ],
+        "parameters": [
+          {
+            "name": "itemEmprestimoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Emprestimo"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Emprestimo"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Emprestimo"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Emprestimos/ValidarEmprestimo-(admin)/{emprestimoId}": {
       "post": {
         "tags": [
@@ -2245,6 +2285,46 @@
         }
       }
     },
+    "/api/PedidosAjuda/{id}": {
+      "get": {
+        "tags": [
+          "PedidosAjuda"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/PedidoAjuda"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PedidoAjuda"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PedidoAjuda"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/PedidosAjuda/Pedir": {
       "post": {
         "tags": [
@@ -2495,6 +2575,29 @@
       "get": {
         "tags": [
           "PedidosAjuda"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/PedidosAjuda/pedido/{pedidoId}/voluntarios": {
+      "get": {
+        "tags": [
+          "PedidosAjuda"
+        ],
+        "parameters": [
+          {
+            "name": "pedidoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
         ],
         "responses": {
           "200": {
@@ -3682,14 +3785,23 @@
         }
       }
     },
-    "/api/Voluntariados/RejeitarVoluntario-(admin)/{idVoluntariado}": {
+    "/api/Voluntariados/pedidos/{pedidoId}/voluntarios/{utilizadorId}/rejeitar": {
       "post": {
         "tags": [
           "Voluntariados"
         ],
         "parameters": [
           {
-            "name": "idVoluntariado",
+            "name": "pedidoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "utilizadorId",
             "in": "path",
             "required": true,
             "schema": {
@@ -3705,14 +3817,23 @@
         }
       }
     },
-    "/api/Voluntariados/AceitarVoluntario-(admin)/{idVoluntariado}": {
+    "/api/Voluntariados/pedidos/{pedidoId}/voluntarios/{utilizadorId}/aceitar": {
       "post": {
         "tags": [
           "Voluntariados"
         ],
         "parameters": [
           {
-            "name": "idVoluntariado",
+            "name": "pedidoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "utilizadorId",
             "in": "path",
             "required": true,
             "schema": {

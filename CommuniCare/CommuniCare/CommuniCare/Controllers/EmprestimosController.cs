@@ -186,7 +186,48 @@ namespace CommuniCare.Controllers
 
         #region Administrador
 
+        /// <summary>
+        /// Obtém o empréstimo correspondente a um ItemEmprestimo específico, com dataDev igual a null.
+        /// </summary>
+        /// <param name="itemEmprestimoId">O ID do ItemEmprestimo.</param>
+        /// <returns>O empréstimo correspondente, ou NotFound se não encontrar.</returns>
+        [HttpGet("EmprestimoCorrespondenteItem/{itemEmprestimoId}")]
+        public async Task<ActionResult<Emprestimo>> EmprestimoCorrespondenteItem(int itemEmprestimoId)
+        {
+            // Procurar o empréstimo ativo associado ao ItemEmprestimo com o ID fornecido
+            var emprestimo = await _context.Emprestimos
+                .Where(e => e.Items.Any(i => i.ItemId == itemEmprestimoId) && e.DataDev == null)
+                .FirstOrDefaultAsync();
 
+            if (emprestimo == null)
+            {
+                return NotFound("Empréstimo não encontrado ou já devolvido.");
+            }
+
+            return Ok(emprestimo);
+        }
+
+        /// <summary>
+        /// Obtém o empréstimo correspondente a um ItemEmprestimo específico, com dataDev igual a null.
+        /// </summary>
+        /// <param name="itemEmprestimoId">O ID do ItemEmprestimo.</param>
+        /// <returns>O empréstimo correspondente, ou NotFound se não encontrar.</returns>
+        [HttpGet("EmprestimoCorrespondenteItemParaDevolucao/{itemEmprestimoId}")]
+        public async Task<ActionResult<Emprestimo>> EmprestimoCorrespondenteItemParaDevolucao(int itemEmprestimoId)
+        {
+            // Procurar o empréstimo ativo associado ao ItemEmprestimo com o ID fornecido
+            var emprestimo = await _context.Emprestimos
+                .Where(e => e.Items.Any(i => i.ItemId == itemEmprestimoId) && e.Transacao == null)
+                .FirstOrDefaultAsync();
+
+            if (emprestimo == null)
+            {
+                return NotFound("Empréstimo não encontrado ou já devolvido.");
+            }
+
+            return Ok(emprestimo);
+        }
+        
         /// <summary>
         /// Obtém o empréstimo correspondente a um ItemEmprestimo específico, com dataDev igual a null.
         /// </summary>

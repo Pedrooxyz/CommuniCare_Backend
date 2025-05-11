@@ -233,8 +233,8 @@ namespace CommuniCare.Controllers
         /// </summary>
         /// <param name="itemEmprestimoId">O ID do ItemEmprestimo.</param>
         /// <returns>O empréstimo correspondente, ou NotFound se não encontrar.</returns>
-        [HttpGet("EmprestimoCorrespondenteItem/{itemEmprestimoId}")]
-        public async Task<ActionResult<Emprestimo>> EmprestimoCorrespondenteItem(int itemEmprestimoId)
+        //[HttpGet("EmprestimoCorrespondenteItem/{itemEmprestimoId}")]
+        /*public async Task<ActionResult<Emprestimo>> EmprestimoCorrespondenteItem(int itemEmprestimoId)
         {
             // Procurar o empréstimo ativo associado ao ItemEmprestimo com o ID fornecido
             var emprestimo = await _context.Emprestimos
@@ -247,7 +247,7 @@ namespace CommuniCare.Controllers
             }
 
             return Ok(emprestimo);
-        }
+        }*/
         
         /// <summary>
         /// Valida o início de um empréstimo (admin).

@@ -74,7 +74,7 @@ namespace CommuniCareTests
         [TestMethod]
         public async Task RejeitarVoluntario_DeveRetornarOk_SeVoluntarioForRejeitado()
         {
-
+            // Arrange
             var voluntariado = new Voluntariado
             {
                 IdVoluntariado = 1,
@@ -115,21 +115,32 @@ namespace CommuniCareTests
                 {
                     User = new ClaimsPrincipal(new ClaimsIdentity(new[]
                     {
-                    new Claim(ClaimTypes.NameIdentifier, "10")
-                    }, "mock"))
+                new Claim(ClaimTypes.NameIdentifier, "10")
+            }, "mock"))
                 }
             };
 
+            // Act
+            var result = await controller.RejeitarVoluntario(1, 10);
 
-            var result = await controller.RejeitarVoluntario(1);
-
-
+            // Assert
             Assert.IsInstanceOfType(result, typeof(OkObjectResult));
             var okResult = result as OkObjectResult;
             Assert.AreEqual("Voluntário rejeitado com sucesso.", okResult.Value);
 
             mockContext.Verify(c => c.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once());
-            notificacaosMock.Verify(m => m.Add(It.IsAny<Notificacao>()), Times.Once());
+            notificacaosMock.Verify(m => m.Add(It.IsAny<Notificacao>()), Times.Exactly(2)); 
+
+          
+            Assert.AreEqual(2, notificacaos.Count);
+            Assert.IsTrue(notificacaos.Any(n =>
+                n.UtilizadorId == 10 &&
+                n.Mensagem.Contains("foi rejeitada")
+            ));
+            Assert.IsTrue(notificacaos.Any(n =>
+                n.UtilizadorId == 5 &&
+                n.Mensagem.Contains("foi rejeitado")
+            ));
         }
 
 
@@ -151,7 +162,7 @@ namespace CommuniCareTests
             };
 
 
-            var result = await controller.RejeitarVoluntario(1);
+            var result = await controller.RejeitarVoluntario(1, 10);
 
 
             Assert.IsInstanceOfType(result, typeof(UnauthorizedObjectResult));
@@ -186,7 +197,7 @@ namespace CommuniCareTests
             };
 
 
-            var result = await controller.RejeitarVoluntario(1);
+            var result = await controller.RejeitarVoluntario(1, 10);
 
 
             Assert.IsInstanceOfType(result, typeof(ForbidResult));
@@ -218,7 +229,7 @@ namespace CommuniCareTests
             };
 
 
-            var result = await controller.RejeitarVoluntario(1);
+            var result = await controller.RejeitarVoluntario(1, 10);
 
 
             Assert.IsInstanceOfType(result, typeof(ForbidResult));
@@ -274,7 +285,7 @@ namespace CommuniCareTests
             };
 
 
-            var result = await controller.RejeitarVoluntario(1);
+            var result = await controller.RejeitarVoluntario(1, 10);
 
 
             Assert.IsInstanceOfType(result, typeof(NotFoundObjectResult));
@@ -355,7 +366,7 @@ namespace CommuniCareTests
             };
 
 
-            var result = await controller.AceitarVoluntario(1, 10, 1);
+            var result = await controller.AceitarVoluntario(1, 10);
 
 
             Assert.IsInstanceOfType(result, typeof(OkObjectResult));
@@ -436,7 +447,7 @@ namespace CommuniCareTests
             };
 
 
-            var result = await controller.AceitarVoluntario(1, 10, 1); ;
+            var result = await controller.AceitarVoluntario(1, 10); ;
 
 
             Assert.IsInstanceOfType(result, typeof(OkObjectResult));
@@ -465,7 +476,7 @@ namespace CommuniCareTests
             };
 
 
-            var result = await controller.AceitarVoluntario(1, 10, 1); ;
+            var result = await controller.AceitarVoluntario(1, 10); ;
 
 
             Assert.IsInstanceOfType(result, typeof(UnauthorizedObjectResult));
@@ -542,8 +553,7 @@ namespace CommuniCareTests
             
             var result = await controller.AceitarVoluntario(
                 pedido.PedidoId,
-                voluntariado.UtilizadorId!.Value,
-                voluntariado.IdVoluntariado);
+                voluntariado.UtilizadorId!.Value);
 
            
             Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));

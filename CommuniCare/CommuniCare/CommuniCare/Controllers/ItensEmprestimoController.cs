@@ -671,9 +671,7 @@ namespace CommuniCare.Controllers
                 .Include(i => i.Emprestimos)
                     .ThenInclude(e => e.Transacao)
                 .Where(i =>
-                    i.Disponivel == EstadoItemEmprestimo.Disponivel &&
-                    i.Emprestimos.Any(e => e.Transacao == null) &&
-                    i.Emprestimos.Any(e => e.DataDev != null)
+                    i.Emprestimos.Any(e => e.Transacao == null)
                 )
                 .ToListAsync();
 

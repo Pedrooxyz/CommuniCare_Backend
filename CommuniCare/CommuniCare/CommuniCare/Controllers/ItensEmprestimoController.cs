@@ -916,5 +916,48 @@ namespace CommuniCare.Controllers
 
             return NoContent();
         }
+
+        /// <summary>
+        /// Recupera os itens de empréstimo pertencentes ao utilizador que estão em uso.
+        /// </summary>
+        /// <returns>Lista de itens de empréstimo do utilizador que estão em uso.</returns>
+        [Authorize]
+        [HttpGet("MeusItensEmUso")]
+        public async Task<ActionResult<IEnumerable<ItemEmprestimoDTO>>> GetMeusItensEmUso()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+
+            if (userIdClaim == null)
+            {
+                return Unauthorized("Utilizador não autenticado.");
+            }
+
+            int utilizadorId = int.Parse(userIdClaim.Value);
+
+            // Primeiro, obter os IDs dos itens do utilizador
+            var meusItemIds = await _context.ItemEmprestimoUtilizadores
+                .Where(rel => rel.UtilizadorId == utilizadorId && rel.TipoRelacao == "Dono")
+                .Select(rel => rel.ItemId)
+                .ToListAsync();
+
+            // Agora, aplicar a lógica dos itens em uso DENTRO dos itens do utilizador
+            var itensEmUso = await _context.ItensEmprestimo
+                .Include(i => i.Emprestimos)
+                .Where(i =>
+                    meusItemIds.Contains(i.ItemId) &&
+                    i.Disponivel == 0 &&
+                    i.Emprestimos.Any(e => e.DataIni != null && e.Transacao == null && e.DataDev == null)
+                )
+                .Select(i => new ItemEmprestimoDTO
+                {
+                    NomeItem = i.NomeItem,
+                    DescItem = i.DescItem,
+                    ComissaoCares = i.ComissaoCares,
+                    FotografiaItem = i.FotografiaItem
+                })
+                .ToListAsync();
+
+            return Ok(itensEmUso);
+        }
     }
 }

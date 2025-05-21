@@ -746,11 +746,11 @@ namespace CommuniCare.Controllers
         }
 
 
-        /// <summary>
-        /// Edita o perfil do utilizador autenticado.
+       /// <summary>
+        /// Edita o nome, email e telemóvel do utilizador autenticado.
         /// </summary>
-        /// <param name="dto">Objeto DTO contendo as informações a serem atualizadas (nome, email, telemóvel, etc.).</param>
-        /// <returns>Retorna 200 Ok com mensagem de sucesso ou 404 Not Found se o utilizador não for encontrado.</returns>
+        /// <param name="dto">Objeto DTO com nome, email e telemóvel.</param>
+        /// <returns>200 OK se sucesso, 404 se utilizador não for encontrado.</returns>
         [HttpPut("EditarPerfil")]
         [Authorize]
         public async Task<IActionResult> EditarPerfil([FromBody] EditarPerfilDTO dto)
@@ -759,43 +759,49 @@ namespace CommuniCare.Controllers
 
             var utilizador = await _context.Utilizadores
                 .Include(u => u.Contactos)
-                .Include(u => u.Morada)
                 .FirstOrDefaultAsync(u => u.UtilizadorId == utilizadorId);
 
             if (utilizador == null) return NotFound("Utilizador não encontrado.");
 
+            // Atualiza nome
             if (!string.IsNullOrEmpty(dto.Nome))
                 utilizador.NomeUtilizador = dto.Nome;
 
+            // Atualiza ou cria contacto de email (TipoContactoId == 1)
             if (!string.IsNullOrEmpty(dto.Email))
             {
                 var contactoEmail = utilizador.Contactos.FirstOrDefault(c => c.TipoContactoId == 1);
                 if (contactoEmail != null)
+                {
                     contactoEmail.NumContacto = dto.Email;
+                }
+                else
+                {
+                    utilizador.Contactos.Add(new Contacto
+                    {
+                        TipoContactoId = 1,
+                        NumContacto = dto.Email,
+                        UtilizadorId = utilizadorId
+                    });
+                }
             }
 
+            // Atualiza ou cria contacto de telemóvel (TipoContactoId == 2)
             if (!string.IsNullOrEmpty(dto.Telemovel))
             {
-                var contactoTele = utilizador.Contactos.FirstOrDefault(c => c.TipoContactoId == 2);
-                if (contactoTele != null)
-                    contactoTele.NumContacto = dto.Telemovel;
-            }
-
-            if (utilizador.Morada != null)
-            {
-                if (!string.IsNullOrEmpty(dto.Rua)) utilizador.Morada.Rua = dto.Rua;
-                if (dto.NumPorta == null) utilizador.Morada.NumPorta = dto.NumPorta;
-
-                if (!string.IsNullOrEmpty(dto.CPostal))
+                var contactoTelemovel = utilizador.Contactos.FirstOrDefault(c => c.TipoContactoId == 2);
+                if (contactoTelemovel != null)
                 {
-                    var cp = await _context.Cps.FindAsync(dto.CPostal);
-                    if (cp == null)
+                    contactoTelemovel.NumContacto = dto.Telemovel;
+                }
+                else
+                {
+                    utilizador.Contactos.Add(new Contacto
                     {
-                        cp = new Cp { CPostal = dto.CPostal, Localidade = dto.Localidade ?? "" };
-                        _context.Cps.Add(cp);
-                        await _context.SaveChangesAsync();
-                    }
-                    utilizador.Morada.CPostal = cp.CPostal;
+                        TipoContactoId = 2,
+                        NumContacto = dto.Telemovel,
+                        UtilizadorId = utilizadorId
+                    });
                 }
             }
 

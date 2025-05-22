@@ -621,6 +621,7 @@ namespace CommuniCare.Controllers
             var pedidosDTO = pedidos.Select(p => new PedidoPendenteDTO
             {
                 PedidoId = p.PedidoId,
+                FotografiaPA = p.FotografiaPA,
                 Titulo = p.Titulo,
                 Descricao = p.DescPedido,
                 DataCriacao = p.HorarioAjuda,
@@ -664,6 +665,7 @@ namespace CommuniCare.Controllers
         var pedidosDTO = pedidos.Select(p => new PedidoPendenteDTO
         {
             PedidoId = p.PedidoId,
+            FotografiaPA = p.FotografiaPA,
             Titulo = p.Titulo,
             Descricao = p.DescPedido,
             DataCriacao = p.HorarioAjuda,
@@ -706,6 +708,7 @@ namespace CommuniCare.Controllers
         var pedidosDTO = pedidos.Select(p => new PedidoPendenteDTO
         {
             PedidoId = p.PedidoId,
+            FotografiaPA = p.FotografiaPA,
             Titulo = p.Titulo,
             Descricao = p.DescPedido,
             DataCriacao = p.HorarioAjuda,

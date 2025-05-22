@@ -2906,5 +2906,4 @@ C:\Users\João\OneDrive - Instituto Politécnico do Cávado e do Ave\Desktop\ipc
 C:\Users\João\OneDrive - Instituto Politécnico do Cávado e do Ave\Desktop\ipca\ano 2\2º semestre\PDS\Segunda Fase\Codigo\CommuniCare\CommuniCare\CommuniCare\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Diagnostics.EventLog.dll
 C:\Users\João\OneDrive - Instituto Politécnico do Cávado e do Ave\Desktop\ipca\ano 2\2º semestre\PDS\Segunda Fase\Codigo\CommuniCare\CommuniCare\CommuniCare\obj\Debug\net8.0\MvcTestingAppManifest.json
 C:\Users\João\OneDrive - Instituto Politécnico do Cávado e do Ave\Desktop\ipca\ano 2\2º semestre\PDS\Segunda Fase\Codigo\CommuniCare\CommuniCare\CommuniCare\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
-C:\Users\ferna\Documents\GitHub\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\ferna\Documents\GitHub\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\bin\Debug\net8.0\CommuniCare.staticwebassets.runtime.json

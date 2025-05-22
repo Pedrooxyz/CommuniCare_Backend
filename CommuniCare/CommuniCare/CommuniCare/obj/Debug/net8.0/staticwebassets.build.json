@@ -1,11 +1,20 @@
 {
   "Version": 1,
-  "Hash": "XLmVXd17eDJZMt1vvW4a7VmDeulAnwEXc8R2IaUvLlQ=",
+  "Hash": "hOtA7DCkgLRSL3jcKfprLsIjKAFvQqNmQrCgzRV+JIE=",
   "Source": "CommuniCare",
   "BasePath": "_content/CommuniCare",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
-  "DiscoveryPatterns": [],
-  "Assets": []
+  "DiscoveryPatterns": [
+    {
+      "Name": "CommuniCare\\wwwroot",
+      "Source": "CommuniCare",
+      "ContentRoot": "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\wwwroot\\",
+      "BasePath": "_content/CommuniCare",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [],
+  "Endpoints": []
 }

@@ -105,7 +105,9 @@ namespace CommuniCare.Controllers
                     NomeArtigo = f.Artigo.NomeArtigo,
                     DescArtigo = f.Artigo.DescArtigo,
                     CustoCares = f.Artigo.CustoCares,
-                    QuantidadeDisponivel = f.Artigo.QuantidadeDisponivel
+                    QuantidadeDisponivel = f.Artigo.QuantidadeDisponivel,
+                    FotografiaArt = f.Artigo.FotografiaArt,
+                    ArtigoId = f.Artigo.ArtigoId,
                 })
                 .ToListAsync();
 

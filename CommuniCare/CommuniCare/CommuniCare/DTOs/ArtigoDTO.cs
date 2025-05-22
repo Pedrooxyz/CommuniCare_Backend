@@ -2,6 +2,7 @@
 {
     public class ArtigoDto
     {
+        public int? ArtigoId { get; set; }
         public string? NomeArtigo { get; set; }
         public string? DescArtigo { get; set; }
         public int? CustoCares { get; set; }

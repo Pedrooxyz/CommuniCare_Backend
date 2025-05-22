@@ -747,6 +747,44 @@ namespace CommuniCare.Controllers
             return Ok(voluntarios);
         }
 
+        /// <summary>
+        /// Obtém a foto do utilizador dono associado a um pedido de ajuda específico.
+        /// </summary>
+        /// <param name="pedidoAjudaId">O ID do pedido de ajuda.</param>
+        /// <returns>A foto do utilizador dono.</returns>
+        [HttpGet("{pedidoAjudaId}/foto-dono")]
+        public async Task<ActionResult<string?>> GetFotoDono(int pedidoAjudaId)
+        {
+            try
+            {
+                var pedido = await _context.PedidosAjuda
+                    .Where(p => p.PedidoId == pedidoAjudaId)
+                    .Select(p => new
+                    {
+                        p.Utilizador.UtilizadorId,
+                        p.Utilizador.NomeUtilizador,
+                        p.Utilizador.FotoUtil
+                    })
+                    .FirstOrDefaultAsync();
+
+                if (pedido == null)
+                {
+                    return NotFound();
+                }
+
+                if (pedido.FotoUtil == null)
+                {
+                    return NotFound();
+                }
+
+                return pedido.FotoUtil;
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Erro interno do servidor.");
+            }
+        }
+
 
 
     }

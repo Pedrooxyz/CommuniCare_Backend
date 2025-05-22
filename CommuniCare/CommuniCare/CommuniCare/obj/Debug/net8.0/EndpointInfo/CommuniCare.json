@@ -2684,6 +2684,46 @@
         }
       }
     },
+    "/api/PedidosAjuda/{pedidoAjudaId}/foto-dono": {
+      "get": {
+        "tags": [
+          "PedidosAjuda"
+        ],
+        "parameters": [
+          {
+            "name": "pedidoAjudaId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/TipoContactos": {
       "get": {
         "tags": [
@@ -4004,6 +4044,11 @@
       "ArtigoDto": {
         "type": "object",
         "properties": {
+          "artigoId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
           "nomeArtigo": {
             "type": "string",
             "nullable": true
@@ -4180,23 +4225,6 @@
             "nullable": true
           },
           "telemovel": {
-            "type": "string",
-            "nullable": true
-          },
-          "rua": {
-            "type": "string",
-            "nullable": true
-          },
-          "numPorta": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "cPostal": {
-            "type": "string",
-            "nullable": true
-          },
-          "localidade": {
             "type": "string",
             "nullable": true
           }

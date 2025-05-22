@@ -1417,6 +1417,32 @@
   },
   {
     "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",
+    "Method": "GetFotoDono",
+    "RelativePath": "api/PedidosAjuda/{pedidoAjudaId}/foto-dono",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pedidoAjudaId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.String",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",
     "Method": "RejeitarPedidoAjuda",
     "RelativePath": "api/PedidosAjuda/{pedidoId}/RejeitarPedido-(admin)",
     "HttpMethod": "POST",

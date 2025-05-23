@@ -1,26 +1,6 @@
 {
   "Files": [
     {
-      "Id": "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\wwwroot\\uploads\\25b3fd57-8007-484c-9517-38674627713e_DKBQ_y-UEAAFDPQ.jpg",
-      "PackagePath": "staticwebassets\\uploads\\25b3fd57-8007-484c-9517-38674627713e_DKBQ_y-UEAAFDPQ.jpg"
-    },
-    {
-      "Id": "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\wwwroot\\uploads\\771f26aa-205c-4131-aa73-e9b8ff2e8816_ferrari-488-gtb.jpg",
-      "PackagePath": "staticwebassets\\uploads\\771f26aa-205c-4131-aa73-e9b8ff2e8816_ferrari-488-gtb.jpg"
-    },
-    {
-      "Id": "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\wwwroot\\uploads\\8aba5eac-8f64-4361-be3e-f5bec79a7829_Funny-Faces-supernatural-30409585-1286-724 (1).jpg",
-      "PackagePath": "staticwebassets\\uploads\\8aba5eac-8f64-4361-be3e-f5bec79a7829_Funny-Faces-supernatural-30409585-1286-724 (1).jpg"
-    },
-    {
-      "Id": "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\wwwroot\\uploads\\ac319199-8dd6-4d20-86ae-6d2f64c79f31_OIP (6).jpg",
-      "PackagePath": "staticwebassets\\uploads\\ac319199-8dd6-4d20-86ae-6d2f64c79f31_OIP (6).jpg"
-    },
-    {
-      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.CommuniCare.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
-      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssetEndpoints.props"
-    },
-    {
       "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.CommuniCare.Microsoft.AspNetCore.StaticWebAssets.props",
       "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
     },
@@ -35,6 +15,22 @@
     {
       "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.CommuniCare.props",
       "PackagePath": "buildTransitive\\CommuniCare.props"
+    },
+    {
+      "Id": "z:\\Universidade\\Semestre1\\24-25\\PDS\\PDS_Api\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\wwwroot\\uploads\\25b3fd57-8007-484c-9517-38674627713e_DKBQ_y-UEAAFDPQ.jpg",
+      "PackagePath": "staticwebassets\\uploads\\25b3fd57-8007-484c-9517-38674627713e_DKBQ_y-UEAAFDPQ.jpg"
+    },
+    {
+      "Id": "z:\\Universidade\\Semestre1\\24-25\\PDS\\PDS_Api\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\wwwroot\\uploads\\771f26aa-205c-4131-aa73-e9b8ff2e8816_ferrari-488-gtb.jpg",
+      "PackagePath": "staticwebassets\\uploads\\771f26aa-205c-4131-aa73-e9b8ff2e8816_ferrari-488-gtb.jpg"
+    },
+    {
+      "Id": "z:\\Universidade\\Semestre1\\24-25\\PDS\\PDS_Api\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\wwwroot\\uploads\\8aba5eac-8f64-4361-be3e-f5bec79a7829_Funny-Faces-supernatural-30409585-1286-724 (1).jpg",
+      "PackagePath": "staticwebassets\\uploads\\8aba5eac-8f64-4361-be3e-f5bec79a7829_Funny-Faces-supernatural-30409585-1286-724 (1).jpg"
+    },
+    {
+      "Id": "z:\\Universidade\\Semestre1\\24-25\\PDS\\PDS_Api\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\wwwroot\\uploads\\ac319199-8dd6-4d20-86ae-6d2f64c79f31_OIP (6).jpg",
+      "PackagePath": "staticwebassets\\uploads\\ac319199-8dd6-4d20-86ae-6d2f64c79f31_OIP (6).jpg"
     }
   ],
   "ElementsToRemove": []

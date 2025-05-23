@@ -1,6 +1,6 @@
 ﻿<Project>
   <ItemGroup>
-    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\uploads\25b3fd57-8007-484c-9517-38674627713e_DKBQ_y-UEAAFDPQ.jpg'))">
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\uploads\25b3fd57-8007-484c-9517-38674627713e_DKBQ_y-UEAAFDPQ.jpg))">
       <SourceType>Package</SourceType>
       <SourceId>CommuniCare</SourceId>
       <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
@@ -12,13 +12,11 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>jmzwf0zfu8</Fingerprint>
-      <Integrity>W9vah7Lg3yUUudcnuhbugn7xsmkM3FFZJUhV03Ou1OE=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\uploads\25b3fd57-8007-484c-9517-38674627713e_DKBQ_y-UEAAFDPQ.jpg'))</OriginalItemSpec>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\uploads\25b3fd57-8007-484c-9517-38674627713e_DKBQ_y-UEAAFDPQ.jpg))</OriginalItemSpec>
     </StaticWebAsset>
-    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\uploads\771f26aa-205c-4131-aa73-e9b8ff2e8816_ferrari-488-gtb.jpg'))">
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\uploads\771f26aa-205c-4131-aa73-e9b8ff2e8816_ferrari-488-gtb.jpg))">
       <SourceType>Package</SourceType>
       <SourceId>CommuniCare</SourceId>
       <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
@@ -30,13 +28,11 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>h2nyq623tt</Fingerprint>
-      <Integrity>t0SjcIlv8d2zyanqvIU5PhWNAWOjZ40ilAGPuujdEM8=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\uploads\771f26aa-205c-4131-aa73-e9b8ff2e8816_ferrari-488-gtb.jpg'))</OriginalItemSpec>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\uploads\771f26aa-205c-4131-aa73-e9b8ff2e8816_ferrari-488-gtb.jpg))</OriginalItemSpec>
     </StaticWebAsset>
-    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\uploads\8aba5eac-8f64-4361-be3e-f5bec79a7829_Funny-Faces-supernatural-30409585-1286-724 (1).jpg'))">
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\uploads\8aba5eac-8f64-4361-be3e-f5bec79a7829_Funny-Faces-supernatural-30409585-1286-724 (1).jpg))">
       <SourceType>Package</SourceType>
       <SourceId>CommuniCare</SourceId>
       <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
@@ -48,13 +44,11 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>78bfn5pz4o</Fingerprint>
-      <Integrity>aR7j6fZb5NCia/If7pngld0ikUpXMuSUzwZA1i6lvEc=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\uploads\8aba5eac-8f64-4361-be3e-f5bec79a7829_Funny-Faces-supernatural-30409585-1286-724 (1).jpg'))</OriginalItemSpec>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\uploads\8aba5eac-8f64-4361-be3e-f5bec79a7829_Funny-Faces-supernatural-30409585-1286-724 (1).jpg))</OriginalItemSpec>
     </StaticWebAsset>
-    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\uploads\ac319199-8dd6-4d20-86ae-6d2f64c79f31_OIP (6).jpg'))">
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\uploads\ac319199-8dd6-4d20-86ae-6d2f64c79f31_OIP (6).jpg))">
       <SourceType>Package</SourceType>
       <SourceId>CommuniCare</SourceId>
       <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
@@ -66,11 +60,9 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>3kryutlen4</Fingerprint>
-      <Integrity>AwL5KTLIrIFyEb5t48FW/YOEAQeshQAJtwGeAKCkcqo=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\uploads\ac319199-8dd6-4d20-86ae-6d2f64c79f31_OIP (6).jpg'))</OriginalItemSpec>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\uploads\ac319199-8dd6-4d20-86ae-6d2f64c79f31_OIP (6).jpg))</OriginalItemSpec>
     </StaticWebAsset>
   </ItemGroup>
 </Project>

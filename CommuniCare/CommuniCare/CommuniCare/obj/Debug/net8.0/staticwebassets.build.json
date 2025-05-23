@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "DIxzfPkzuDwV+D2oIGnSY0kcfoFNHXZBNQN1lCLWtp0=",
+  "Hash": "ZQTj3rE97wh6BN+5G7xc/OAbJCmTvSwpTi7/ddxmqhk=",
   "Source": "CommuniCare",
   "BasePath": "_content/CommuniCare",
   "Mode": "Default",
@@ -10,425 +10,87 @@
     {
       "Name": "CommuniCare\\wwwroot",
       "Source": "CommuniCare",
-      "ContentRoot": "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\wwwroot\\",
+      "ContentRoot": "z:\\Universidade\\Semestre1\\24-25\\PDS\\PDS_Api\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\wwwroot\\",
       "BasePath": "_content/CommuniCare",
       "Pattern": "**"
     }
   ],
   "Assets": [
     {
-      "Identity": "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\wwwroot\\uploads\\25b3fd57-8007-484c-9517-38674627713e_DKBQ_y-UEAAFDPQ.jpg",
+      "Identity": "z:\\Universidade\\Semestre1\\24-25\\PDS\\PDS_Api\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\wwwroot\\uploads\\25b3fd57-8007-484c-9517-38674627713e_DKBQ_y-UEAAFDPQ.jpg",
       "SourceId": "CommuniCare",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\wwwroot\\",
+      "ContentRoot": "z:\\Universidade\\Semestre1\\24-25\\PDS\\PDS_Api\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\wwwroot\\",
       "BasePath": "_content/CommuniCare",
-      "RelativePath": "uploads/25b3fd57-8007-484c-9517-38674627713e_DKBQ_y-UEAAFDPQ#[.{fingerprint}]?.jpg",
+      "RelativePath": "uploads/25b3fd57-8007-484c-9517-38674627713e_DKBQ_y-UEAAFDPQ.jpg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
-      "AssetMergeBehavior": "",
+      "AssetMergeBehavior": "PreferTarget",
       "AssetMergeSource": "",
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "jmzwf0zfu8",
-      "Integrity": "W9vah7Lg3yUUudcnuhbugn7xsmkM3FFZJUhV03Ou1OE=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\uploads\\25b3fd57-8007-484c-9517-38674627713e_DKBQ_y-UEAAFDPQ.jpg"
     },
     {
-      "Identity": "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\wwwroot\\uploads\\771f26aa-205c-4131-aa73-e9b8ff2e8816_ferrari-488-gtb.jpg",
+      "Identity": "z:\\Universidade\\Semestre1\\24-25\\PDS\\PDS_Api\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\wwwroot\\uploads\\771f26aa-205c-4131-aa73-e9b8ff2e8816_ferrari-488-gtb.jpg",
       "SourceId": "CommuniCare",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\wwwroot\\",
+      "ContentRoot": "z:\\Universidade\\Semestre1\\24-25\\PDS\\PDS_Api\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\wwwroot\\",
       "BasePath": "_content/CommuniCare",
-      "RelativePath": "uploads/771f26aa-205c-4131-aa73-e9b8ff2e8816_ferrari-488-gtb#[.{fingerprint}]?.jpg",
+      "RelativePath": "uploads/771f26aa-205c-4131-aa73-e9b8ff2e8816_ferrari-488-gtb.jpg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
-      "AssetMergeBehavior": "",
+      "AssetMergeBehavior": "PreferTarget",
       "AssetMergeSource": "",
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "h2nyq623tt",
-      "Integrity": "t0SjcIlv8d2zyanqvIU5PhWNAWOjZ40ilAGPuujdEM8=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\uploads\\771f26aa-205c-4131-aa73-e9b8ff2e8816_ferrari-488-gtb.jpg"
     },
     {
-      "Identity": "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\wwwroot\\uploads\\8aba5eac-8f64-4361-be3e-f5bec79a7829_Funny-Faces-supernatural-30409585-1286-724 (1).jpg",
+      "Identity": "z:\\Universidade\\Semestre1\\24-25\\PDS\\PDS_Api\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\wwwroot\\uploads\\8aba5eac-8f64-4361-be3e-f5bec79a7829_Funny-Faces-supernatural-30409585-1286-724 (1).jpg",
       "SourceId": "CommuniCare",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\wwwroot\\",
+      "ContentRoot": "z:\\Universidade\\Semestre1\\24-25\\PDS\\PDS_Api\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\wwwroot\\",
       "BasePath": "_content/CommuniCare",
-      "RelativePath": "uploads/8aba5eac-8f64-4361-be3e-f5bec79a7829_Funny-Faces-supernatural-30409585-1286-724 (1)#[.{fingerprint}]?.jpg",
+      "RelativePath": "uploads/8aba5eac-8f64-4361-be3e-f5bec79a7829_Funny-Faces-supernatural-30409585-1286-724 (1).jpg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
-      "AssetMergeBehavior": "",
+      "AssetMergeBehavior": "PreferTarget",
       "AssetMergeSource": "",
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "78bfn5pz4o",
-      "Integrity": "aR7j6fZb5NCia/If7pngld0ikUpXMuSUzwZA1i6lvEc=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\uploads\\8aba5eac-8f64-4361-be3e-f5bec79a7829_Funny-Faces-supernatural-30409585-1286-724 (1).jpg"
     },
     {
-      "Identity": "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\wwwroot\\uploads\\ac319199-8dd6-4d20-86ae-6d2f64c79f31_OIP (6).jpg",
+      "Identity": "z:\\Universidade\\Semestre1\\24-25\\PDS\\PDS_Api\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\wwwroot\\uploads\\ac319199-8dd6-4d20-86ae-6d2f64c79f31_OIP (6).jpg",
       "SourceId": "CommuniCare",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\wwwroot\\",
+      "ContentRoot": "z:\\Universidade\\Semestre1\\24-25\\PDS\\PDS_Api\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\wwwroot\\",
       "BasePath": "_content/CommuniCare",
-      "RelativePath": "uploads/ac319199-8dd6-4d20-86ae-6d2f64c79f31_OIP (6)#[.{fingerprint}]?.jpg",
+      "RelativePath": "uploads/ac319199-8dd6-4d20-86ae-6d2f64c79f31_OIP (6).jpg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
-      "AssetMergeBehavior": "",
+      "AssetMergeBehavior": "PreferTarget",
       "AssetMergeSource": "",
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "3kryutlen4",
-      "Integrity": "AwL5KTLIrIFyEb5t48FW/YOEAQeshQAJtwGeAKCkcqo=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\uploads\\ac319199-8dd6-4d20-86ae-6d2f64c79f31_OIP (6).jpg"
-    }
-  ],
-  "Endpoints": [
-    {
-      "Route": "uploads/25b3fd57-8007-484c-9517-38674627713e_DKBQ_y-UEAAFDPQ.jmzwf0zfu8.jpg",
-      "AssetFile": "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\wwwroot\\uploads\\25b3fd57-8007-484c-9517-38674627713e_DKBQ_y-UEAAFDPQ.jpg",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "98962"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "image/jpeg"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"W9vah7Lg3yUUudcnuhbugn7xsmkM3FFZJUhV03Ou1OE=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Thu, 22 May 2025 19:56:50 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "jmzwf0zfu8"
-        },
-        {
-          "Name": "label",
-          "Value": "uploads/25b3fd57-8007-484c-9517-38674627713e_DKBQ_y-UEAAFDPQ.jpg"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-W9vah7Lg3yUUudcnuhbugn7xsmkM3FFZJUhV03Ou1OE="
-        }
-      ]
-    },
-    {
-      "Route": "uploads/25b3fd57-8007-484c-9517-38674627713e_DKBQ_y-UEAAFDPQ.jpg",
-      "AssetFile": "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\wwwroot\\uploads\\25b3fd57-8007-484c-9517-38674627713e_DKBQ_y-UEAAFDPQ.jpg",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "98962"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "image/jpeg"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"W9vah7Lg3yUUudcnuhbugn7xsmkM3FFZJUhV03Ou1OE=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Thu, 22 May 2025 19:56:50 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=3600, must-revalidate"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-W9vah7Lg3yUUudcnuhbugn7xsmkM3FFZJUhV03Ou1OE="
-        }
-      ]
-    },
-    {
-      "Route": "uploads/771f26aa-205c-4131-aa73-e9b8ff2e8816_ferrari-488-gtb.h2nyq623tt.jpg",
-      "AssetFile": "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\wwwroot\\uploads\\771f26aa-205c-4131-aa73-e9b8ff2e8816_ferrari-488-gtb.jpg",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "577235"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "image/jpeg"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"t0SjcIlv8d2zyanqvIU5PhWNAWOjZ40ilAGPuujdEM8=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Thu, 22 May 2025 15:27:39 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "h2nyq623tt"
-        },
-        {
-          "Name": "label",
-          "Value": "uploads/771f26aa-205c-4131-aa73-e9b8ff2e8816_ferrari-488-gtb.jpg"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-t0SjcIlv8d2zyanqvIU5PhWNAWOjZ40ilAGPuujdEM8="
-        }
-      ]
-    },
-    {
-      "Route": "uploads/771f26aa-205c-4131-aa73-e9b8ff2e8816_ferrari-488-gtb.jpg",
-      "AssetFile": "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\wwwroot\\uploads\\771f26aa-205c-4131-aa73-e9b8ff2e8816_ferrari-488-gtb.jpg",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "577235"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "image/jpeg"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"t0SjcIlv8d2zyanqvIU5PhWNAWOjZ40ilAGPuujdEM8=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Thu, 22 May 2025 15:27:39 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=3600, must-revalidate"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-t0SjcIlv8d2zyanqvIU5PhWNAWOjZ40ilAGPuujdEM8="
-        }
-      ]
-    },
-    {
-      "Route": "uploads/8aba5eac-8f64-4361-be3e-f5bec79a7829_Funny-Faces-supernatural-30409585-1286-724 (1).78bfn5pz4o.jpg",
-      "AssetFile": "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\wwwroot\\uploads\\8aba5eac-8f64-4361-be3e-f5bec79a7829_Funny-Faces-supernatural-30409585-1286-724 (1).jpg",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "50262"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "image/jpeg"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"aR7j6fZb5NCia/If7pngld0ikUpXMuSUzwZA1i6lvEc=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Thu, 22 May 2025 15:27:39 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "78bfn5pz4o"
-        },
-        {
-          "Name": "label",
-          "Value": "uploads/8aba5eac-8f64-4361-be3e-f5bec79a7829_Funny-Faces-supernatural-30409585-1286-724 (1).jpg"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-aR7j6fZb5NCia/If7pngld0ikUpXMuSUzwZA1i6lvEc="
-        }
-      ]
-    },
-    {
-      "Route": "uploads/8aba5eac-8f64-4361-be3e-f5bec79a7829_Funny-Faces-supernatural-30409585-1286-724 (1).jpg",
-      "AssetFile": "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\wwwroot\\uploads\\8aba5eac-8f64-4361-be3e-f5bec79a7829_Funny-Faces-supernatural-30409585-1286-724 (1).jpg",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "50262"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "image/jpeg"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"aR7j6fZb5NCia/If7pngld0ikUpXMuSUzwZA1i6lvEc=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Thu, 22 May 2025 15:27:39 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=3600, must-revalidate"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-aR7j6fZb5NCia/If7pngld0ikUpXMuSUzwZA1i6lvEc="
-        }
-      ]
-    },
-    {
-      "Route": "uploads/ac319199-8dd6-4d20-86ae-6d2f64c79f31_OIP (6).3kryutlen4.jpg",
-      "AssetFile": "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\wwwroot\\uploads\\ac319199-8dd6-4d20-86ae-6d2f64c79f31_OIP (6).jpg",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "15207"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "image/jpeg"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"AwL5KTLIrIFyEb5t48FW/YOEAQeshQAJtwGeAKCkcqo=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Fri, 23 May 2025 13:25:15 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "3kryutlen4"
-        },
-        {
-          "Name": "label",
-          "Value": "uploads/ac319199-8dd6-4d20-86ae-6d2f64c79f31_OIP (6).jpg"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-AwL5KTLIrIFyEb5t48FW/YOEAQeshQAJtwGeAKCkcqo="
-        }
-      ]
-    },
-    {
-      "Route": "uploads/ac319199-8dd6-4d20-86ae-6d2f64c79f31_OIP (6).jpg",
-      "AssetFile": "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\wwwroot\\uploads\\ac319199-8dd6-4d20-86ae-6d2f64c79f31_OIP (6).jpg",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "15207"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "image/jpeg"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"AwL5KTLIrIFyEb5t48FW/YOEAQeshQAJtwGeAKCkcqo=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Fri, 23 May 2025 13:25:15 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=3600, must-revalidate"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-AwL5KTLIrIFyEb5t48FW/YOEAQeshQAJtwGeAKCkcqo="
-        }
-      ]
     }
   ]
 }

@@ -710,3 +710,4 @@ Z:\Universidade\Semestre1\24-25\PDS\PDS_Api\CommuniCare_PDS\CommuniCare\CommuniC
 Z:\Universidade\Semestre1\24-25\PDS\PDS_Api\CommuniCare_PDS\CommuniCare\CommuniCare\CommunicareIntegrationsTests\obj\Debug\net8.0\CommunicareIntegrationsTests.pdb
 Z:\Universidade\Semestre1\24-25\PDS\PDS_Api\CommuniCare_PDS\CommuniCare\CommuniCare\CommunicareIntegrationsTests\obj\Debug\net8.0\CommunicareIntegrationsTests.genruntimeconfig.cache
 Z:\Universidade\Semestre1\24-25\PDS\PDS_Api\CommuniCare_PDS\CommuniCare\CommuniCare\CommunicareIntegrationsTests\obj\Debug\net8.0\ref\CommunicareIntegrationsTests.dll
+z:\Universidade\Semestre1\24-25\PDS\PDS_Api\CommuniCare_PDS\CommuniCare\CommuniCare\CommunicareIntegrationsTests\bin\Debug\net8.0\CommuniCare.staticwebassets.runtime.json

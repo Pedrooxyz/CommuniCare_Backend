@@ -3116,3 +3116,4 @@ C:\Users\João\OneDrive - Instituto Politécnico do Cávado e do Ave\Desktop\ipc
 C:\Users\João\OneDrive - Instituto Politécnico do Cávado e do Ave\Desktop\ipca\ano 2\2º semestre\PDS\Segunda Fase\Codigo\CommuniCare\CommuniCare\CommuniCareTests\obj\Debug\net8.0\CommuniCareTests.pdb
 C:\Users\João\OneDrive - Instituto Politécnico do Cávado e do Ave\Desktop\ipca\ano 2\2º semestre\PDS\Segunda Fase\Codigo\CommuniCare\CommuniCare\CommuniCareTests\obj\Debug\net8.0\CommuniCareTests.genruntimeconfig.cache
 C:\Users\João\OneDrive - Instituto Politécnico do Cávado e do Ave\Desktop\ipca\ano 2\2º semestre\PDS\Segunda Fase\Codigo\CommuniCare\CommuniCare\CommuniCareTests\obj\Debug\net8.0\ref\CommuniCareTests.dll
+z:\Universidade\Semestre1\24-25\PDS\PDS_Api\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCareTests\bin\Debug\net8.0\CommuniCare.staticwebassets.runtime.json

@@ -1243,7 +1243,7 @@ namespace CommuniCareTests
 
             Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
             var bad = (BadRequestObjectResult)result;
-            Assert.AreEqual("Não foi possível determinar o recetor do pedido.", bad.Value);
+            Assert.AreEqual("Nenhum voluntário confirmado para este pedido.", bad.Value);
         }
 
 
@@ -1259,16 +1259,20 @@ namespace CommuniCareTests
         [TestMethod]
         public async Task ValidarConclusaoPedidoAjuda_ValidRequest_ReturnsOk()
         {
-
             const int pedidoId = 1;
             const int adminId = 2;
+            const int voluntarioId = 99;
 
-
+            
             var admin = new Utilizador { UtilizadorId = adminId, TipoUtilizadorId = 2 };
 
-
+           
             var recetor = new Utilizador { UtilizadorId = 3, NumCares = 10 };
 
+           
+            var voluntario = new Utilizador { UtilizadorId = voluntarioId, NumCares = 0 };
+
+           
             var pedido = new PedidoAjuda
             {
                 PedidoId = pedidoId,
@@ -1277,13 +1281,17 @@ namespace CommuniCareTests
                 UtilizadorId = recetor.UtilizadorId,
                 RecompensaCares = 5,
                 Voluntariados = new List<Voluntariado>
-                {
-                    new Voluntariado { UtilizadorId = 99 }
-                }
+        {
+            new Voluntariado
+            {
+                UtilizadorId = voluntarioId,
+                Estado = EstadoVoluntariado.Aceite
+            }
+        }
             };
 
-
-            var utilizadores = new[] { admin, recetor }
+            
+            var utilizadores = new[] { admin, recetor, voluntario }
                                .AsQueryable()
                                .BuildMockDbSet();
 
@@ -1297,14 +1305,13 @@ namespace CommuniCareTests
 
             _mockContext.Setup(c => c.Utilizadores).Returns(utilizadores.Object);
 
-
+            
             var pedidosDbSet = new[] { pedido }
                                .AsQueryable()
                                .BuildMockDbSet();
-
             _mockContext.Setup(c => c.PedidosAjuda).Returns(pedidosDbSet.Object);
 
-
+            
             var transacoesDb = new Mock<DbSet<Transacao>>();
             var transAjudaDb = new Mock<DbSet<TransacaoAjuda>>();
             var notificacoesDb = new Mock<DbSet<Notificacao>>();
@@ -1313,11 +1320,10 @@ namespace CommuniCareTests
             _mockContext.Setup(c => c.TransacaoAjuda).Returns(transAjudaDb.Object);
             _mockContext.Setup(c => c.Notificacaos).Returns(notificacoesDb.Object);
 
-
             _mockContext.Setup(c => c.SaveChangesAsync(It.IsAny<CancellationToken>()))
                         .ReturnsAsync(1);
 
-
+            
             _controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext
@@ -1329,25 +1335,24 @@ namespace CommuniCareTests
                 }
             };
 
-
+            // Act
             var result = await _controller.ValidarConclusaoPedidoAjuda(pedidoId);
 
-
+            // Assert
             Assert.IsInstanceOfType(result, typeof(OkObjectResult));
             var ok = (OkObjectResult)result;
+
             Assert.AreEqual(
-                "Pedido de ajuda concluído com sucesso. Recompensa atribuída, transação registada e notificação enviada.",
+                "Pedido de ajuda concluído com sucesso. Recompensa atribuída a todos os voluntários, transações registadas e notificações enviadas.",
                 ok.Value);
 
+            Assert.AreEqual(5, voluntario.NumCares); // RecompensaCares was 5
 
-            Assert.AreEqual(15, recetor.NumCares);
-
-
+            // Verify each expected operation was triggered
             transacoesDb.Verify(d => d.Add(It.IsAny<Transacao>()), Times.Once);
             transAjudaDb.Verify(d => d.Add(It.IsAny<TransacaoAjuda>()), Times.Once);
             notificacoesDb.Verify(d => d.Add(It.IsAny<Notificacao>()), Times.Once);
-            _mockContext.Verify(c => c.SaveChangesAsync(It.IsAny<CancellationToken>()),
-                                   Times.Once);
+            _mockContext.Verify(c => c.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
         }
 
 

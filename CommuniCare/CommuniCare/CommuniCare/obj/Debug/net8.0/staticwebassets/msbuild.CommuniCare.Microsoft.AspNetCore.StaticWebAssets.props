@@ -54,5 +54,23 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\uploads\8aba5eac-8f64-4361-be3e-f5bec79a7829_Funny-Faces-supernatural-30409585-1286-724 (1).jpg'))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\uploads\ac319199-8dd6-4d20-86ae-6d2f64c79f31_OIP (6).jpg'))">
+      <SourceType>Package</SourceType>
+      <SourceId>CommuniCare</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/CommuniCare</BasePath>
+      <RelativePath>uploads/ac319199-8dd6-4d20-86ae-6d2f64c79f31_OIP (6).jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>3kryutlen4</Fingerprint>
+      <Integrity>AwL5KTLIrIFyEb5t48FW/YOEAQeshQAJtwGeAKCkcqo=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\uploads\ac319199-8dd6-4d20-86ae-6d2f64c79f31_OIP (6).jpg'))</OriginalItemSpec>
+    </StaticWebAsset>
   </ItemGroup>
 </Project>

@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "O1KgkAUQvpjdZrvIhv+7SY2HXhqEcP4Utw9wVvW3jtw=",
+  "Hash": "DIxzfPkzuDwV+D2oIGnSY0kcfoFNHXZBNQN1lCLWtp0=",
   "Source": "CommuniCare",
   "BasePath": "_content/CommuniCare",
   "Mode": "Default",
@@ -78,6 +78,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\uploads\\8aba5eac-8f64-4361-be3e-f5bec79a7829_Funny-Faces-supernatural-30409585-1286-724 (1).jpg"
+    },
+    {
+      "Identity": "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\wwwroot\\uploads\\ac319199-8dd6-4d20-86ae-6d2f64c79f31_OIP (6).jpg",
+      "SourceId": "CommuniCare",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\wwwroot\\",
+      "BasePath": "_content/CommuniCare",
+      "RelativePath": "uploads/ac319199-8dd6-4d20-86ae-6d2f64c79f31_OIP (6)#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "3kryutlen4",
+      "Integrity": "AwL5KTLIrIFyEb5t48FW/YOEAQeshQAJtwGeAKCkcqo=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\ac319199-8dd6-4d20-86ae-6d2f64c79f31_OIP (6).jpg"
     }
   ],
   "Endpoints": [
@@ -324,6 +345,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-aR7j6fZb5NCia/If7pngld0ikUpXMuSUzwZA1i6lvEc="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/ac319199-8dd6-4d20-86ae-6d2f64c79f31_OIP (6).3kryutlen4.jpg",
+      "AssetFile": "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\wwwroot\\uploads\\ac319199-8dd6-4d20-86ae-6d2f64c79f31_OIP (6).jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "15207"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"AwL5KTLIrIFyEb5t48FW/YOEAQeshQAJtwGeAKCkcqo=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 23 May 2025 13:25:15 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "3kryutlen4"
+        },
+        {
+          "Name": "label",
+          "Value": "uploads/ac319199-8dd6-4d20-86ae-6d2f64c79f31_OIP (6).jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-AwL5KTLIrIFyEb5t48FW/YOEAQeshQAJtwGeAKCkcqo="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/ac319199-8dd6-4d20-86ae-6d2f64c79f31_OIP (6).jpg",
+      "AssetFile": "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\wwwroot\\uploads\\ac319199-8dd6-4d20-86ae-6d2f64c79f31_OIP (6).jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "15207"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"AwL5KTLIrIFyEb5t48FW/YOEAQeshQAJtwGeAKCkcqo=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 23 May 2025 13:25:15 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-AwL5KTLIrIFyEb5t48FW/YOEAQeshQAJtwGeAKCkcqo="
         }
       ]
     }

@@ -494,61 +494,64 @@ namespace CommuniCare.Controllers
                 return BadRequest("O pedido não ainda não foi concluído.");
             }
 
-            var recetor = pedido.Utilizador;
+            var voluntariosConfirmados = pedido.Voluntariados
+                .Where(v => v.Estado == EstadoVoluntariado.Aceite)
+                .ToList();
 
-            if (recetor == null)
+            if (!voluntariosConfirmados.Any())
             {
-                return BadRequest("Não foi possível determinar o recetor do pedido.");
+                return BadRequest("Nenhum voluntário confirmado para este pedido.");
             }
 
             int recompensa = pedido.RecompensaCares ?? 0;
 
-            recetor.NumCares += recompensa;
-
-            var transacao = new Transacao
+            foreach (var voluntariado in voluntariosConfirmados)
             {
-                DataTransacao = DateTime.UtcNow,
-                Quantidade = recompensa
-            };
+                var recetor = await _context.Utilizadores.FindAsync(voluntariado.UtilizadorId);
+                if (recetor == null) continue;
 
-            var transacaoAjuda = new TransacaoAjuda
-            {
-                RecetorTran = recetor.UtilizadorId,
-                Transacao = transacao,
-                PedidoAjuda = new List<PedidoAjuda> { pedido }
-            };
+                recetor.NumCares += recompensa;
 
-            _context.Transacoes.Add(transacao);
-            _context.TransacaoAjuda.Add(transacaoAjuda);
+                var transacao = new Transacao
+                {
+                    DataTransacao = DateTime.UtcNow,
+                    Quantidade = recompensa
+                };
 
-            var voluntariado = pedido.Voluntariados.FirstOrDefault();
-            if (voluntariado != null)
-            {
+                var transacaoAjuda = new TransacaoAjuda
+                {
+                    RecetorTran = recetor.UtilizadorId,
+                    Transacao = transacao,
+                    PedidoAjuda = new List<PedidoAjuda> { pedido }
+                };
+
                 var notificacaoVoluntario = new Notificacao
                 {
                     Mensagem = $"A transação foi efetuada com sucesso para o pedido #{pedido.PedidoId}. Obrigado pela tua ajuda!",
                     Lida = 0,
                     DataMensagem = DateTime.Now,
                     PedidoId = pedido.PedidoId,
-                    UtilizadorId = voluntariado.UtilizadorId,
+                    UtilizadorId = recetor.UtilizadorId,
                     ItemId = null
                 };
+
+                _context.Transacoes.Add(transacao);
+                _context.TransacaoAjuda.Add(transacaoAjuda);
                 _context.Notificacaos.Add(notificacaoVoluntario);
             }
 
             await _context.SaveChangesAsync();
 
-            return Ok("Pedido de ajuda concluído com sucesso. Recompensa atribuída, transação registada e notificação enviada.");
+            return Ok("Pedido de ajuda concluído com sucesso. Recompensa atribuída a todos os voluntários, transações registadas e notificações enviadas.");
         }
+            #endregion
 
-        #endregion
+            /// <summary>
+            /// Obtém todos os pedidos de ajuda disponíveis para o utilizador, exceto os pedidos criados pelo próprio utilizador.
+            /// </summary>
+            /// <returns>Retorna uma lista de pedidos de ajuda disponíveis ou 401 Unauthorized se o utilizador não estiver autenticado.</returns>
 
-        /// <summary>
-        /// Obtém todos os pedidos de ajuda disponíveis para o utilizador, exceto os pedidos criados pelo próprio utilizador.
-        /// </summary>
-        /// <returns>Retorna uma lista de pedidos de ajuda disponíveis ou 401 Unauthorized se o utilizador não estiver autenticado.</returns>
-
-        [Authorize]
+            [Authorize]
         [HttpGet("PedidosDisponiveis")]
         public async Task<ActionResult<IEnumerable<PedidoAjuda>>> GetPedidosAjudaDisponiveis()
         {

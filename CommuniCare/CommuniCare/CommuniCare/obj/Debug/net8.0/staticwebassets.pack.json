@@ -13,6 +13,10 @@
       "PackagePath": "staticwebassets\\uploads\\8aba5eac-8f64-4361-be3e-f5bec79a7829_Funny-Faces-supernatural-30409585-1286-724 (1).jpg"
     },
     {
+      "Id": "C:\\Users\\ferna\\Documents\\GitHub\\CommuniCare_PDS\\CommuniCare\\CommuniCare\\CommuniCare\\wwwroot\\uploads\\ac319199-8dd6-4d20-86ae-6d2f64c79f31_OIP (6).jpg",
+      "PackagePath": "staticwebassets\\uploads\\ac319199-8dd6-4d20-86ae-6d2f64c79f31_OIP (6).jpg"
+    },
+    {
       "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.CommuniCare.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
       "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssetEndpoints.props"
     },

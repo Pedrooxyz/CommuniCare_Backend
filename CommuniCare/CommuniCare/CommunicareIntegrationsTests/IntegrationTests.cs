@@ -44,18 +44,17 @@ namespace CommuniCareIntegrationsTest
         }
 
         public record PedidoAjudaDto(
-    int PedidoAjudaId,
-    string DescPedido,
-    int NHoras,
-    int NPessoas,
-    DateTime HorarioAjuda,
-    string FotografiaPA);
+            int PedidoAjudaId,
+            string DescPedido,
+            int NHoras,
+            int NPessoas,
+            DateTime HorarioAjuda,
+            string FotografiaPA);
 
 
         [TestMethod]
         public async Task POST_PedidoAjuda_creates_resource_and_can_be_fetched()
         {
-            // ── Arrange ──
             var novoPedido = new
             {
                 DescPedido = "Preciso de ajuda com a horta.",
@@ -65,7 +64,6 @@ namespace CommuniCareIntegrationsTest
                 FotografiaPA = "horta.jpg"
             };
 
-            // ── Act 1 – POST ──
             var postRes = await _client.PostAsJsonAsync(
                 "/api/PedidosAjuda/Pedir",
                 novoPedido);
@@ -73,15 +71,12 @@ namespace CommuniCareIntegrationsTest
             Assert.AreEqual(HttpStatusCode.OK, postRes.StatusCode,
                 $"Esperava 200 mas obtive {(int)postRes.StatusCode}");
 
-            // ── Act 2 – GET lista de pedidos ──
-            // Altere o caminho se o seu endpoint de listagem for diferente
             var listRes = await _client.GetAsync("/api/PedidosAjuda");
-            listRes.EnsureSuccessStatusCode();          // 200-OK
+            listRes.EnsureSuccessStatusCode();      
 
             var pedidos = await listRes.Content.ReadFromJsonAsync<PedidoAjudaDto[]>();
             Assert.IsNotNull(pedidos, "Falhou a desserialização da lista de pedidos.");
 
-            // ── Assert – o novo pedido existe ──
             bool existe = pedidos!.Any(p =>
                 p.DescPedido == novoPedido.DescPedido &&
                 p.NHoras == novoPedido.NHoras &&
@@ -94,31 +89,25 @@ namespace CommuniCareIntegrationsTest
         [TestMethod]
         public async Task POST_CriarLoja_creates_active_store_and_deactivates_others()
         {
-            // ── Arrange ──
             var dto = new LojaDto
             {
                 NomeLoja = "Loja Nova",
                 DescLoja = "Agora é a ativa"
             };
 
-            // ── Act ──
             var res = await _client.PostAsJsonAsync("/api/Lojas/CriarLoja-(admin)", dto);
 
-            // Espera-se 201 Created
             Assert.AreEqual(
                 HttpStatusCode.Created,
                 res.StatusCode,
                 $"Esperava 201 mas obtive {(int)res.StatusCode}");
 
-            // CreatedAtAction deve enviar um header Location
             Assert.IsTrue(res.Headers.Location is not null,
                 "O header Location não foi devolvido.");
 
-            // Corpo não é essencial; basta garantir que veio algo
             var body = await res.Content.ReadFromJsonAsync<object>();
             Assert.IsNotNull(body, "Corpo da resposta não veio.");
 
-            // ── Assert side-effects no BD ──
             using var scope = _factory.Services.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<CommuniCareContext>();
 

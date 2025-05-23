@@ -8,7 +8,7 @@ using Microsoft.OpenApi.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-public class Program // Alteração: tornou-se pública
+public class Program 
 {
     public static void Main(string[] args)
     {
@@ -27,7 +27,6 @@ public class Program // Alteração: tornou-se pública
             });
         });
 
-        // Configuração da licensa do QuestPDF
         var questPdfLicense = builder.Configuration["QuestPDF:LicenseKey"];
         if (!string.IsNullOrEmpty(questPdfLicense))
         {
@@ -38,14 +37,14 @@ public class Program // Alteração: tornou-se pública
             QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
         }
 
-        // Configurar JWT
+
         var jwtSettingsSection = builder.Configuration.GetSection("JwtSettings");
         builder.Services.Configure<JwtSettings>(jwtSettingsSection);
 
         var jwtSettings = jwtSettingsSection.Get<JwtSettings>();
         var key = Encoding.ASCII.GetBytes(jwtSettings.SecretKey);
 
-        // Configurar autenticação JWT
+
         builder.Services.AddAuthentication(options =>
         {
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -92,7 +91,6 @@ public class Program // Alteração: tornou-se pública
             };
         });
 
-        // Serviços essenciais
         builder.Services.AddSingleton<EmailService>();
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
@@ -100,7 +98,6 @@ public class Program // Alteração: tornou-se pública
         {
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "CommuniCare API", Version = "v1" });
 
-            // Configurar o botão Authorize no Swagger
             c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
                 Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Introduz o token abaixo:",
@@ -129,13 +126,11 @@ public class Program // Alteração: tornou-se pública
             });
         });
 
-        // Configurar o DbContext
         builder.Services.AddDbContext<CommuniCareContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("ConStr")));
 
         var app = builder.Build();
 
-        // População inicial do banco de dados
         using (var scope = app.Services.CreateScope())
         {
             var db = scope.ServiceProvider.GetRequiredService<CommuniCareContext>();
@@ -209,7 +204,6 @@ public class Program // Alteração: tornou-se pública
             }
         }
 
-        // Configuração do middleware
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();

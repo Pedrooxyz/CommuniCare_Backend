@@ -727,7 +727,7 @@ namespace CommuniCare.Controllers
         public async Task<IActionResult> ObterVoluntariosPorPedido(int pedidoId)
         {
             var voluntarios = await _context.Voluntariados
-                .Where(v => v.PedidoId == pedidoId && v.Estado != EstadoVoluntariado.Aceite) // Filtra para não incluir voluntários com estado 'Aceite'
+                .Where(v => v.PedidoId == pedidoId && v.Estado != EstadoVoluntariado.Aceite)
                 .Select(v => new
                 {
                     Nome = v.Utilizador.NomeUtilizador,

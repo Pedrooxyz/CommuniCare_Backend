@@ -141,95 +141,6 @@ namespace CommuniCare.Controllers
         /// <returns>Retorna um status 200 OK se a conta for criada com sucesso, aguardando aprovação de um administrador.</returns>
         #endregion
 
-        //[HttpPost("RegisterUtilizador")]
-        //public async Task<IActionResult> Register([FromBody] UtilizadorDTO dto)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
-
-        //    bool emailExiste = await _context.Contactos
-        //        .AnyAsync(c => c.NumContacto == dto.Email);
-
-        //    if (emailExiste)
-        //    {
-        //        return BadRequest("Já existe uma conta com este email.");
-        //    }
-
-        //    var codigoPostalPadrao = await _context.Cps.FirstOrDefaultAsync(cp => cp.CPostal == "0000-000");
-        //    if (codigoPostalPadrao == null)
-        //    {
-        //        codigoPostalPadrao = new Cp
-        //        {
-        //            CPostal = "0000-000",
-        //            Localidade = "000000"
-        //        };
-        //        _context.Cps.Add(codigoPostalPadrao);
-        //        await _context.SaveChangesAsync();
-        //    }
-
-        //    var moradaTemporaria = new Morada
-        //    {
-        //        Rua = "A definir",
-        //        NumPorta = null,
-        //        CPostal = codigoPostalPadrao.CPostal
-        //    };
-
-        //    _context.Morada.Add(moradaTemporaria);
-        //    await _context.SaveChangesAsync();
-
-        //    var novoUtilizador = new Utilizador
-        //    {
-        //        NomeUtilizador = dto.NomeUtilizador,
-        //        Password = BCrypt.Net.BCrypt.HashPassword(dto.Password),
-        //        NumCares = 0,
-        //        TipoUtilizadorId = 1,
-        //        MoradaId = moradaTemporaria.MoradaId,
-        //        EstadoUtilizador = EstadoUtilizador.Pendente
-        //    };
-
-        //    _context.Utilizadores.Add(novoUtilizador);
-        //    await _context.SaveChangesAsync();
-
-        //    var contactoEmail = new Contacto
-        //    {
-        //        NumContacto = dto.Email,
-        //        TipoContactoId = 1,
-        //        UtilizadorId = novoUtilizador.UtilizadorId
-        //    };
-
-        //    _context.Contactos.Add(contactoEmail);
-        //    await _context.SaveChangesAsync();
-
-
-        //    var admins = await _context.Utilizadores
-        //        .Where(u => u.TipoUtilizadorId == 2 && u.EstadoUtilizador == EstadoUtilizador.Ativo)
-        //        .ToListAsync();
-
-        //    foreach (var admin in admins)
-        //    {
-        //        var notificacao = new Notificacao
-        //        {
-        //            UtilizadorId = admin.UtilizadorId,
-        //            Mensagem = $"Nova conta criada: {novoUtilizador.NomeUtilizador}. Aguardando aprovação.",
-        //            Lida = 0,
-        //            DataMensagem = DateTime.Now,
-        //            PedidoId = null,
-        //            ItemId = null
-        //        };
-
-        //        _context.Notificacaos.Add(notificacao);
-        //    }
-
-        //    await _context.SaveChangesAsync();
-
-        //    return Ok(new
-        //    {
-        //        Message = "Conta criada com sucesso! Aguardando aprovação de um administrador.",
-        //    });
-        //}
-
         /// <summary>
         /// Regista um novo administrador com os dados fornecidos.
         /// </summary>
@@ -244,7 +155,6 @@ namespace CommuniCare.Controllers
                 return BadRequest(ModelState);
             }
 
-            // Verifica se o email já existe nos contactos
             bool emailExiste = await _context.Contactos
                 .AnyAsync(c => c.NumContacto == dto.Email);
 
@@ -253,13 +163,11 @@ namespace CommuniCare.Controllers
                 return BadRequest("Já existe uma conta com este email.");
             }
 
-            // Validação extra do Código Postal e Localidade
             if (string.IsNullOrWhiteSpace(dto.CPostal) || string.IsNullOrWhiteSpace(dto.Localidade))
             {
                 return BadRequest("Código postal e localidade são obrigatórios.");
             }
 
-            // Verifica se o código postal já existe
             var cpExistente = await _context.Cps.FirstOrDefaultAsync(cp => cp.CPostal == dto.CPostal);
             if (cpExistente == null)
             {
@@ -271,7 +179,6 @@ namespace CommuniCare.Controllers
                 _context.Cps.Add(cpExistente);
             }
 
-            // Cria a morada com os dados fornecidos
             var morada = new Morada
             {
                 Rua = dto.Rua,
@@ -280,28 +187,25 @@ namespace CommuniCare.Controllers
             };
             _context.Morada.Add(morada);
 
-            // Cria o utilizador
             var novoUtilizador = new Utilizador
             {
                 NomeUtilizador = dto.NomeUtilizador,
                 Password = BCrypt.Net.BCrypt.HashPassword(dto.Password),
                 NumCares = 0,
-                TipoUtilizadorId = 1, // 1 = utilizador normal
-                Morada = morada, // associa diretamente a morada (não precisa MoradaId agora)
+                TipoUtilizadorId = 1,
+                Morada = morada, 
                 EstadoUtilizador = EstadoUtilizador.Pendente
             };
             _context.Utilizadores.Add(novoUtilizador);
 
-            // Cria o contacto (email)
             var contactoEmail = new Contacto
             {
                 NumContacto = dto.Email,
-                TipoContactoId = 1, // 1 = email
+                TipoContactoId = 1, 
                 Utilizador = novoUtilizador
             };
             _context.Contactos.Add(contactoEmail);
 
-            // Notificar admins
             var admins = await _context.Utilizadores
                 .Where(u => u.TipoUtilizadorId == 2 && u.EstadoUtilizador == EstadoUtilizador.Ativo)
                 .ToListAsync();
@@ -318,15 +222,12 @@ namespace CommuniCare.Controllers
 
             _context.Notificacaos.AddRange(notificacoes);
 
-            // Grava tudo de uma vez
             await _context.SaveChangesAsync();
 
-            // Carregar o utilizador com Morada incluída
             var utilizadorComMorada = await _context.Utilizadores
                 .Include(u => u.Morada)
                 .FirstOrDefaultAsync(u => u.UtilizadorId == novoUtilizador.UtilizadorId);
 
-            // Devolver resposta controlada (sem password!)
             var resultado = new
             {
                 utilizadorComMorada.UtilizadorId,
@@ -344,9 +245,6 @@ namespace CommuniCare.Controllers
 
             return StatusCode(StatusCodes.Status201Created, resultado);
         }
-
-
-
 
 
         [HttpGet("ListarPendentes")]
@@ -422,11 +320,9 @@ namespace CommuniCare.Controllers
         [Authorize]
         public async Task<IActionResult> UpdateFoto(IFormFile foto)
         {
-            // Verifica se o ficheiro é nulo ou vazio
             if (foto == null || foto.Length == 0)
                 return BadRequest("Nenhum ficheiro enviado.");
 
-            // Obtém o ID do utilizador a partir dos claims
             var idStr = User.FindFirstValue(ClaimTypes.NameIdentifier) ??
                         User.FindFirstValue("sub") ??
                         User.FindFirstValue("uid") ??
@@ -435,35 +331,28 @@ namespace CommuniCare.Controllers
             if (!int.TryParse(idStr, out var userId))
                 return Unauthorized();
 
-            // Procura o utilizador no banco de dados
             var utilizador = await _context.Utilizadores.SingleOrDefaultAsync(u => u.UtilizadorId == userId);
             if (utilizador is null)
                 return Unauthorized();
 
-            // Criação do caminho do diretório de upload
             var uploadDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
 
-            // Verifica se o diretório de uploads existe, se não, cria ele
             if (!Directory.Exists(uploadDirectory))
             {
                 Directory.CreateDirectory(uploadDirectory);
             }
 
-            // Gera o nome do ficheiro com um GUID único
             var fileName = $"{Guid.NewGuid()}_{foto.FileName}";
             var filePath = Path.Combine(uploadDirectory, fileName);
 
-            // Guarda o ficheiro no servidor
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
                 await foto.CopyToAsync(stream);
             }
 
-            // Atualiza a URL da foto no utilizador
             utilizador.FotoUtil = $"/uploads/{fileName}";
             await _context.SaveChangesAsync();
 
-            // Retorna a URL da foto salva
             return Ok(new { fotoUtil = utilizador.FotoUtil });
         }
 
@@ -475,31 +364,26 @@ namespace CommuniCare.Controllers
         [Authorize]
         public IActionResult VerificarAdmin()
         {
-            // Obtém o valor do claim de tipo de utilizador
             string? tipoClaim = User.FindFirstValue(ClaimTypes.Role);
 
-            // Verifica se o tipo de utilizador é 2 (administrador)
             if (tipoClaim == "2")
             {
-                return Ok(true); // Retorna true se for administrador
+                return Ok(true); 
             }
             
-            return Ok(false); // Retorna false se não for administrador
+            return Ok(false); 
         }
         
         #region Administrador
 
         /// <summary>
-        /// Aprova um utilizador, permitindo que aceda à plataforma.
+        /// Altera o tipo de um utilizador.
         /// </summary>
-        /// <param name="id">ID do utilizador a ser aprovado.</param>
-        /// <returns>Retorna 200 Ok com mensagem de sucesso ou 404 Not Found se o utilizador não for encontrado, ou 400 Bad Request se o utilizador já estiver ativo.</returns>
+        /// <param name="id">ID do utilizador a ter o seu tipo alterado.</param>
+        /// <returns>Retorna 200 Ok com mensagem de sucesso ou 404 Not Found se o utilizador não for encontrado.</returns>
         [Authorize]
         [HttpPut("/MudarTipoUtilizador/{id:int}")]
-        public async Task<IActionResult> ChangeUserRole(
-    int id,
-    [FromBody] ChangeRoleRequest request,
-    CancellationToken ct)
+        public async Task<IActionResult> ChangeUserRole(int id, [FromBody] ChangeRoleRequest request, CancellationToken ct)
         {
             
             string? tipoClaim = User.FindFirstValue(ClaimTypes.Role);   
@@ -507,7 +391,6 @@ namespace CommuniCare.Controllers
             if (tipoClaim != "2")                  
                 return Unauthorized("Só administradores podem mudar o tipo de utilizador.");
 
-           
             
             if (request.NewTipoUtilizadorId is not (1 or 2))
                 return BadRequest("NewTipoUtilizadorId must be 1 or 2.");
@@ -582,7 +465,6 @@ namespace CommuniCare.Controllers
         [HttpPut("RejeitarUtilizador-(admin)/{id}")]
         public async Task<IActionResult> RejeitarUtilizador(int id)
         {
-            // Buscar o utilizador
             var utilizador = await _context.Utilizadores.FindAsync(id);
 
             if (utilizador == null)
@@ -763,11 +645,9 @@ namespace CommuniCare.Controllers
 
             if (utilizador == null) return NotFound("Utilizador não encontrado.");
 
-            // Atualiza nome
             if (!string.IsNullOrEmpty(dto.Nome))
                 utilizador.NomeUtilizador = dto.Nome;
 
-            // Atualiza ou cria contacto de email (TipoContactoId == 1)
             if (!string.IsNullOrEmpty(dto.Email))
             {
                 var contactoEmail = utilizador.Contactos.FirstOrDefault(c => c.TipoContactoId == 1);
@@ -786,7 +666,6 @@ namespace CommuniCare.Controllers
                 }
             }
 
-            // Atualiza ou cria contacto de telemóvel (TipoContactoId == 2)
             if (!string.IsNullOrEmpty(dto.Telemovel))
             {
                 var contactoTelemovel = utilizador.Contactos.FirstOrDefault(c => c.TipoContactoId == 2);
@@ -875,8 +754,6 @@ namespace CommuniCare.Controllers
 
             return Ok(new { Message = "Conta desativada com sucesso." });
         }
-
-
 
         #region Reset Password
 

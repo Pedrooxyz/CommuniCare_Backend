@@ -46,8 +46,6 @@
             if (string.IsNullOrWhiteSpace(apiKey))
                 throw new Exception("API Key do SendGrid não está configurada.");
 
-            //if (string.IsNullOrWhiteSpace(fromEmail))
-            //    throw new Exception("Email remetente do SendGrid não está configurado.");
 
             var client = new SendGridClient(apiKey);
             var from = new EmailAddress(_configuration["SendGridSettings:FromEmail"]);

@@ -25,9 +25,9 @@ namespace CommunicareIntegrationsTests
         {
             var claims = new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, "2"),    // admin id
+                new Claim(ClaimTypes.NameIdentifier, "2"),    
                 new Claim(ClaimTypes.Name, "integration-user"),
-                new Claim(ClaimTypes.Role, "Admin")           // optional
+                new Claim(ClaimTypes.Role, "Admin")           
             };
             var identity = new ClaimsIdentity(claims, Scheme);
             var principal = new ClaimsPrincipal(identity);

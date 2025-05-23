@@ -61,7 +61,6 @@ namespace CommuniCare.Controllers
         [HttpGet("{itemEmprestimoId}/foto-emprestador")]
         public async Task<ActionResult<string?>> GetFotoEmprestador(int itemEmprestimoId)
         {
-            //Console.WriteLine($"Início da execução da função GetFotoEmprestador com o itemEmprestimoId: {itemEmprestimoId}");
 
             try
             {
@@ -77,26 +76,18 @@ namespace CommuniCare.Controllers
 
                 if (relacaoEmprestador == null)
                 {
-                    //Console.WriteLine("Nenhum utilizador dono encontrado para este item.");
                     return NotFound();
                 }
-
-                // Logs detalhados do utilizador encontrado
-                //Console.WriteLine($"Utilizador encontrado: ID = {relacaoEmprestador.UtilizadorId}, Nome = {relacaoEmprestador.NomeUtilizador}");
-                //Console.WriteLine($"Foto do emprestador encontrada: {relacaoEmprestador.FotoUtil}");
 
                 if (relacaoEmprestador.FotoUtil == null)
                 {
-                    //Console.WriteLine("Foto do emprestador não encontrada.");
                     return NotFound();
                 }
 
-                //Console.WriteLine("Foto do emprestador retornada com sucesso.");
                 return relacaoEmprestador.FotoUtil;
             }
             catch (Exception ex)
             {
-                //Console.WriteLine($"Erro na execução: {ex.Message}");
                 return StatusCode(500, "Erro interno do servidor.");
             }
         }
@@ -735,10 +726,6 @@ namespace CommuniCare.Controllers
                 .Where(e => e.Items.Any(i => i.ItemId == itemId))
                 .FirstOrDefaultAsync();
 
-            //if (emprestimo == null)
-            //{
-            //    return NotFound("Empréstimo relacionado não encontrado.");
-            //}
 
             var itemEmprestimoUtilizador = await _context.ItemEmprestimoUtilizadores
                 .FirstOrDefaultAsync(ie => ie.ItemId == itemId && ie.UtilizadorId == utilizadorId);
@@ -797,11 +784,6 @@ namespace CommuniCare.Controllers
             var emprestimo = await _context.Emprestimos
                 .Where(e => e.Items.Any(i => i.ItemId == itemId))
                 .FirstOrDefaultAsync();
-
-            //if (emprestimo == null)
-            //{
-            //    return NotFound("Empréstimo relacionado não encontrado.");
-            //}
 
             var itemEmprestimoUtilizador = await _context.ItemEmprestimoUtilizadores
                 .FirstOrDefaultAsync(ie => ie.ItemId == itemId && ie.UtilizadorId == utilizadorId);
@@ -934,13 +916,11 @@ namespace CommuniCare.Controllers
 
             int utilizadorId = int.Parse(userIdClaim.Value);
 
-            // Primeiro, obter os IDs dos itens do utilizador
             var meusItemIds = await _context.ItemEmprestimoUtilizadores
                 .Where(rel => rel.UtilizadorId == utilizadorId && rel.TipoRelacao == "Dono")
                 .Select(rel => rel.ItemId)
                 .ToListAsync();
 
-            // Agora, aplicar a lógica dos itens em uso DENTRO dos itens do utilizador
             var itensEmUso = await _context.ItensEmprestimo
                 .Include(i => i.Emprestimos)
                 .Where(i =>

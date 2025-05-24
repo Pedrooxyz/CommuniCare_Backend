@@ -218,5 +218,38 @@ namespace CommuniCare.Controllers
             return Ok(notificacao);
         }
 
+        /// <summary>
+        /// Obtém as notificações lidas do utilizador autenticado.
+        /// </summary>
+        /// <returns>Uma lista de notificações lidas do utilizador autenticado, ou NotFound se não houver notificações.</returns>
+        /// <response code="401">Se o utilizador não estiver autenticado.</response>
+        /// <response code="404">Se não houver notificações lidas para o utilizador.</response>
+        [HttpGet("NotificacoesLidas")]
+        [Authorize]
+        public async Task<IActionResult> VerNotificacoesLidas()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Unauthorized("Utilizador não autenticado.");
+            }
+
+            int utilizadorId = int.Parse(userIdClaim.Value);
+
+            var notificacoesLidas = await _context.Notificacaos
+                .Where(n => n.UtilizadorId == utilizadorId)
+                .Where(n => n.Lida == 1) 
+                .OrderByDescending(n => n.DataMensagem)
+                .ToListAsync();
+
+            if (notificacoesLidas == null || !notificacoesLidas.Any())
+            {
+                return NotFound("Não há notificações lidas para mostrar.");
+            }
+
+            return Ok(notificacoesLidas);
+        }
+
+
     }
 }

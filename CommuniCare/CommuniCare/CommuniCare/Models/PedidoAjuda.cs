@@ -304,6 +304,7 @@ namespace CommuniCare.Models
             return nHoras * 50;
         }
 
+
         #endregion
     
     }

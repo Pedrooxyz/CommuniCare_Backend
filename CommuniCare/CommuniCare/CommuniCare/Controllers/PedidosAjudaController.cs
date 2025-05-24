@@ -791,6 +791,96 @@ namespace CommuniCare.Controllers
             }
         }
 
+        /// <summary>
+        /// Atualiza os campos de um pedido de ajuda.
+        /// Apenas o "Dono" do pedido pode realizar essa atualização.
+        /// </summary>
+        /// <param name="pedidoId">ID do pedido a ser atualizado.</param>
+        /// <param name="pedidoDto">Objeto com os campos para atualização.</param>
+        /// <returns>Retorna status indicando sucesso ou erro.</returns>
+        [HttpPut("AtualizarPedido/{pedidoId}")]
+        [Authorize]
+        public async Task<IActionResult> AtualizarPedido(int pedidoId, [FromBody] PedidoAjudaEditDTO pedidoDto)
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Unauthorized("Utilizador não autenticado.");
+            }
+
+            if (!int.TryParse(userIdClaim.Value, out int utilizadorId))
+            {
+                return Unauthorized("ID de utilizador inválido.");
+            }
+
+            var pedido = await _context.PedidosAjuda
+                .FirstOrDefaultAsync(p => p.PedidoId == pedidoId);
+
+            if (pedido == null)
+            {
+                return NotFound("Pedido de ajuda não encontrado.");
+            }
+
+            if (pedido.UtilizadorId != utilizadorId)
+            {
+                return Unauthorized("Você não tem permissão para atualizar este pedido.");
+            }
+
+            pedido.Titulo = pedidoDto.Titulo;
+            pedido.DescPedido = pedidoDto.DescPedido;
+            pedido.NPessoas = pedidoDto.NPessoas;
+            pedido.NHoras = pedidoDto.NHoras;
+
+            pedido.RecompensaCares = pedido.NHoras * 50;
+
+            _context.PedidosAjuda.Update(pedido);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Apaga um pedido de ajuda específico pelo seu ID.
+        /// Apenas o utilizador que criou o pedido pode apagá-lo.
+        /// </summary>
+        /// <param name="pedidoId">ID do pedido de ajuda a ser apagado.</param>
+        /// <returns>
+        /// Retorna 204 No Content se a operação for bem-sucedida.
+        /// Retorna 401 Unauthorized se o utilizador não estiver autenticado ou não for o dono do pedido.
+        /// Retorna 404 Not Found se o pedido não existir.
+        /// </returns>
+        [HttpDelete("ApagarPedido/{pedidoId}")]
+        [Authorize]
+        public async Task<IActionResult> ApagarPedido(int pedidoId)
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+                return Unauthorized("Utilizador não autenticado.");
+
+            if (!int.TryParse(userIdClaim.Value, out int utilizadorId))
+                return Unauthorized("ID de utilizador inválido.");
+
+            var pedido = await _context.PedidosAjuda
+                .Include(p => p.Notificacaos) 
+                .FirstOrDefaultAsync(p => p.PedidoId == pedidoId);
+
+            if (pedido == null)
+                return NotFound("Pedido de ajuda não encontrado.");
+
+            if (pedido.UtilizadorId != utilizadorId)
+                return Unauthorized("Você não tem permissão para apagar este pedido.");
+
+            if (pedido.Notificacaos != null && pedido.Notificacaos.Any())
+            {
+                _context.Notificacaos.RemoveRange(pedido.Notificacaos);
+            }
+
+            _context.PedidosAjuda.Remove(pedido);
+
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
 
 
     }

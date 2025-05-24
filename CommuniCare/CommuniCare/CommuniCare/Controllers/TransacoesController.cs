@@ -144,15 +144,22 @@ namespace CommuniCare.Controllers
         public async Task<ActionResult<IEnumerable<object>>> GetHistoricoTransacoes(int utilizadorId)
         {
             var transacoesAjuda = await _context.Transacoes
+                .Include(t => t.TransacaoAjuda)
+                .ThenInclude(ta => ta.PedidoAjuda)
                 .Where(t => t.TransacaoAjuda != null && t.TransacaoAjuda.RecetorTran == utilizadorId)
                 .ToListAsync();
 
             var transacoesEmprestimo = await _context.Transacoes
+                .Include(t => t.TransacaoEmprestimo)
+                .ThenInclude(te => te.Emprestimos)
+                .ThenInclude(e => e.Items)
                 .Where(t => t.TransacaoEmprestimo != null &&
                        (t.TransacaoEmprestimo.RecetorTran == utilizadorId || t.TransacaoEmprestimo.PagaTran == utilizadorId))
                 .ToListAsync();
 
             var transacoesVenda = await _context.Transacoes
+                .Include(t => t.Venda)
+                .ThenInclude(v => v.Artigos)
                 .Where(t => t.Venda != null && t.Venda.UtilizadorId == utilizadorId)
                 .ToListAsync();
 
@@ -162,21 +169,24 @@ namespace CommuniCare.Controllers
                     t.TransacaoId,
                     Tipo = "Ajuda",
                     Data = ((DateTime)t.DataTransacao).ToString("dd/MM HH:mm"),
-                    NumeroCarenciasTransferido = t.Quantidade
+                    NumeroCarenciasTransferido = t.Quantidade,
+                    Titulo = t.TransacaoAjuda.PedidoAjuda.FirstOrDefault()?.Titulo ?? "Sem título"
                 })
                 .Concat(transacoesEmprestimo.Select(t => new
                 {
                     t.TransacaoId,
                     Tipo = "Emprestimo",
                     Data = ((DateTime)t.DataTransacao).ToString("dd/MM HH:mm"),
-                    NumeroCarenciasTransferido = t.Quantidade
+                    NumeroCarenciasTransferido = t.Quantidade,
+                    Titulo = t.TransacaoEmprestimo.Emprestimos.FirstOrDefault()?.Items.FirstOrDefault()?.NomeItem ?? "Sem título"
                 }))
                 .Concat(transacoesVenda.Select(t => new
                 {
                     t.TransacaoId,
                     Tipo = "Venda",
                     Data = ((DateTime)t.DataTransacao).ToString("dd/MM HH:mm"),
-                    NumeroCarenciasTransferido = t.Quantidade
+                    NumeroCarenciasTransferido = t.Quantidade,
+                    Titulo = t.Venda.Artigos?.FirstOrDefault().NomeArtigo ?? "Sem título"
                 }))
                 .OrderByDescending(t => t.Data)
                 .ToList();

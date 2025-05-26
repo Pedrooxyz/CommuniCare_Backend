@@ -672,6 +672,7 @@ namespace CommuniCare.Controllers
             Titulo = p.Titulo,
             Descricao = p.DescPedido,
             DataCriacao = p.HorarioAjuda,
+            RecompensaCares = p.RecompensaCares,
             NumeroVoluntarios = p.Voluntariados.Count,
             Transacao = p.Transacao == null ? null : new TransacaoDTO
             {
@@ -715,6 +716,7 @@ namespace CommuniCare.Controllers
             Titulo = p.Titulo,
             Descricao = p.DescPedido,
             DataCriacao = p.HorarioAjuda,
+            RecompensaCares = p.RecompensaCares,
             NumeroVoluntarios = p.Voluntariados.Count,
             Transacao = p.Transacao == null ? null : new TransacaoDTO
             {

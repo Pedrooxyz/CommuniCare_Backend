@@ -1361,6 +1361,16 @@
   },
   {
     "ContainingType": "CommuniCare.Controllers.NotificacoesController",
+    "Method": "VerNotificacoesLidas",
+    "RelativePath": "api/Notificacoes/NotificacoesLidas",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.NotificacoesController",
     "Method": "VerNotificacoesNaoLidas",
     "RelativePath": "api/Notificacoes/NotificacoesNaoLidas",
     "HttpMethod": "GET",
@@ -1517,6 +1527,43 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",
+    "Method": "ApagarPedido",
+    "RelativePath": "api/PedidosAjuda/ApagarPedido/{pedidoId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pedidoId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CommuniCare.Controllers.PedidosAjudaController",
+    "Method": "AtualizarPedido",
+    "RelativePath": "api/PedidosAjuda/AtualizarPedido/{pedidoId}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pedidoId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "pedidoDto",
+        "Type": "CommuniCare.DTOs.PedidoAjudaEditDTO",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {

@@ -2325,6 +2325,18 @@
         }
       }
     },
+    "/api/Notificacoes/NotificacoesLidas": {
+      "get": {
+        "tags": [
+          "Notificacoes"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/PedidosAjuda": {
       "get": {
         "tags": [
@@ -2720,6 +2732,71 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/api/PedidosAjuda/AtualizarPedido/{pedidoId}": {
+      "put": {
+        "tags": [
+          "PedidosAjuda"
+        ],
+        "parameters": [
+          {
+            "name": "pedidoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PedidoAjudaEditDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PedidoAjudaEditDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/PedidoAjudaEditDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/PedidosAjuda/ApagarPedido/{pedidoId}": {
+      "delete": {
+        "tags": [
+          "PedidosAjuda"
+        ],
+        "parameters": [
+          {
+            "name": "pedidoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -4779,6 +4856,28 @@
           "fotografiaPA": {
             "type": "string",
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PedidoAjudaEditDTO": {
+        "type": "object",
+        "properties": {
+          "titulo": {
+            "type": "string",
+            "nullable": true
+          },
+          "descPedido": {
+            "type": "string",
+            "nullable": true
+          },
+          "nHoras": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nPessoas": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false

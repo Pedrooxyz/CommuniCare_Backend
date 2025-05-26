@@ -11,4 +11,5 @@ public class PedidoPendenteDTO
     public int NHoras { get; set; }            
     public int NPessoas { get; set; }          
     public TransacaoDTO? Transacao { get; set; }
+    public int? RecompensaCares { get; set; }
 }

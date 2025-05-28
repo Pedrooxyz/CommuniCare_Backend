@@ -964,5 +964,36 @@ namespace CommuniCare.Controllers
 
             return Ok(itens);
         }
+
+        [HttpGet("{itemEmprestimoId}/dados-emprestador")]
+        public async Task<ActionResult<object>> GetDadosEmprestador(int itemEmprestimoId)
+        {
+            try
+            {
+                var relacaoEmprestador = await _context.ItemEmprestimoUtilizadores
+                    .Where(rel => rel.ItemId == itemEmprestimoId && rel.TipoRelacao == "Dono")
+                    .Select(rel => new
+                    {
+                        IdEmprestador = rel.Utilizador.UtilizadorId,
+                        rel.Utilizador.FotoUtil
+                    })
+                    .FirstOrDefaultAsync();
+
+                if (relacaoEmprestador == null)
+                {
+                    return NotFound();
+                }
+
+                if (relacaoEmprestador.FotoUtil == null)
+                {
+                    return NotFound();
+                }
+                return Ok(relacaoEmprestador);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Erro interno do servidor.");
+            }
+        }
     }
 }

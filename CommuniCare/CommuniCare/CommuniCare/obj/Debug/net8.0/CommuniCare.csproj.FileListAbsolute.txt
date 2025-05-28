@@ -2908,4 +2908,3 @@ C:\Users\João\OneDrive - Instituto Politécnico do Cávado e do Ave\Desktop\ipc
 C:\Users\João\OneDrive - Instituto Politécnico do Cávado e do Ave\Desktop\ipca\ano 2\2º semestre\PDS\Segunda Fase\Codigo\CommuniCare\CommuniCare\CommuniCare\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\ferna\Documents\GitHub\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\bin\Debug\net8.0\CommuniCare.staticwebassets.runtime.json
 z:\Universidade\Semestre1\24-25\PDS\PDS_Api\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\bin\Debug\net8.0\CommuniCare.staticwebassets.runtime.json
-C:\Users\ferna\Documents\GitHub\CommuniCare_PDS\CommuniCare\CommuniCare\CommuniCare\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

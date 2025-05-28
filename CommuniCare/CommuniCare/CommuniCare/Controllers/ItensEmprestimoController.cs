@@ -939,5 +939,30 @@ namespace CommuniCare.Controllers
 
             return Ok(itensEmUso);
         }
+
+        [Authorize]
+        [HttpGet("ItensUtilizador/{id}")]
+        public async Task<ActionResult<IEnumerable<ItemEmprestimo>>> GetItensDeOutroUtilizador(int id)
+        {
+
+            var existeUtilizador = await _context.Utilizadores
+                .AsNoTracking()
+                .AnyAsync(u => u.UtilizadorId == id);
+
+            if (!existeUtilizador)
+                return NotFound($"Utilizador com ID {id} não encontrado.");
+
+            var itemIds = await _context.ItemEmprestimoUtilizadores
+                .Where(rel => rel.UtilizadorId == id && rel.TipoRelacao == "Dono")
+                .Select(rel => rel.ItemId)
+                .ToListAsync();
+
+            var itens = await _context.ItensEmprestimo
+                .Where(item => itemIds.Contains(item.ItemId) &&
+                               item.Disponivel != EstadoItemEmprestimo.IndisponivelPermanentemente)
+                .ToListAsync();
+
+            return Ok(itens);
+        }
     }
 }

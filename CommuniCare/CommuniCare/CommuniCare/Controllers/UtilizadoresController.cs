@@ -866,6 +866,30 @@ namespace CommuniCare.Controllers
 
         #endregion
 
+        [HttpGet("InfoUtilizador/{id}")]
+        [Authorize]
+
+        public async Task<ActionResult<UtilizadorInfoDto>> GetUserById(int id)
+        {
+            var utilizador = await _context.Utilizadores
+                                            .AsNoTracking()
+                                            .SingleOrDefaultAsync(u => u.UtilizadorId == id);
+
+            if (utilizador is null) return NotFound();
+
+            var dto = new UtilizadorInfoDto
+            {
+                UtilizadorId = utilizador.UtilizadorId,
+                NomeUtilizador = utilizador.NomeUtilizador,
+                FotoUtil = utilizador.FotoUtil,
+                NumCares = utilizador.NumCares,
+                MoradaId = utilizador.MoradaId,
+                TipoUtilizadorId = utilizador.TipoUtilizadorId
+            };
+
+            return Ok(dto);
+        }
+
         #region TESTE 
 
         /// <summary>

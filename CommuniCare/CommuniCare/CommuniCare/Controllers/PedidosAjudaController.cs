@@ -884,6 +884,25 @@ namespace CommuniCare.Controllers
             return NoContent();
         }
 
+        [Authorize]
+        [HttpGet("PedidosUtilizador/{id}")]
+        public async Task<ActionResult<IEnumerable<PedidoAjuda>>> GetPedidosDeOutroUtilizador(int id)
+        {
+            // Verifica se o utilizador existe
+            var existeUtilizador = await _context.Utilizadores
+                .AsNoTracking()
+                .AnyAsync(u => u.UtilizadorId == id);
+
+            if (!existeUtilizador)
+                return NotFound($"Utilizador com ID {id} não encontrado.");
+
+            // Busca os pedidos de ajuda do utilizador
+            var pedidos = await _context.PedidosAjuda
+                .Where(p => p.UtilizadorId == id)
+                .ToListAsync();
+
+            return Ok(pedidos);
+        }
 
     }
 }

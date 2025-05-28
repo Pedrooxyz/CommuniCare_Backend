@@ -126,19 +126,36 @@ namespace CommuniCare.Controllers
             return _context.Artigos.Any(e => e.ArtigoId == id);
         }
 
-        /// <summary>
-        /// Obtém a lista de artigos que estão disponíveis na loja.
-        /// </summary>
-        /// <returns>Uma lista de artigos com estado disponível.</returns>
         [HttpGet("Disponiveis")]
-        public async Task<ActionResult<IEnumerable<Artigo>>> GetArtigosDisponiveis()
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ArtigoRespostaDto>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
+        public async Task<ActionResult<IEnumerable<ArtigoRespostaDto>>> GetArtigosDisponiveis()
         {
+            var lojaAtiva = await _context.Lojas.FirstOrDefaultAsync(l => l.Estado == EstadoLoja.Ativo);
+
+            if (lojaAtiva == null)
+            {
+                return NotFound("Nenhuma loja ativa encontrada.");
+            }
+
             var artigosDisponiveis = await _context.Artigos
-                .Where(a => a.Estado == EstadoArtigo.Disponivel)
+                .Where(a => a.Estado == EstadoArtigo.Disponivel && a.LojaId == lojaAtiva.LojaId)
+                .Select(a => new ArtigoRespostaDto
+                {
+                    ArtigoId = a.ArtigoId,
+                    NomeArtigo = a.NomeArtigo,
+                    DescArtigo = a.DescArtigo,
+                    CustoCares = a.CustoCares,
+                    QuantidadeDisponivel = a.QuantidadeDisponivel,
+                    LojaId = a.LojaId,
+                    FotografiaArt = a.FotografiaArt
+                })
                 .ToListAsync();
 
             return Ok(artigosDisponiveis);
         }
+
+
 
 
         /// <summary>

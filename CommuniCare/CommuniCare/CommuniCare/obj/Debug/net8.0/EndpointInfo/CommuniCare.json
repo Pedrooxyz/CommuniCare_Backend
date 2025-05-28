@@ -96,7 +96,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Artigo"
+                    "$ref": "#/components/schemas/ArtigoRespostaDto"
                   }
                 }
               },
@@ -104,7 +104,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Artigo"
+                    "$ref": "#/components/schemas/ArtigoRespostaDto"
                   }
                 }
               },
@@ -112,8 +112,28 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Artigo"
+                    "$ref": "#/components/schemas/ArtigoRespostaDto"
                   }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -4178,6 +4198,10 @@
           "lojaId": {
             "type": "integer",
             "format": "int32"
+          },
+          "fotografiaArt": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false

@@ -8,6 +8,8 @@
         public int? CustoCares { get; set; }
         public int? QuantidadeDisponivel { get; set; }
         public int LojaId { get; set; }
+
+        public string? FotografiaArt { get; set; }
     }
 
 }

@@ -207,29 +207,30 @@ namespace CommuniCare.Controllers
             return Ok(contactoAdicionado);
         }
 
+        [HttpGet("ContactosUtilizador/{id}")]
         [Authorize]
-        [HttpGet("ItensUtilizador/{id}")]
-        public async Task<ActionResult<IEnumerable<ItemEmprestimo>>> GetItensDeOutroUtilizador(int id)
+        public async Task<ActionResult<IEnumerable<ContactoDTO>>> GetContactosDeOutroUtilizador(int id)
         {
-
+            // Verifica se o utilizador com o ID fornecido existe
             var existeUtilizador = await _context.Utilizadores
                 .AsNoTracking()
                 .AnyAsync(u => u.UtilizadorId == id);
 
             if (!existeUtilizador)
-                return NotFound($"Utilizador com ID {id} não encontrado.");
+                return NotFound();
 
-            var itemIds = await _context.ItemEmprestimoUtilizadores
-                .Where(rel => rel.UtilizadorId == id && rel.TipoRelacao == "Dono")
-                .Select(rel => rel.ItemId)
+            // Busca os contactos desse utilizador
+            var contactos = await _context.Contactos
+                .AsNoTracking()
+                .Where(c => c.UtilizadorId == id)
+                .Select(c => new ContactoDTO
+                {
+                    TipoContactoId = c.TipoContactoId,
+                    NumContacto = c.NumContacto
+                })
                 .ToListAsync();
 
-            var itens = await _context.ItensEmprestimo
-                .Where(item => itemIds.Contains(item.ItemId) &&
-                               item.Disponivel != EstadoItemEmprestimo.IndisponivelPermanentemente)
-                .ToListAsync();
-
-            return Ok(itens);
+            return Ok(contactos);
         }
     }
 }

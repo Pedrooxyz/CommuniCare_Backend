@@ -43,6 +43,30 @@ Acreditámos que a **Communicare** oferece uma solução para os desafios do ind
 
 ---
 
+# CommuniCare - Backend
+
+API e lógica do servidor da aplicação **CommuniCare**. Funciona em conjunto com o frontend [CommuniCare_Frontend](https://github.com/Pedrooxyz/CommuniCare_Frontend).
+
+## Instalação e Execução
+
+1. **Clonar o repositório backend**
+``` 
+git clone https://github.com/Pedrooxyz/CommuniCare_Backend.git
+cd CommuniCare_Backend
+```
+
+2. **Restaurar dependências e construir o projeto**  
+``` 
+dotnet restore
+dotnet ef database update
+dotnet build
+```
+
+3. **Executar a API localmente**  
+``` 
+dotnet run
+``` 
+
 # Bibliografia
 
 [1] Bauman, Z. (2009). *Medo Líquido: A Insegurança na Era do Medo*. Rio de Janeiro: Zahar.
